@@ -2,14 +2,15 @@
 "use strict";
 
 /* =========================================
-   ORBIT AI — PRODUCTION SERVICE WORKER
+   ORBIT AI — PRODUCTION SERVICE WORKER v3
    ========================================= */
 
-const CACHE_NAME = "orbit-ai-cache-v2";
+const CACHE_NAME = "orbit-ai-cache-v3";
 
 const APP_SHELL = [
   "/",
-  "/manifest.json"
+  "/manifest.json",
+  "/offline.html"
 ];
 
 /* INSTALL */
@@ -69,29 +70,35 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  /* Navigation: Network First */
+  /* NAVIGATION: NETWORK FIRST + OFFLINE FALLBACK */
   if (request.mode === "navigate") {
     event.respondWith(
       (async () => {
         try {
           const response = await fetch(request);
 
-          if (response.ok) {
+          if (response.ok && response.type === "basic") {
             const cache = await caches.open(CACHE_NAME);
             await cache.put("/", response.clone());
           }
 
           return response;
         } catch (error) {
+          const cache = await caches.open(CACHE_NAME);
+
           return (
-            (await caches.match(request)) ||
-            (await caches.match("/")) ||
-            new Response("ORBIT AI is currently unavailable offline.", {
-              status: 503,
-              headers: {
-                "Content-Type": "text/plain; charset=utf-8"
+            (await cache.match(request)) ||
+            (await cache.match("/")) ||
+            (await cache.match("/offline.html")) ||
+            new Response(
+              "ORBIT AI is currently unavailable offline.",
+              {
+                status: 503,
+                headers: {
+                  "Content-Type": "text/plain; charset=utf-8"
+                }
               }
-            })
+            )
           );
         }
       })()
@@ -100,7 +107,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  /* Static resources: Cache First */
+  /* STATIC RESOURCES: CACHE FIRST */
   event.respondWith(
     (async () => {
       const cached = await caches.match(request);
@@ -130,4 +137,4 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-console.log("ORBIT AI Service Worker v2 loaded");
+console.log("ORBIT AI Service Worker v3 loaded");
