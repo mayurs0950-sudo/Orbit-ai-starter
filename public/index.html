@@ -687,47 +687,47 @@
       margin-bottom: 14px;
     }
 
-   .form-group label {
-    display: block;
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--lavender-white);
-  }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--lavender-white);
+    }
 
-  .form-group input, .form-group textarea, .form-group select {
-    width: 100%;
-    padding: 11px 14px;
-    border-radius: 12px;
-    border-top: 1px solid rgba(233, 232, 248, 0.48);
-    border-left: 1px solid rgba(141, 185, 240, 0.35);
-    border-bottom: 1.5px solid rgba(245, 182, 158, 0.4);
-    background: rgba(16, 18, 25, 0.65);
-    color: #fff;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
-  }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border-top: 1px solid rgba(233, 232, 248, 0.48);
+      border-left: 1px solid rgba(141, 185, 240, 0.35);
+      border-bottom: 1.5px solid rgba(245, 182, 158, 0.4);
+      background: rgba(16, 18, 25, 0.65);
+      color: #fff;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
+    }
 
-  @media (max-width: 860px) {
-    .app-shell { padding: 8px; }
-    .sidebar {
-      position: fixed;
-      left: 8px;
-      top: 8px;
-      bottom: 8px;
-      transform: translateX(-110%);
-      transition: transform 0.3s ease;
-      z-index: 1000;
+    @media (max-width: 860px) {
+      .app-shell { padding: 8px; }
+      .sidebar {
+        position: fixed;
+        left: 8px;
+        top: 8px;
+        bottom: 8px;
+        transform: translateX(-110%);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      }
+      .mobile-menu-btn {
+        display: inline-block;
+        z-index: 1001;
+      }
     }
-    .sidebar.open {
-      transform: translateX(0);
-      box-shadow: 0 0 50px rgba(0,0,0,0.8);
-    }
-    .mobile-menu-btn {
-      display: inline-block;
-      z-index: 1001;
-    }
-  }
-</style>
+  </style>
 </head>
 <body>
 
@@ -773,7 +773,8 @@
         <button class="nav-btn owner-only" onclick="switchView('admin')">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
       </div>
     </aside>
-        <div class="main-area">
+
+    <div class="main-area">
       <header class="topbar">
         <div class="topbar-left">
           <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
@@ -883,8 +884,9 @@
           </div>
         </div>
         <div class="grid-3d" id="modelsGrid"></div>
-  </section>
-        <!-- 4. PROMPT LIBRARY -->
+      </section>
+
+      <!-- 4. PROMPT LIBRARY -->
       <section class="workspace-view" id="view-prompts">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create / Save Prompt</div>
@@ -943,7 +945,8 @@
         </div>
         <div class="grid-3d" id="agentsGrid"></div>
       </section>
-            <!-- 9. PROJECTS -->
+
+      <!-- 9. PROJECTS -->
       <section class="workspace-view" id="view-projects">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create Project Workspace</div>
@@ -1375,7 +1378,6 @@
       const sparkCount = 28;
       const sparkPos = new Float32Array(sparkCount * 3);
       for (let i = 0; i < sparkCount; i++) {
-        for (let i = 0; i < sparkCount; i++) {
         const theta = Math.random() * Math.PI * 2;
         const r = 1.5 + Math.random() * 0.45;
         sparkPos[i * 3] = Math.cos(theta) * r;
@@ -1419,7 +1421,8 @@
       }
       animateOrb();
     }
-        function setOrbitCoreState(state) {
+
+    function setOrbitCoreState(state) {
       coreState = state;
       const badge = document.getElementById('coreStateBadge');
       if (badge) badge.textContent = `ORBIT CORE: ${state === 'idle' ? 'ONLINE' : state.toUpperCase()}`;
@@ -1483,7 +1486,6 @@
       const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick')?.includes(`'${name}'`));
       if (activeBtn) activeBtn.classList.add('active');
 
-      // मोबाईलवर टॅब क्लिक केल्यावर साईडबार आपोआप बंद होण्याचा ऑटो-क्लोज लॉजिक:
       const sidebar = document.getElementById('sidebar');
       if (sidebar) sidebar.classList.remove('open');
 
@@ -1492,7 +1494,8 @@
       if (name === 'history') renderHistoryList();
       setTimeout(attach3DGlassTilt, 60);
     }
-          function toggleTheme() {
+
+    function toggleTheme() {
       const html = document.documentElement;
       const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', next);
@@ -1658,7 +1661,8 @@
       }).join('');
       box.scrollTop = box.scrollHeight;
     }
-        async function handleChatFileAttach(input) {
+
+    async function handleChatFileAttach(input) {
       const file = input.files[0];
       if (!file) return;
       const fd = new FormData();
@@ -1796,7 +1800,8 @@
       `).join('');
       attach3DGlassTilt();
     }
-        function renderPrompts() {
+
+    function renderPrompts() {
       const grid = document.getElementById('promptsGrid');
       if (!grid) return;
       grid.innerHTML = promptsList.map((p, i) => `
