@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#14161D">
+  <title>ORBIT AI — Offline</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #14161D;
+      color: #E9E8F8;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    main {
+      max-width: 420px;
+      padding: 36px 24px;
+      border: 1px solid #ffffff22;
+      border-radius: 28px;
+      background: #ffffff0b;
+      box-shadow: 0 20px 70px #0008;
+    }
+    .orb {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 24px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 25%, #ffb6c1, #b20d36 45%, #390018 80%);
+      box-shadow: 0 0 45px #d7195066;
+    }
+    h1 { letter-spacing: 3px; }
+    p { color: #b8b8c8; line-height: 1.7; }
+    button {
+      margin-top: 18px;
+      padding: 13px 24px;
+      border: 0;
+      border-radius: 14px;
+      background: #EAAA00;
+      color: #14161D;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="orb"></div>
+    <h1>ORBIT AI</h1>
+    <h2>You’re Offline</h2>
+    <p>Your internet connection is unavailable. Please reconnect and try again.</p>
+    <button onclick="location.reload()">Try Again</button>
+  </main>
+</body>
+</html>
