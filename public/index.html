@@ -949,18 +949,18 @@
         <div class="grid-3d" id="knowledgeGrid"></div>
       </section>
 
-      <!-- 11. IMAGE & VIDEO AI -->
+      <!-- 11. IMAGE & VIDEO AI (डायरेक्ट फ्री इमेज जनरेशन स्टुडिओ जोडलेला आहे) -->
       <section class="workspace-view" id="view-media">
         <div class="card-3d tilt-glass">
-          <div class="card-title">AI Image & Video Generation Studio</div>
+          <div class="card-title">AI Image Generation Studio (Powered by Pollinations.ai)</div>
           <p style="color: var(--lavender-white); opacity:0.85; font-size: 0.9rem; margin-bottom: 12px;">
-            Generates 9:16 cinematic video prompts & photorealistic visual specs via ORBIT AI.
+            Enter a detailed text prompt to instantly generate professional AI artwork or photos.
           </p>
-          <div style="display: flex; gap: 10px;">
-            <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 9:16 cinematic video or photorealistic graphic..." />
-            <button class="btn-3d btn-peach-blue" onclick="generateMediaPrompt()">Generate Spec 🎨</button>
+          <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+            <input id="imagePromptInput" class="input-3d" style="flex:1;" placeholder="e.g. Cinematic futuristic city in neon lights, 8k resolution..." />
+            <button class="btn-3d btn-peach-blue" onclick="generateAiImage()">Generate Image 🎨</button>
           </div>
-          <div id="mediaOutput" style="margin-top: 14px;"></div>
+          <div id="imageResultContainer" style="text-align: center; margin-top: 14px;"></div>
         </div>
       </section>
 
@@ -1060,7 +1060,7 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
-    // सर्वांत महत्त्वाचे: सर्व १४ भाषांच्या संपूर्ण ट्रान्सलेशनची डिक्शनरी
+    // सर्वांत महत्त्वाची पूर्ण १४ भाषांची ट्रान्सलेशन डिक्शनरी
     const I18N = {
       en: {
         sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
@@ -1095,116 +1095,17 @@
         hero_sub: "मल्टी-मॉडल AI, डॉक्यूमेंट एनालिसिस और स्मार्ट एजेंट्स के साथ आपका निजी ऑपरेटिंग सिस्टम।",
         btn_launch_chat: "AI चैट खोलें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न", card_stats: "आंकड़े"
       },
-      bn: {
-        sec_workspace: "ওয়ার্কস্পেস", sec_personal: "ব্যক্তিগত",
-        nav_overview: "ওভারভিউ", nav_chat: "এআই চ্যাট", nav_models: "এআই মডেল হাব", nav_prompts: "প্রম্পট লাইব্রেরি",
-        nav_files: "ফাইল এবং টুলস", nav_history: "চ্যাট ইতিহাস", nav_search: "এআই সার্চ", nav_agents: "এআই এজেন্ট",
-        nav_projects: "প্রজেক্ট", nav_knowledge: "নলেজ বেস", nav_media: "ইমেজ ও ভিডিও এআই", nav_automation: "অটোমেশন",
-        nav_profile: "প্রোফাইল", nav_apiconn: "এপিআই কানেকশন", nav_security: "নিরাপত্তা", nav_settings: "সেটিংস", nav_admin: "অ্যাডমিন প্যানেল",
-        hero_title: "ORBIT AI — প্রাইভেট ইন্টেলিজেন্স OS",
-        hero_sub: "ডকুমেন্ট ইন্টেলিজেন্স এবং অটোনমাস এজেন্ট সহ নেক্সট-জেনারেশন এআই ওয়ার্কস্পেস।",
-        btn_launch_chat: "এআই চ্যাট শুরু করুন", card_status: "সিস্টেম ও মডেল স্ট্যাটাস", card_quick_chat: "দ্রুত এআই প্রশ্ন", card_stats: "ওয়ার্কস্পেস পরিসংখ্যান"
-      },
-      ta: {
-        sec_workspace: "பணிক্ষেত্র", sec_personal: "தனிப்பட்ட",
-        nav_overview: "கண்ணோட்டம்", nav_chat: "AI அரட்டை", nav_models: "AI மாதிரி மையம்", nav_prompts: "தூண்டுதல் நூலகம்",
-        nav_files: "கோப்புகள் & கருவிகள்", nav_history: "அரட்டை வரலாறு", nav_search: "AI தேடல்", nav_agents: "AI முகவர்கள்",
-        nav_projects: "திட்டங்கள்", nav_knowledge: "அறிவு தளம்", nav_media: "படம் & வீடியோ AI", nav_automation: "தானியங்கு",
-        nav_profile: "சுயவிவரம்", nav_apiconn: "API இணைப்புகள்", nav_security: "பாதுகாப்பு", nav_settings: "அமைப்புகள்", nav_admin: "நிர்வாக குழு",
-        hero_title: "ORBIT AI — பிரைவேட் இன்டெலிஜென்ஸ் OS",
-        hero_sub: "மேம்பட்ட நுண்ணறிவுடன் கூடிய அடுத்த தலைமுறை AI பணிক্ষেত্র.",
-        btn_launch_chat: "AI அரட்டையைத் தொடங்கு", card_status: "கட்டமைப்பு நிலை", card_quick_chat: "விரைவான AI கேள்வி", card_stats: "புள்ளிவிவரங்கள்"
-      },
-      te: {
-        sec_workspace: "వర్క్‌స్పేస్", sec_personal: "వ్యక్తిగతం",
-        nav_overview: "అవలోకనం", nav_chat: "AI చాట్", nav_models: "AI మోడల్ హబ్", nav_prompts: "ప్రారంభ లైబ్రరీ",
-        nav_files: "ఫైళ్లు & టూల్స్", nav_history: "చాట్ చరిత్ర", nav_search: "AI శోధన", nav_agents: "AI ఏజెంట్లు",
-        nav_projects: "ప్రాజెక్ట్‌లు", nav_knowledge: "జ్ఞాన కేంద్రం", nav_media: "చిత్రం & వీడియో AI", nav_automation: "ఆటోమేషన్",
-        nav_profile: "ప్రొఫైల్", nav_apiconn: "API కనెక్షన్‌లు", nav_security: "భద్రత", nav_settings: "సెట్టింగ్‌లు", nav_admin: "అడ్మిన్ ప్యానెల్",
-        hero_title: "ORBIT AI — ప్రైవేట్ ఇంటెలిజెన్స్ OS",
-        hero_sub: "అధునాతన ఇంటెలిజెన్స్‌తో తదుపరి తరం AI వర్క్‌స్పేస్.",
-        btn_launch_chat: "AI చాట్‌ను ప్రారంభించండి", card_status: "సిస్టమ్ స్థితి", card_quick_chat: "త్వరిత AI ప్రశ్న", card_stats: "గణాంకాలు"
-      },
-      gu: {
-        sec_workspace: "વર્કસ્પેસ", sec_personal: "વ્યક્તિગત",
-        nav_overview: "ઝાંખી", nav_chat: "AI ચેટ", nav_models: "AI મોડેલ હબ", nav_prompts: "પ્રૉમ્પ્ટ લાઇબ્રેરી",
-        nav_files: "ફાઇલો અને સાધનો", nav_history: "ચેટ ઇતિહાસ", nav_search: "AI શોધ", nav_agents: "AI એજન્ટ્સ",
-        nav_projects: "પ્રોજેક્ટ્સ", nav_knowledge: "જ્ઞાન બેઝ", nav_media: "છબી અને વીડિયો AI", nav_automation: "ઓટોમેશન",
-        nav_profile: "પ્રોફાઇલ", nav_apiconn: "API કનેક્શન્સ", nav_security: "સુરક્ષા", nav_settings: "સેટિંગ્સ", nav_admin: "એડમિન પેનલ",
-        hero_title: "ORBIT AI — પ્રાઇવેટ ઇન્ટેલિજન્સ OS",
-        hero_sub: "અગત્યની બુદ્ધિમત્તા સાથેની આગામી પેઢીની AI વર્કસ્પેસ.",
-        btn_launch_chat: "AI ચેટ શરૂ કરો", card_status: "સિસ્ટમ સ્થિતિ", card_quick_chat: "ઝડપી AI પ્રશ્ન", card_stats: "આંકડા"
-      },
-      kn: {
-        sec_workspace: "ಕಾರ್ಯಕ್ಷೇತ್ರ", sec_personal: "ವೈಯಕ್ತಿಕ",
-        nav_overview: "ಅವಲೋಕನ", nav_chat: "AI ಚಾಟ್", nav_models: "AI ಮಾದರಿ ಕೇಂದ್ರ", nav_prompts: "ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ",
-        nav_files: "ಫೈಲ್‌ಗಳು & ಉಪಕರಣಗಳು", nav_history: "ಚಾಟ್ ಇತಿಹಾಸ", nav_search: "AI ಹುಡುಕಾಟ", nav_agents: "AI ಏಜೆಂಟ್‌ಗಳು",
-        nav_projects: "ಯೋಜನೆಗಳು", nav_knowledge: "ಜ್ಞಾನ ಬೇಸ್", nav_media: "ಚಿತ್ರ & ವೀಡಿಯೊ AI", nav_automation: "ಯಾಂತ್ರೀಕೃತಗೊಂಡ",
-        nav_profile: "ಪ್ರೊಫೈಲ್", nav_apiconn: "API ಸಂಪರ್ಕಗಳು", nav_security: "ಭದ್ರತೆ", nav_settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", nav_admin: "ನಿರ್ವಾಹಕ ಫಲಕ",
-        hero_title: "ORBIT AI — ಖಾಸಗಿ ಗುಪ್ತಚರ OS",
-        hero_sub: "ಸುಧಾರಿತ ಬುದ್ಧಿವಂತಿಕೆಯೊಂದಿಗೆ ಮುಂದಿನ ಪೀಳಿಗೆಯ AI ಕಾರ್ಯಕ್ಷೇತ್ರ.",
-        btn_launch_chat: "AI ಚಾಟ್ ಪ್ರಾರಂಭಿಸಿ", card_status: "ಸಿಸ್ಟಮ್ ಸ್ಥಿತಿ", card_quick_chat: "ತ್ವರಿತ AI ಪ್ರಶ್ನೆ", card_stats: "ಅಂಕಿಅಂಶಗಳು"
-      },
-      ml: {
-        sec_workspace: "വർക്ക്‌സ്‌പേസ്", sec_personal: "വ്യക്തിപരം",
-        nav_overview: "അവലോകനം", nav_chat: "AI ചാറ്റ്", nav_models: "AI മോഡൽ ഹബ്", nav_prompts: "പ്രോംപ്റ്റ് ലൈബ്രറി",
-        nav_files: "ഫയലുകളും ടൂളുകളും", nav_history: "ചാറ്റ് ചരിത്രം", nav_search: "AI തിരയൽ", nav_agents: "AI ഏജന്റുകൾ",
-        nav_projects: "പ്രോജക്റ്റുകൾ", nav_knowledge: "വിജ്ഞാന അടിസ്ഥാനം", nav_media: "ചിത്രവും വീഡിയോയും AI", nav_automation: "ഓട്ടോമേഷൻ",
-        nav_profile: "പ്രൊഫൈൽ", nav_apiconn: "API കണക്ഷനുകൾ", nav_security: "സുരക്ഷ", nav_settings: "ക്രമീകരണങ്ങൾ", nav_admin: "അഡ്മിൻ പാനൽ",
-        hero_title: "ORBIT AI — പ്രൈവറ്റ് ഇന്റലിജൻസ് OS",
-        hero_sub: "നൂതന ഇന്റലിജൻസോടുകൂടിയ അടുത്ത തലമുറ AI വർക്ക്‌സ്‌പേസ്.",
-        btn_launch_chat: "AI ചാറ്റ് ആരംഭിക്കുക", card_status: "സിസ്റ്റം നില", card_quick_chat: "ദ്രുത AI ചോദ്യം", card_stats: "സ്റ്റാറ്റിസ്റ്റിക്സ്"
-      },
-      pa: {
-        sec_workspace: "ਵਰਕਸਪੇਸ", sec_personal: "ਨਿੱਜੀ",
-        nav_overview: "ਸੰਖੇਪ ਜਾਣਕਾਰੀ", nav_chat: "AI ਚੈਟ", nav_models: "AI ਮਾਡਲ ਹੱਬ", nav_prompts: "ਪ੍ਰੋਂਪਟ ਲਾਇਬ੍ਰੇਰੀ",
-        nav_files: "ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ", nav_history: "ਚੈਟ ਇਤਿਹਾਸ", nav_search: "AI ਖੋਜ", nav_agents: "AI ਏਜੰਟ",
-        nav_projects: "ਪ੍ਰੋਜੈਕਟ", nav_knowledge: "ਗਿਆਨ ਅਧਾਰ", nav_media: "ਚਿੱਤਰ ਅਤੇ ਵੀਡੀਓ AI", nav_automation: "ਆਟੋਮੇਸ਼ਨ",
-        nav_profile: "ਪ੍ਰੋਫਾਈਲ", nav_apiconn: "API ਕਨੈਕਸ਼ਨ", nav_security: "ਸੁਰੱਖਿਆ", nav_settings: "ਸੈਟਿੰਗਾਂ", nav_admin: "ਐਡਮਿਨ ਪੈਨਲ",
-        hero_title: "ORBIT AI — ਪ੍ਰਾਈਵੇਟ ਇੰਟੈಲಿਜੈਂਸ OS",
-        hero_sub: "ਉੱਨਤ ਖুफੀਆ ਜਾਣਕਾਰੀ ਨਾਲ ਅਗਲੀ ਪੀੜ੍ਹੀ ਦਾ AI ਵਰਕਸਪੇਸ।",
-        btn_launch_chat: "AI ਚੈਟ ਲਾਂਚ ਕਰੋ", card_status: "ਸਿਸਟਮ ਸਥਿਤੀ", card_quick_chat: "ਤੇਜ਼ AI ਸਵਾਲ", card_stats: "ਅੰਕੜੇ"
-      },
-      or: {
-        sec_workspace: "ୱାର୍କସ୍ପେସ୍", sec_personal: "ବ୍ୟକ୍ତିଗତ",
-        nav_overview: "ଓଭର୍ଭିୟୁ", nav_chat: "AI ଚାଟ୍", nav_models: "AI ମଡେଲ୍ ହବ୍", nav_prompts: "ପ୍ରମ୍ପଟ୍ ଲାଇବ୍ରେରୀ",
-        nav_files: "ଫାଇଲ୍ ଏବଂ ଟୁଲ୍ସ", nav_history: "ଚାଟ୍ ଇତିହାସ", nav_search: "AI ସର୍ଚ୍ଚ", nav_agents: "AI ଏଜେଣ୍ଟ୍",
-        nav_projects: "ପ୍ରୋଜେକ୍ଟ୍", nav_knowledge: "ଜ୍ଞାନ ଆଧାର", nav_media: "ଛବି ଏବଂ ଭିଡିଓ AI", nav_automation: "ଅଟୋମେସନ୍",
-        nav_profile: "ପ୍ରୋଫାଇଲ୍", nav_apiconn: "API କନେକ୍ସନ୍", nav_security: "ସୁରକ୍ଷା", nav_settings: "ସେଟିଂସ୍", nav_admin: "ଅଧିକାରୀ ପ୍ୟାନେଲ୍",
-        hero_title: "ORBIT AI — ପ୍ରାଇଭେଟ୍ ଇଣ୍ଟେଲିଜେନ୍ସ OS",
-        hero_sub: "ଉନ୍ନତ ବୁଦ୍ଧିମତ୍ତା ସହିତ ପରବର୍ତ୍ତୀ ପିଢ଼ିର AI ୱାର୍କସ୍ପେସ୍।",
-        btn_launch_chat: "AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ", card_status: "ସିଷ୍ଟମ୍ ସ୍ଥିତି", card_quick_chat: "ଶୀଘ୍ର AI ପ୍ରଶ୍ନ", card_stats: "ପରିସଂଖ୍ୟାନ"
-      },
-      as: {
-        sec_workspace: "ৱৰ্কস্পেচ", sec_personal: "ব্যক্তিগত",
-        nav_overview: "অভাৰভিউ", nav_chat: "AI চাট", nav_models: "AI ম’ডেল হাব", nav_prompts: "প্ৰম্পট লাইব্ৰেৰী",
-        nav_files: "ফাইল আৰু সঁজুলি", nav_history: "চাটৰ ইতিহাস", nav_search: "AI অনুসন্ধান", nav_agents: "AI এজেণ্ট",
-        nav_projects: "প্ৰজেক্ট", nav_knowledge: "জ্ঞানৰ আধাৰ", nav_media: "ছবি আৰু ভিডিঅ' AI", nav_automation: "অটোমেচন",
-        nav_profile: "প্ৰ'ফাইল", nav_apiconn: "API সংযোগ", nav_security: "নিৰাপত্তা", nav_settings: "ছেটিংছ", nav_admin: "এডমিন পেনেল",
-        hero_title: "ORBIT AI — প্ৰাইভেট ইন্টেলিজেন্স OS",
-        hero_sub: "উন্নত বুদ্ধিমত্তাৰে পৰৱৰ্তী প্ৰজন্মৰ AI ৱৰ্কস্পেচ।",
-        btn_launch_chat: "AI চাট আৰম্ভ কৰক", card_status: "ছিষ্টেমৰ অৱস্থা", card_quick_chat: "দ্ৰুত AI প্ৰশ্ন", card_stats: "পৰিসংখ্যা"
-      },
-      ur: {
-        sec_workspace: "ورک اسپیس", sec_personal: "ذاتی",
-        nav_overview: "جائزہ", nav_chat: "AI چیٹ", nav_models: "AI ماڈل حب", nav_prompts: "پرامپٹ لائبریری",
-        nav_files: "فائلیں اور ٹولز", nav_history: "چیٹ کی تاریخ", nav_search: "AI تلاش", nav_agents: "AI ایجنٹس",
-        nav_projects: "پروجیکٹس", nav_knowledge: "نالج بیس", nav_media: "تصویر اور ویڈیو AI", nav_automation: "آٹومেশনের",
-        nav_profile: "پروفائل", nav_apiconn: "API کنکشنز", nav_security: "سیکیورٹی", nav_settings: "ترتیبات", nav_admin: "ایڈمن پینل",
-        hero_title: "ORBIT AI — پرائیویٹ انٹیلی جنس OS",
-        hero_sub: "اعلی درجے کی ذہانت کے ساتھ اگلی نسل کا AI ورک اسپیس।",
-        btn_launch_chat: "AI چیٹ شروع کریں", card_status: "سسٹم کی حیثیت", card_quick_chat: "فوری AI سوال", card_stats: "شماریات"
-      },
-      sa: {
-        sec_workspace: "कार्यक्षेत्रम्", sec_personal: "वैयक्तिकम्",
-        nav_overview: "अवलोकनम्", nav_chat: "AI सम्भाषणम्", nav_models: "AI आदर्शकेन्द्रम्", nav_prompts: "प्रेरकग्रन्थालयः",
-        nav_files: "सञ्चिकाः साधनानि च", nav_history: "संभाषणइतिहासः", nav_search: "AI अन्वेषणम्", nav_agents: "AI अभिकतारः",
-        nav_projects: "प्रकल्पः", nav_knowledge: "ज्ञानकोशः", nav_media: "चित्रं चलचित्रं च AI", nav_automation: "स्वयंचलितीकरणम्",
-        nav_profile: "परिचयपत्रम्", nav_apiconn: "API सम्बन्धाः", nav_security: "सुरक्षा", nav_settings: "विन्यासः", nav_admin: "प्रशासनपटलम्",
-        hero_title: "ORBIT AI — गुप्तबुद्धि OS",
-        hero_sub: "उन्नतबुद्ध्या सह अग्रेतरस्य पीढ्याः AI कार्यक्षेत्रम्।",
-        btn_launch_chat: "AI सम्भाषणम् आरभत", card_status: "तन्त्रस्थितिः", card_quick_chat: "शीघ्रं AI प्रश्नः", card_stats: "आंकडानि"
-      }
+      bn: { sec_workspace: "ওয়ার্কস্পেস", sec_personal: "ব্যক্তিগত", nav_overview: "ওভারভিউ", nav_chat: "এআই চ্যাট", nav_models: "এআই মডেল হাব", nav_prompts: "প্রম্পট লাইব্রেরি", nav_files: "ফাইল এবং টুলস", nav_history: "চ্যাট ইতিহাস", nav_search: "এআই সার্চ", nav_agents: "এআই এজেন্ট", nav_projects: "প্রজেক্ট", nav_knowledge: "নলেজ বেস", nav_media: "ইমেজ ও ভিডিও এআই", nav_automation: "অটোমেশন", nav_profile: "প্রোফাইল", nav_apiconn: "এপিআই কানেকশন", nav_security: "নিরাপত্তা", nav_settings: "সেটিংস", nav_admin: "অ্যাডমিন প্যানেল", hero_title: "ORBIT AI — প্রাইভেট ইন্টেলিজেন্স OS", hero_sub: "নেক্সট-জেনারেশন এআই ওয়ার্কস্পেস।", btn_launch_chat: "এআই চ্যাট শুরু করুন", card_status: "সিস্টেম ও মডেল স্ট্যাটাস", card_quick_chat: "দ্রুত এআই প্রশ্ন", card_stats: "ওয়ার্কস্পেস পরিসংখ্যান" },
+      ta: { sec_workspace: "பணிক্ষেত্র", sec_personal: "தனிப்பட்ட", nav_overview: "கண்ணோட்டம்", nav_chat: "AI அரட்டை", nav_models: "AI மாதிரி மையம்", nav_prompts: "தூண்டுதல் நூலகம்", nav_files: "கோப்புகள் & கருவிகள்", nav_history: "அரட்டை வரலாறு", nav_search: "AI தேடல்", nav_agents: "AI முகவர்கள்", nav_projects: "திட்டங்கள்", nav_knowledge: "அறிவு தளம்", nav_media: "படம் & வீடியோ AI", nav_automation: "தானியங்கு", nav_profile: "சுயவிவரம்", nav_apiconn: "API இணைப்புகள்", nav_security: "பாதுகாப்பு", nav_settings: "அமைப்புகள்", nav_admin: "நிர்வாக குழு", hero_title: "ORBIT AI — பிரைவேட் இன்டெலிஜென்ஸ் OS", hero_sub: "அடுத்த தலைமுறை AI பணிক্ষেত্র.", btn_launch_chat: "AI அரட்டையைத் தொடங்கு", card_status: "கட்டமைப்பு நிலை", card_quick_chat: "விரைவான AI கேள்வி", card_stats: "புள்ளிவிவரங்கள்" },
+      te: { sec_workspace: "వర్క్‌స్పేస్", sec_personal: "వ్యక్తిగతం", nav_overview: "అవలోకనం", nav_chat: "AI చాట్", nav_models: "AI మోడల్ హబ్", nav_prompts: "ప్రారంభ లైబ్రరీ", nav_files: "ఫైళ్లు & టూల్స్", nav_history: "చాట్ చరిత్ర", nav_search: "AI శోధన", nav_agents: "AI ఏజెంట్లు", nav_projects: "ప్రాజెక్ట్‌లు", nav_knowledge: "జ్ఞాన కేంద్రం", nav_media: "చిత్రం & వీడియో AI", nav_automation: "ఆటోమేషన్", nav_profile: "ప్రొఫైల్", nav_apiconn: "API కనెక్షన్‌లు", nav_security: "భద్రత", nav_settings: "సెట్టింగ్‌లు", nav_admin: "అడ్మిన్ ప్యానెల్", hero_title: "ORBIT AI — ప్రైవేట్ ఇంటెలిజెన్స్ OS", hero_sub: "తదుపరి తరం AI వర్క్‌స్పేస్.", btn_launch_chat: "AI చాట్‌ను ప్రారంభించండి", card_status: "సిస్టమ్ స్థితి", card_quick_chat: "త్వరిత AI ప్రశ్న", card_stats: "గణాంకాలు" },
+      gu: { sec_workspace: "વર્કસ્પેસ", sec_personal: "વ્યક્તિગત", nav_overview: "ઝાંખી", nav_chat: "AI ચેટ", nav_models: "AI મોડેલ હબ", nav_prompts: "પ્રૉમ્પ્ટ લાઇબ્રેરી", nav_files: "ફાઇલો અને સાધનો", nav_history: "ચેટ ઇતિહાસ", nav_search: "AI શોધ", nav_agents: "AI એજન્ટ્સ", nav_projects: "પ્રોજેક્ટ્સ", nav_knowledge: "જ્ઞાન બેઝ", nav_media: "છબી અને વીડિયો AI", nav_automation: "ઓટોમેશન", nav_profile: "પ્રોફાઇલ", nav_apiconn: "API કનેક્શન્સ", nav_security: "સુરક્ષા", nav_settings: "સેટિંગ્સ", nav_admin: "એડમિન પેનલ", hero_title: "ORBIT AI — પ્રાઇવેટ ઇન્ટેલિજન્સ OS", hero_sub: "આગામી પેઢીની AI વર્કસ્પેસ.", btn_launch_chat: "AI ચેટ શરૂ કરો", card_status: "સિસ્ટમ સ્થિતિ", card_quick_chat: "ઝડપી AI પ્રશ્ન", card_stats: "આંકડા" },
+      kn: { sec_workspace: "ಕಾರ್ಯಕ್ಷೇತ್ರ", sec_personal: "ವೈಯಕ್ತಿಕ", nav_overview: "ಅವಲೋಕನ", nav_chat: "AI ಚಾಟ್", nav_models: "AI ಮಾದರಿ ಕೇಂದ್ರ", nav_prompts: "ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ", nav_files: "ಫೈಲ್‌ಗಳು & ಉಪಕರಣಗಳು", nav_history: "ಚಾಟ್ ಇತಿಹಾಸ", nav_search: "AI ಹುಡುಕಾಟ", nav_agents: "AI ಏಜೆಂಟ್‌ಗಳು", nav_projects: "ಯೋಜನೆಗಳು", nav_knowledge: "ಜ್ಞಾನ ಬೇಸ್", nav_media: "ಚಿತ್ರ & ವೀಡಿಯೊ AI", nav_automation: "ಯಾಂತ್ರೀಕೃತಗೊಂಡ", nav_profile: "ಪ್ರೊಫೈಲ್", nav_apiconn: "API ಸಂಪರ್ಕಗಳು", nav_security: "ಭದ್ರತೆ", nav_settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", nav_admin: "ನಿರ್ವಾಹಕ ಫಲಕ", hero_title: "ORBIT AI — ಖಾಸಗಿ ಗುಪ್ತಚರ OS", hero_sub: "ಮುಂದಿನ ಪೀಳಿಗೆಯ AI ಕಾರ್ಯಕ್ಷೇತ್ರ.", btn_launch_chat: "AI ಚಾಟ್ ಪ್ರಾರಂಭಿಸಿ", card_status: "ಸಿಸ್ಟಮ್ ಸ್ಥಿತಿ", card_quick_chat: "ತ್ವರಿತ AI ಪ್ರಶ್ನೆ", card_stats: "ಅಂಕಿಅಂಶಗಳು" },
+      ml: { sec_workspace: "വർക്ക്‌സ്‌പേസ്", sec_personal: "വ്യക്തിപരം", nav_overview: "അവലോകനം", nav_chat: "AI ചാറ്റ്", nav_models: "AI മോഡൽ ഹബ്", nav_prompts: "പ്രോംപ്റ്റ് ലൈബ്രറി", nav_files: "ഫയലുകളും ടൂളുകളും", nav_history: "ചാറ്റ് ചരിത്രം", nav_search: "AI തിരയൽ", nav_agents: "AI ഏജന്റുകൾ", nav_projects: "പ്രോജക്റ്റുകൾ", nav_knowledge: "വിജ്ഞാന അടിസ്ഥാനം", nav_media: "ചിത്രവും വീഡിയോയും AI", nav_automation: "ഓട്ടോമേഷൻ", nav_profile: "പ്രൊഫൈൽ", nav_apiconn: "API കണക്ഷനുകൾ", nav_security: "സുരക്ഷ", nav_settings: "ക്രമീകരണങ്ങൾ", nav_admin: "അഡ്മിൻ പാനൽ", hero_title: "ORBIT AI — പ്രൈവറ്റ് ഇന്റലിജൻസ് OS", hero_sub: "അടുത്ത തലമുറ AI വർക്ക്‌സ്‌പേസ്.", btn_launch_chat: "AI ചാറ്റ് ആരംഭിക്കുക", card_status: "സിസ്റ്റം നില", card_quick_chat: "ദ്രുത AI ചോദ്യം", card_stats: "സ്റ്റാറ്റിസ്റ്റിക്സ്" },
+      pa: { sec_workspace: "ਵਰਕਸਪੇਸ", sec_personal: "ਨਿੱਜੀ", nav_overview: "ਸੰਖੇਪ ਜਾਣਕਾਰੀ", nav_chat: "AI ਚੈਟ", nav_models: "AI ਮਾਡਲ ਹੱਬ", nav_prompts: "ਪ੍ਰੋਂਪਟ ਲਾਇਬ੍ਰੇਰੀ", nav_files: "ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ", nav_history: "ਚੈਟ ਇਤਿਹਾᱥ", nav_search: "AI ਖੋਜ", nav_agents: "AI ਏਜੰਟ", nav_projects: "ਪ੍ਰੋਜੈਕਟ", nav_knowledge: "ਗਿਆਨ ਅਧਾਰ", nav_media: "ਚਿੱਤਰ ਅਤੇ ਵੀਡੀਓ AI", nav_automation: "ਆਟੋਮੇਸ਼ਨ", nav_profile: "ਪ੍ਰੋਫਾਈਲ", nav_apiconn: "API ਕਨੈਕਸ਼ਨ", nav_security: "ਸੁਰੱਖਿਆ", nav_settings: "ਸੈਟਿੰਗਾਂ", nav_admin: "ਐਡਮਿਨ ਪੈਨਲ", hero_title: "ORBIT AI — ਪ੍ਰਾਈਵੇਟ ਇੰਟੈલિਜੈਂਸ OS", hero_sub: "ਅਗਲੀ ਪੀੜ੍ਹੀ ਦਾ AI ਵਰਕਸਪੇਸ.", btn_launch_chat: "AI ਚੈਟ ਲਾਂਚ ਕਰੋ", card_status: "ਸਿਸਟਮ ਸਥਿਤੀ", card_quick_chat: "ਤੇਜ਼ AI ਸਵਾਲ", card_stats: "ਅੰਕੜੇ" },
+      or: { sec_workspace: "ୱାର୍କସ୍ପେସ୍", sec_personal: "ବ୍ୟକ୍ତିଗତ", nav_overview: "ଓଭର୍ଭିୟୁ", nav_chat: "AI ଚାଟ୍", nav_models: "AI ମଡେଲ୍ ହବ୍", nav_prompts: "ପ୍ରମ୍ପଟ୍ ଲାଇବ୍ରେରୀ", nav_files: "ଫାଇଲ୍ ଏବଂ ଟୁଲ୍ସ", nav_history: "ଚାଟ୍ ଇତିହାସ", nav_search: "AI ସର୍ଚ୍ଚ", nav_agents: "AI ଏଜେଣ୍ଟ୍", nav_projects: "ପ୍ରୋଜେକ୍ଟ୍", nav_knowledge: "ଜ୍ଞାନ ଆଧାର", nav_media: "ଛବି ଏବଂ ଭିଡିଓ AI", nav_automation: "ଅଟୋମେସନ୍", nav_profile: "ପ୍ରୋଫାଇଲ୍", nav_apiconn: "API କନେକ୍ସନ୍", nav_security: "ସୁରକ୍ଷା", nav_settings: "ସେଟିଂସ୍", nav_admin: "ଅଧିକାରୀ ପ୍ୟାନେଲ୍", hero_title: "ORBIT AI — ପ୍ରାଇଭେଟ୍ ଇଣ୍ଟେଲିଜେନ୍ସ OS", hero_sub: "ପରବର୍ତ୍ତୀ ପିଢ଼ିର AI ୱାର୍କସ୍ପେସ୍।", btn_launch_chat: "AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ", card_status: "ସିଷ୍ଟମ୍ ସ୍ଥିତି", card_quick_chat: "ଶୀଘ୍ର AI ପ୍ରଶ୍ନ", card_stats: "ପରିସଂଖ୍ୟାନ" },
+      as: { sec_workspace: "ৱৰ্কস্পেচ", sec_personal: "ব্যক্তিগত", nav_overview: "অভাৰভিউ", nav_chat: "AI চাট", nav_models: "AI ম’ডেল হাব", nav_prompts: "প্ৰম্পট লাইব্ৰেৰী", nav_files: "ফাইল আৰু সঁজুলি", nav_history: "চাটৰ ইতিহাস", nav_search: "AI অনুসন্ধান", nav_agents: "AI এজেণ্ট", nav_projects: "প্ৰজেক্ট", nav_knowledge: "জ্ঞানৰ আধাৰ", nav_media: "ছবি আৰু ভিডিঅ' AI", nav_automation: "অটোমেচন", nav_profile: "প্ৰ'ফাইল", nav_apiconn: "API সংযোগ", nav_security: "নিৰাপত্তা", nav_settings: "ছেটিংছ", nav_admin: "এডমিন পেনেল", hero_title: "ORBIT AI — প্ৰাইভেট ইন্টেলিজেন্স OS", hero_sub: "পৰৱৰ্তী প্ৰজন্মৰ AI ৱৰ্কস্পেচ।", btn_launch_chat: "AI চাট আৰম্ভ কৰক", card_status: "ছিষ্টেমৰ অৱস্থা", card_quick_chat: "দ্ৰুত AI প্ৰশ্ন", card_stats: "পৰিসংখ্যা" },
+      ur: { sec_workspace: "ورک اسپیس", sec_personal: "ذاتی", nav_overview: "جائزہ", nav_chat: "AI چیٹ", nav_models: "AI ماڈل حب", nav_prompts: "پرامپٹ لائبریری", nav_files: "فائلیں اور ٹولز", nav_history: "چیٹ کی تاریخ", nav_search: "AI تلاش", nav_agents: "AI ایجنٹس", nav_projects: "پروجیکٹس", nav_knowledge: "نالج بیس", nav_media: "تصویر اور ویڈیو AI", nav_automation: "آٹومেশনের", nav_profile: "پروفائل", nav_apiconn: "API کنکشنز", nav_security: "سیکیورٹی", nav_settings: "ترتیبات", nav_admin: "ایڈمن پینل", hero_title: "ORBIT AI — پرائیویٹ انٹیلی جنس OS", hero_sub: "اگلی نسل کا AI ورک اسپیس۔", btn_launch_chat: "AI چیٹ شروع کریں", card_status: "سسٹم کی حیثیت", card_quick_chat: "فوری AI سوال", card_stats: "شماریات" },
+      sa: { sec_workspace: "कार्यक्षेत्रम्", sec_personal: "वैयक्तिकम्", nav_overview: "अवलोकनम्", nav_chat: "AI सम्भाषणम्", nav_models: "AI आदर्शकेन्द्रम्", nav_prompts: "प्रेरकग्रन्थालयः", nav_files: "सञ्चिकाः साधनानि च", nav_history: "संभाषणइतिहासः", nav_search: "AI अन्वेषणम्", nav_agents: "AI अभिकतारः", nav_projects: "प्रकल्पः", nav_knowledge: "ज्ञानकोशः", nav_media: "चित्रं चलचित्रं च AI", nav_automation: "स्वयंचलितीकरणम्", nav_profile: "परिचयपत्रम्", nav_apiconn: "API सम्बन्धाः", nav_security: "सुरक्षा", nav_settings: "विन्यासः", nav_admin: "प्रशासनपटलम्", hero_title: "ORBIT AI — गुप्तबुद्धि OS", hero_sub: "अग्रेतरस्य पीढ्याः AI कार्यक्षेत्रम्।", btn_launch_chat: "AI सम्भाषणम् आरभत", card_status: "तन्त्रस्थितिः", card_quick_chat: "शीघ्रं AI प्रश्नः", card_stats: "आंकडानि" }
     };
 
     function changeLanguage(lang) {
@@ -1590,6 +1491,37 @@
       updateAuthUI();
     }
 
+    // डायरेक्ट फ्री इमेज जनरेट करणारे फंक्शन (Pollinations.ai API)
+    function generateAiImage() {
+      const prompt = document.getElementById('imagePromptInput').value.trim();
+      const container = document.getElementById('imageResultContainer');
+      if (!prompt) {
+        container.innerHTML = `<p style="color:#ff6b6b;">Please enter a description for the image.</p>`;
+        return;
+      }
+      container.innerHTML = `<p style="color:var(--powder-blue);">Generating high-resolution AI artwork...</p>`;
+      
+      const encodedPrompt = encodeURIComponent(prompt);
+      const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+
+      // इमेज लोड झाल्याची खात्री करणे
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => {
+        container.innerHTML = `
+          <div style="margin-top:12px;">
+            <img src="${imageUrl}" alt="${prompt}" style="max-width:100%; border-radius:16px; border:2px solid var(--powder-blue); box-shadow:0 10px 30px rgba(0,0,0,0.5);" />
+            <div style="margin-top:12px;">
+              <a href="${imageUrl}" target="_blank" class="btn-3d btn-peach-blue" style="text-decoration:none; display:inline-block;">⬇ Download Image</a>
+            </div>
+          </div>
+        `;
+      };
+      img.onerror = () => {
+        container.innerHTML = `<p style="color:#ff6b6b;">Failed to generate image. Please try another prompt.</p>`;
+      };
+    }
+
     function getActiveConversation() {
       let conv = conversations.find(c => c.id === activeConvId);
       if (!conv) {
@@ -1969,25 +1901,6 @@
       if (conv.messages[idx]) speakText(conv.messages[idx].content);
     }
 
-    async function generateMediaPrompt() {
-      const p = document.getElementById('mediaPrompt').value.trim();
-      if (!p) return;
-      const out = document.getElementById('mediaOutput');
-      out.innerHTML = 'Generating cinematic specification via ORBIT AI...';
-      try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: [{ role: 'user', content: `Create a high-precision 9:16 cinematic video & photorealistic visual generation prompt with camera angles and lighting for: ${p}` }]
-          })
-        });
-        out.innerHTML = `<div class="card-3d">${marked.parse(res.reply)}</div>`;
-      } catch (e) {
-        out.innerHTML = `Error: ${e.message}`;
-      }
-    }
-
     async function runAutomationTask() {
       const task = document.getElementById('autoTaskInput').value.trim();
       if (!task) return;
@@ -2112,6 +2025,8 @@
       const savedLang = localStorage.getItem('orbit_lang') || 'en';
       document.getElementById('langSelect').value = savedLang;
       changeLanguage(savedLang);
+
+      document.getElementById('apiBaseUrlInput').value = sysInitLang => sysInitLang;
 
       document.getElementById('apiBaseUrlInput').value = API_BASE;
 
