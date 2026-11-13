@@ -1,17 +1,23 @@
 
 "use strict";
 
-const CACHE_NAME = "orbit-ai-cache-v1";
+/* =========================================
+   ORBIT AI — PRODUCTION SERVICE WORKER
+   ========================================= */
+
+const CACHE_NAME = "orbit-ai-cache-v2";
 
 const APP_SHELL = [
   "/",
   "/manifest.json"
 ];
 
-// Install
+/* INSTALL */
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+
       for (const url of APP_SHELL) {
         try {
           await cache.add(url);
@@ -19,33 +25,38 @@ self.addEventListener("install", (event) => {
           console.warn("ORBIT cache skipped:", url, error);
         }
       }
-    })
-  );
 
-  self.skipWaiting();
+      await self.skipWaiting();
+    })()
+  );
 });
 
-// Activate
+/* ACTIVATE */
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then(async (keys) => {
+    (async () => {
+      const keys = await caches.keys();
+
       await Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME)
+          .filter(
+            (key) =>
+              key.startsWith("orbit-ai-cache-") &&
+              key !== CACHE_NAME
+          )
           .map((key) => caches.delete(key))
       );
 
       await self.clients.claim();
-    })
+    })()
   );
 });
 
-// Fetch
+/* FETCH */
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
-  // Only handle GET requests from this origin.
   if (
     request.method !== "GET" ||
     url.origin !== self.location.origin
@@ -53,40 +64,47 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Never cache authentication, AI, or upload APIs.
+  /* Never cache API, authentication or uploads */
   if (url.pathname.startsWith("/api/")) {
     return;
   }
 
-  // Navigation: network first, cached app fallback.
+  /* Navigation: Network First */
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
+      (async () => {
+        try {
+          const response = await fetch(request);
 
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put("/", copy);
-            });
+          if (response.ok) {
+            const cache = await caches.open(CACHE_NAME);
+            await cache.put("/", response.clone());
           }
 
           return response;
-        })
-        .catch(async () => {
+        } catch (error) {
           return (
-            await caches.match(request) ||
-            await caches.match("/")
+            (await caches.match(request)) ||
+            (await caches.match("/")) ||
+            new Response("ORBIT AI is currently unavailable offline.", {
+              status: 503,
+              headers: {
+                "Content-Type": "text/plain; charset=utf-8"
+              }
+            })
           );
-        })
+        }
+      })()
     );
 
     return;
   }
 
-  // Static same-origin resources: cache first.
+  /* Static resources: Cache First */
   event.respondWith(
-    caches.match(request).then(async (cached) => {
+    (async () => {
+      const cached = await caches.match(request);
+
       if (cached) {
         return cached;
       }
@@ -96,7 +114,7 @@ self.addEventListener("fetch", (event) => {
 
         if (response.ok && response.type === "basic") {
           const cache = await caches.open(CACHE_NAME);
-          cache.put(request, response.clone());
+          await cache.put(request, response.clone());
         }
 
         return response;
@@ -104,12 +122,12 @@ self.addEventListener("fetch", (event) => {
         return new Response("Resource unavailable offline.", {
           status: 503,
           headers: {
-            "Content-Type": "text/plain"
+            "Content-Type": "text/plain; charset=utf-8"
           }
         });
       }
-    })
+    })()
   );
 });
 
-console.log("ORBIT AI Service Worker loaded");
+console.log("ORBIT AI Service Worker v2 loaded");
