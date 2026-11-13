@@ -275,7 +275,6 @@ app.post('/api/auth/approve', requireOwner, (req, res) => {
   res.json({ ok: true, request: reqItem, user });
 });
 
-// Added Reject Request Support
 app.post('/api/auth/reject', requireOwner, (req, res) => {
   const { requestId } = req.body;
   const auth = loadAuthData();
@@ -283,7 +282,6 @@ app.post('/api/auth/reject', requireOwner, (req, res) => {
   if (!reqItem) return res.status(404).json({ error: 'Request not found' });
   reqItem.status = 'rejected';
   
-  // Also revoke or remove user access if rejected
   const user = auth.users.find(u => u.email.toLowerCase() === reqItem.email.toLowerCase());
   if (user) {
     user.revoked = true;
@@ -420,7 +418,11 @@ app.get('/api/workspace', (req, res) => {
   res.json({ ok: true, ...loadWorkspaceData() });
 });
 
+// अचूक स्टॅटिक फोल्डर आणि राऊटिंग कॉन्फिगरेशन (ब्लॅक स्क्रीन काढण्यासाठी)
 app.use(express.static(path.join(__dirname, 'public')));
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.listen(PORT, () => console.log(`ORBIT AI running on port ${PORT}`));
+    
