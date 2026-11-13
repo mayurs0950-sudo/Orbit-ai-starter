@@ -33,10 +33,9 @@ if (!SESSION_SECRET) {
 }
 
 // =========================================================
-// SECURITY & OTP ENHANCEMENTS (Rate Limiting, Expiry, Attempts)
+// SECURITY & RATE LIMITING
 // =========================================================
 const requestCounts = new Map();
-const otpStore = new Map();
 
 function rateLimiter(req, res, next) {
   const ip = req.ip || req.connection.remoteAddress;
@@ -62,22 +61,29 @@ function rateLimiter(req, res, next) {
 }
 app.use(rateLimiter);
 
-function verifyOtpForEmail(email, enteredOtp) {
-  const record = otpStore.get(email);
+function verifyOtpForEmail(email, enteredOtp, authData) {
+  const record = authData.otps ? authData.otps[email] : null;
   if (!record) return { success: false, message: 'OTP not requested or expired.' };
+  
   if (Date.now() > record.expiresAt) {
-    otpStore.delete(email);
+    delete authData.otps[email];
+    saveAuthData(authData);
     return { success: false, message: 'OTP has expired. Please request a new one.' };
   }
   if (record.attempts >= 3) {
-    otpStore.delete(email);
+    delete authData.otps[email];
+    saveAuthData(authData);
     return { success: false, message: 'Maximum attempt limit exceeded. Request a new OTP.' };
   }
   if (record.otp !== enteredOtp) {
     record.attempts++;
+    saveAuthData(authData);
     return { success: false, message: `Invalid OTP. ${3 - record.attempts} attempts remaining.` };
   }
-  otpStore.delete(email);
+
+  // OTP यशस्वीरीत्या वापरल्यानंतर ॲडमिन पॅनलमधून/स्टोअरमधून तो OTP तात्काळ डिलीट होईल
+  delete authData.otps[email];
+  saveAuthData(authData);
   return { success: true };
 }
 
@@ -251,9 +257,17 @@ app.post('/api/auth/request', (req, res) => {
   res.json({ ok: true, requestId: newReq.id, status: 'pending' });
 });
 
+// ॲडमिन पॅनलसाठी रिक्वेस्ट्स आणि त्यांचे लेटेस्ट OTP थेट दाखवणे
 app.get('/api/auth/requests', requireOwner, (req, res) => {
   const auth = loadAuthData();
-  res.json({ ok: true, requests: auth.requests });
+  const requestsWithOtps = (auth.requests || []).map(reqItem => {
+    const userOtpData = auth.otps ? auth.otps[reqItem.email.toLowerCase()] : null;
+    return {
+      ...reqItem,
+      latestOtp: userOtpData ? userOtpData.otp : 'No OTP requested yet'
+    };
+  });
+  res.json({ ok: true, requests: requestsWithOtps });
 });
 
 app.post('/api/auth/approve', requireOwner, (req, res) => {
@@ -275,7 +289,6 @@ app.post('/api/auth/approve', requireOwner, (req, res) => {
   res.json({ ok: true, request: reqItem, user });
 });
 
-// Added Reject Request Support
 app.post('/api/auth/reject', requireOwner, (req, res) => {
   const { requestId } = req.body;
   const auth = loadAuthData();
@@ -283,7 +296,6 @@ app.post('/api/auth/reject', requireOwner, (req, res) => {
   if (!reqItem) return res.status(404).json({ error: 'Request not found' });
   reqItem.status = 'rejected';
   
-  // Also revoke or remove user access if rejected
   const user = auth.users.find(u => u.email.toLowerCase() === reqItem.email.toLowerCase());
   if (user) {
     user.revoked = true;
@@ -293,6 +305,7 @@ app.post('/api/auth/reject', requireOwner, (req, res) => {
   res.json({ ok: true, request: reqItem });
 });
 
+// गेस्ट युजरने ओटीपी मागितल्यावर तो स्क्रीनवर न दाखवता थेट ॲडमिन पॅनलला पाठवणे
 app.post('/api/auth/issue', (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email required' });
@@ -306,20 +319,31 @@ app.post('/api/auth/issue', (req, res) => {
     return res.status(403).json({ error: 'Email not found or access not approved yet.' });
   }
 
+  // नवीन OTP जनरेट करणे (दिवसातून हजार वेळा मागितला तरी नवीन तयार होईल)
   const otp = String(Math.floor(100000 + Math.random() * 900000));
-  otpStore.set(lower, { otp, expiresAt: Date.now() + 5 * 60 * 1000, attempts: 0 });
+  
+  auth.otps = auth.otps || {};
+  auth.otps[lower] = {
+    otp,
+    createdAt: new Date().toISOString(),
+    expiresAt: Date.now() + 10 * 60 * 1000, // १० मिनिटे व्हॅलिडिटी
+    attempts: 0
+  };
   saveAuthData(auth);
-  res.json({ ok: true, message: 'OTP sent.', devOtp: otp });
+
+  // लक्षात ठेवा: इथे कोणताही OTP क्लायंटच्या रिस्पॉन्समध्ये पाठवलेला नाही, त्यामुळे युजरच्या स्क्रीनवर कधीही दिसणार नाही.
+  res.json({ ok: true, message: 'OTP generated and sent to Admin Panel.' });
 });
 
 app.post('/api/auth/verify', (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) return res.status(400).json({ error: 'Email and OTP required' });
   const lower = email.toLowerCase();
-  const verificationResult = verifyOtpForEmail(lower, String(otp).trim());
-  if (!verificationResult.success) return res.status(401).json({ error: verificationResult.message });
 
   const auth = loadAuthData();
+  const verificationResult = verifyOtpForEmail(lower, String(otp).trim(), auth);
+  if (!verificationResult.success) return res.status(401).json({ error: verificationResult.message });
+
   if (auth.owner && auth.owner.email.toLowerCase() === lower) {
     const token = setSessionCookie(res, { ...auth.owner, role: 'owner', tier: 'pro' });
     return res.json({ ok: true, user: { ...auth.owner, role: 'owner', tier: 'pro' }, token });
