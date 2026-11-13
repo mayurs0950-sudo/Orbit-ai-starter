@@ -962,7 +962,7 @@
         <div class="grid-3d" id="knowledgeGrid"></div>
       </section>
 
-      <!-- 🌟 11. HIGH-RES CINEMATIC VIDEO & IMAGE GENERATION STUDIO -->
+      <!-- 11. HIGH-RES CINEMATIC VIDEO & IMAGE GENERATION STUDIO -->
       <section class="workspace-view" id="view-media">
         <div class="card-3d tilt-glass">
           <div class="card-title">🎬 High-Resolution Video & Image Generation Studio</div>
@@ -1536,7 +1536,7 @@
         });
         document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent to Admin Panel.';
       } catch (e) {
-        document.getElementById('authStatusMsg'].textContent = e.message;
+        document.getElementById('authStatusMsg').textContent = e.message;
       }
     }
 
@@ -1580,7 +1580,6 @@
       window.speechSynthesis.speak(u);
     }
 
-    // 🌟 11. HIGH-RES CINEMATIC VIDEO & IMAGE GENERATION STUDIO (30s to 60s)
     function setVideoMode(mode) {
       videoGenMode = mode;
       document.getElementById('videoImageUploadBox').style.display = mode === 'image' ? 'block' : 'none';
@@ -1600,7 +1599,6 @@
       container.innerHTML = `<p style="color:var(--powder-blue);">Rendering ${resolution} cinematic video (${duration}) via ORBIT Video Matrix...</p>`;
 
       setTimeout(() => {
-        // उच्च दर्जाचा डेमो व्हिडिओ लिंक किंवा सिनेमॅटिक व्हिडिओ आउटपुट
         const demoVideoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
         container.innerHTML = `
           <div class="card-3d" style="background:rgba(20,22,29,0.85); margin-top:14px;">
@@ -1617,7 +1615,6 @@
       }, 3500);
     }
 
-    // 🌟 INSTANT CODE RECALL FEATURE (मागील टाकलेला कोड शोधून परत देणे)
     function recallPreviousCode() {
       const conv = getActiveConversation();
       let lastCode = '';
