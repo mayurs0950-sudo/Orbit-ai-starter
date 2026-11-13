@@ -58,6 +58,35 @@ function rateLimiter(req, res, next) {
 }
 app.use(rateLimiter);
 
+// Twilio SMS Alert Helper Function (Native fetch based - zero extra npm install needed)
+async function sendTwilioAlert(messageText) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
+  const myNumber = process.env.MY_PHONE_NUMBER;
+
+  if (!accountSid || !authToken || !twilioNumber || !myNumber) return;
+
+  try {
+    const authHeader = 'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+    const params = new URLSearchParams();
+    params.append('To', myNumber);
+    params.append('From', twilioNumber);
+    params.append('Body', messageText);
+
+    await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
+      method: 'POST',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: params
+    });
+  } catch (e) {
+    console.error('Twilio SMS error:', e.message);
+  }
+}
+
 function verifyOtpForEmail(email, enteredOtp, authData) {
   const record = authData.otps ? authData.otps[email] : null;
   if (!record) return { success: false, message: 'OTP not requested or expired.' };
@@ -190,7 +219,6 @@ function requireOwner(req, res, next) {
   next();
 }
 
-// युजरचे स्टेटस तपासताना जर युजर रिव्होक झाला असेल तर लगेच सेशन बाद करणे (Live Revocation Check)
 app.get('/api/auth/status', (req, res) => {
   const auth = loadAuthData();
   const cookies = parseCookies(req);
@@ -203,7 +231,6 @@ app.get('/api/auth/status', (req, res) => {
   if (decoded.role !== 'owner') {
     const userInDb = auth.users.find(u => u.id === decoded.id);
     if (!userInDb || userInDb.revoked) {
-      // युजर रिव्होक झाला असल्यास हा एरर पाठवेल, ज्यामुळे फ्रंटएंड लगेच लॉग आऊट करेल
       return res.status(403).json({ error: 'Access revoked by admin', revoked: true });
     }
   }
@@ -259,12 +286,17 @@ app.post('/api/auth/request', (req, res) => {
   if (existingReq) {
     existingReq.status = 'pending';
     saveAuthData(auth);
+    sendTwilioAlert(`🚨 ORBIT AI: Access request renewed from ${name} (${email}).`);
     return res.json({ ok: true, requestId: existingReq.id, status: existingReq.status });
   }
 
   const newReq = { id: 'req_' + crypto.randomBytes(6).toString('hex'), name, email, reason: reason || 'Workspace Access', status: 'pending', createdAt: new Date().toISOString() };
   auth.requests.push(newReq);
   saveAuthData(auth);
+
+  // Twilio SMS Alert on New Request
+  sendTwilioAlert(`🚨 ORBIT AI: New access request from ${name} (${email}). Reason: ${reason || 'Workspace Access'}`);
+
   res.json({ ok: true, requestId: newReq.id, status: 'pending' });
 });
 
@@ -339,6 +371,9 @@ app.post('/api/auth/issue', (req, res) => {
   };
   saveAuthData(auth);
 
+  // Twilio SMS Alert on OTP generation
+  sendTwilioAlert(`🔑 ORBIT AI: New OTP generated for ${email}: ${otp}. Valid for 10 minutes.`);
+
   res.json({ ok: true, message: 'OTP generated and sent to Admin Panel.' });
 });
 
@@ -411,7 +446,6 @@ app.get('/api/models', async (req, res) => {
   }
 });
 
-// Fixed AI Search Endpoint (OpenRouter Fallback support to avoid Request Failed)
 app.post('/api/search', async (req, res) => {
   const { query } = req.body;
   if (!query) return res.status(400).json({ error: 'Query required' });
