@@ -276,7 +276,7 @@
     }
 
     .topbar {
-      min-height: 68px;
+      height: 68px;
       background: var(--glass-surface);
       backdrop-filter: blur(28px) saturate(200%);
       -webkit-backdrop-filter: blur(28px) saturate(200%);
@@ -289,7 +289,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 22px;
+      padding: 0 22px;
       gap: 12px;
       flex-shrink: 0;
       flex-wrap: wrap;
@@ -679,14 +679,14 @@
 
   <canvas id="bg3dCanvas"></canvas>
 
-  <!-- FORCE AUTH GATE (ॲप उघडताच आधी हे लॉगिन/ओनर क्लेम पेज येईल) -->
+  <!-- FORCE AUTH GATE (ओनर कोडशिवाय ॲक्सेस मिळणार नाही) -->
   <div class="auth-overlay" id="forceAuthModal" style="display: flex;">
     <div class="auth-card">
       <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
         <span>🔐 ORBIT AI Access</span>
       </div>
       <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;">
-        प्रवेश मिळवण्यासाठी ओनर क्रेडेंशियल्स किंवा वैध टोकन प्रविष्ट करा.
+        प्रवेश मिळवण्यासाठी अचूक ओनर क्रेडेंशियल्स प्रविष्ट करा.
       </p>
 
       <div style="display: flex; gap: 6px; margin-bottom: 16px;">
@@ -750,7 +750,6 @@
         <button class="nav-btn owner-only" onclick="switchView('apiconn')" style="display:none;">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
         <button class="nav-btn" onclick="switchView('security')">🛡️ <span data-i18n="nav_security">Permissions & Security</span></button>
         <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
-        <button class="nav-btn" onclick="switchView('subscription')">💠 <span data-i18n="nav_pro">Pro Subscription</span></button>
         <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
       </div>
     </aside>
@@ -883,7 +882,7 @@
       <!-- 5. FILES & TOOLS -->
       <section class="workspace-view" id="view-files">
         <div class="card-3d tilt-glass">
-          <div class="card-title">Upload & Analyze Files (PDF, DOCX, TXT, CSV, JSON, Images, Videos) — 18MB Limit</div>
+          <div class="card-title">Upload & Analyze Files (PDF, DOCX, TXT, CSV, JSON, Images, Videos)</div>
           <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <input type="file" id="workspaceFileInput" class="input-3d" />
             <button class="btn-3d btn-peach-blue" onclick="uploadWorkspaceFile()">Upload & Extract</button>
@@ -943,7 +942,7 @@
       <!-- 10. KNOWLEDGE BASE -->
       <section class="workspace-view" id="view-knowledge">
         <div class="card-3d tilt-glass">
-          <div class="card-title">Add Document to Knowledge Base (Used automatically in AI Chat)</div>
+          <div class="card-title">Add Document to Knowledge Base</div>
           <div style="display: grid; gap: 10px;">
             <input id="kbTitle" class="input-3d" placeholder="Document Title" />
             <textarea id="kbContent" class="input-3d" rows="4" placeholder="Paste knowledge text, notes, or extracted document content..."></textarea>
@@ -1032,28 +1031,14 @@
         <h2 style="margin-bottom: 14px;" data-i18n="nav_settings">Complete 3D Workspace Settings</h2>
         <div class="grid-3d">
           <div class="card-3d tilt-glass"><div class="card-title">1. Appearance & 3D Glass</div><button class="btn-3d" onclick="toggleTheme()">Switch Dark / Light Glass Theme</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">2. Language & Region</div><p>Use topbar selector for all 14 languages (मराठी, हिंदी, English, etc.).</p></div>
+          <div class="card-3d tilt-glass"><div class="card-title">2. Language & Region</div><p>Use topbar selector for all 14 languages.</p></div>
           <div class="card-3d tilt-glass"><div class="card-title">3. Voice & Speech</div><button class="btn-3d" onclick="speakText('ORBIT AI Private Intelligence OS is online.')">Test Voice Output 🔊</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">4. Data Export & Control</div><button class="btn-3d" onclick="exportAllWorkspaceData()">Export Full Local Data 📦</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">5. Diagnostics & Health</div><button class="btn-3d btn-peach-blue" onclick="checkHealth()">Run System Check 🩺</button></div>
         </div>
       </section>
 
-      <!-- 17. PRO SUBSCRIPTION (लिमिटेशन्ससह) -->
-      <section class="workspace-view" id="view-subscription">
-        <div class="grid-3d">
-          <div class="card-3d tilt-glass">
-            <div class="card-title">Free Personal Tier</div>
-            <p style="line-height: 1.8;">• दैनिक मेसेज मर्यादा: २० मेसेज/दिवस<br>• फाईल अपलोड साईज: कमाल २MB (केवळ TXT/PDF)<br>• मॉडेल प्रवेश: केवळ बेसिक मॉडेल्स</p>
-          </div>
-          <div class="card-3d tilt-glass" style="border-bottom-color: var(--sunset-peach);">
-            <div class="card-title">ORBIT AI PRO (Active Private OS) 💠</div>
-            <p style="line-height: 1.7;">• दैनिक मेसेज मर्यादा: <strong>अनलिमिटेड</strong><br>• फाईल अपलोड साईज: <strong>१८MB पर्यंत (PDF/DOCX/Media)</strong><br>• मॉडेल प्रवेश: <strong>सर्व शेकडो प्रीमियम मॉडेल्स</strong></p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 18. ADMIN PANEL -->
+      <!-- 17. ADMIN PANEL -->
       <section class="workspace-view" id="view-admin">
         <div class="card-3d tilt-glass">
           <div class="card-title">👑 Owner Admin Panel — Guest Requests & Users</div>
@@ -1078,7 +1063,6 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
-    // संपूर्ण १४ भाषांची ट्रान्सलेशन डिक्शनरी (सर्व भाषा आता सुरळीत चालतील)
     const I18N = {
       en: {
         sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
@@ -1086,7 +1070,7 @@
         nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
         nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
         nav_profile: "Profile & Account", nav_apiconn: "API Connections", nav_security: "Permissions & Security",
-        nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        nav_settings: "Settings", nav_admin: "Admin Panel",
         hero_title: "ORBIT AI — Private Intelligence OS",
         hero_sub: "Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, and private execution.",
         btn_launch_chat: "Launch AI Chat", card_status: "System & Model Status", card_quick_chat: "Quick AI Ask", card_stats: "Workspace Statistics"
@@ -1097,7 +1081,7 @@
         nav_files: "फाईल्स आणि टूल्स", nav_history: "चॅट इतिहास", nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स",
         nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस", nav_media: "इमेज आणि व्हिडिओ AI", nav_automation: "ऑटोमेशन",
         nav_profile: "प्रोफाईल आणि खाते", nav_apiconn: "API कनेक्शन्स", nav_security: "परवानग्या आणि सुरक्षा",
-        nav_settings: "सेटिंग्ज", nav_pro: "प्रो सबस्क्रिप्शन", nav_admin: "ॲडमिन पॅनेल",
+        nav_settings: "सेटिंग्ज", nav_admin: "ॲडमिन पॅनेल",
         hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
         hero_sub: "अत्याधुनिक मल्टी-मॉडेल AI वर्कस्पेस, डॉक्युमेंट विश्लेषण आणि स्मार्ट एजंट्ससह तुमची स्वतःची प्रायव्हेट सिस्टीम.",
         btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम आणि मॉडेल स्थिती", card_quick_chat: "झटपट AI प्रश्न", card_stats: "वर्कस्पेस आकडेवारी"
@@ -1108,22 +1092,11 @@
         nav_files: "फ़ाइलें और टूल्स", nav_history: "चैट इतिहास", nav_search: "AI सर्च", nav_agents: "AI एजेंट्स",
         nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस", nav_media: "इमेज और वीडियो AI", nav_automation: "ऑटोमेशन",
         nav_profile: "प्रोफ़ाइल", nav_apiconn: "API कनेक्शन", nav_security: "सुरक्षा",
-        nav_settings: "सेटिंग्स", nav_pro: "प्रो प्लान", nav_admin: "एडमिन पैनल",
+        nav_settings: "सेटिंग्स", nav_admin: "एडमिन पैनल",
         hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
         hero_sub: "मल्टी-मॉडल AI, डॉक्यूमेंट एनालिसिस और स्मार्ट एजेंट्स के साथ आपका निजी ऑपरेटिंग सिस्टम।",
         btn_launch_chat: "AI चैट खोलें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न", card_stats: "आंकड़े"
-      },
-      bn: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      ta: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      te: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      gu: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      kn: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      ml: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      pa: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      or: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      as: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      ur: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" },
-      sa: { sec_workspace: "Workspace", sec_personal: "Personal", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics" }
+      }
     };
 
     function changeLanguage(lang) {
@@ -1397,7 +1370,6 @@
       localStorage.setItem('orbit_theme', next);
     }
 
-    // Force Auth Gate Check on startup
     async function checkAuthStatus() {
       try {
         const data = await apiFetch('/api/auth/status');
@@ -1406,9 +1378,7 @@
           document.getElementById('forceAuthModal').style.display = 'none';
           updateAuthUI();
         }
-      } catch (e) {
-        // Not logged in -> Force modal stays open
-      }
+      } catch (e) {}
     }
 
     function updateAuthUI() {
@@ -2040,7 +2010,7 @@
       init3DOrbitCore();
       initBgParticles();
       attach3DGlassTilt();
-      checkAuthStatus(); // ॲप लोड होताच ओनर/सेशन व्हेरिफाय करेल
+      checkAuthStatus(); // ॲप उघडताच ओनर व्हेरिफिकेशन तपासले जाईल
       checkHealth();
       loadModels();
       renderPrompts();
@@ -2048,15 +2018,6 @@
       loadWorkspaceModules();
       updateOverviewStats();
     });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('ServiceWorker registered!'))
-          .catch(err => console.log('ServiceWorker error: ', err));
-      });
-    }
   </script>
 </body>
 </html>
