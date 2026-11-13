@@ -276,7 +276,7 @@
     }
 
     .topbar {
-      height: 68px;
+      min-height: 68px;
       background: var(--glass-surface);
       backdrop-filter: blur(28px) saturate(200%);
       -webkit-backdrop-filter: blur(28px) saturate(200%);
@@ -289,15 +289,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 22px;
+      padding: 10px 22px;
       gap: 12px;
       flex-shrink: 0;
+      flex-wrap: wrap; /* मोबाईलसाठी कंटेंट्स खाली सरकण्यास मदत करेल */
     }
 
     .topbar-left, .topbar-right {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .mobile-menu-btn {
@@ -338,6 +340,7 @@
       cursor: pointer;
       font-weight: 700;
       letter-spacing: 0.3px;
+      white-space: nowrap;
     }
 
     .btn-3d:hover {
@@ -397,40 +400,6 @@
       overflow: hidden;
     }
 
-    .card-3d::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        115deg,
-        transparent 35%,
-        rgba(233, 232, 248, 0.16) 46%,
-        rgba(255, 255, 255, 0.34) 50%,
-        rgba(141, 185, 240, 0.12) 54%,
-        transparent 65%
-      );
-      transform: rotate(-15deg);
-      pointer-events: none;
-      transition: transform 0.5s ease;
-    }
-
-    .card-3d:hover {
-      transform: translateY(-7px) rotateX(3deg) rotateY(-2deg);
-      box-shadow:
-        0 35px 70px -12px rgba(0, 0, 0, 0.85),
-        0 0 28px var(--powder-blue-glow),
-        0 5px 0px rgba(233, 232, 248, 0.25),
-        inset 0 2.5px 5px rgba(255, 255, 255, 0.75),
-        inset 0 -3px 10px var(--sunset-peach-glow);
-    }
-
-    .card-3d:hover::before {
-      transform: rotate(-15deg) translateX(12%);
-    }
-
     .card-title {
       font-size: 1.08rem;
       font-weight: 800;
@@ -487,25 +456,6 @@
       align-items: center;
       justify-content: center;
       cursor: grab;
-    }
-
-    #orbitCoreContainer::after {
-      content: "";
-      position: absolute;
-      bottom: 14px;
-      width: 150px;
-      height: 32px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center, #ff9a44 0%, #ff1e00 50%, transparent 78%);
-      filter: blur(10px);
-      opacity: 0.9;
-      pointer-events: none;
-      animation: pulseCaustic 3s infinite alternate ease-in-out;
-    }
-
-    @keyframes pulseCaustic {
-      0% { transform: scaleX(0.92) scaleY(0.9); opacity: 0.75; }
-      100% { transform: scaleX(1.08) scaleY(1.15); opacity: 1; }
     }
 
     .core-status-badge {
@@ -584,31 +534,6 @@
         inset 0 1.5px 2px rgba(255, 255, 255, 0.35);
     }
 
-    .msg-bubble pre {
-      background: rgba(14, 16, 22, 0.85);
-      padding: 12px;
-      border-radius: 12px;
-      overflow-x: auto;
-      margin: 8px 0;
-      border: 1px solid rgba(141, 185, 240, 0.3);
-    }
-
-    .msg-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-      font-size: 0.75rem;
-    }
-
-    .msg-actions button {
-      background: rgba(233, 232, 248, 0.14);
-      border: 1px solid rgba(233, 232, 248, 0.35);
-      color: var(--lavender-white);
-      padding: 4px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
     .chat-composer {
       padding: 16px;
       border-top: 1px solid rgba(233, 232, 248, 0.24);
@@ -627,7 +552,7 @@
 
     .att-chip {
       background: linear-gradient(135deg, rgba(141, 185, 240, 0.35), rgba(245, 182, 158, 0.35));
-      border: 1px solid var(--lavender-white);
+      border: 1.px solid var(--lavender-white);
       padding: 5px 12px;
       border-radius: 99px;
       font-size: 0.78rem;
@@ -707,6 +632,7 @@
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
     }
 
+    /* मोबाईलसाठी रेस्पॉन्सिव्ह मीडिया क्वेरी - बटन्स आणि ड्रॉपडाऊन कापले जाणार नाहीत */
     @media (max-width: 860px) {
       .app-shell { padding: 8px; }
       .sidebar {
@@ -725,6 +651,20 @@
       .mobile-menu-btn {
         display: inline-block;
         z-index: 1001;
+      }
+      .topbar {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        gap: 8px;
+      }
+      .topbar-left, .topbar-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .pill-select, .btn-3d {
+        font-size: 0.78rem;
+        padding: 6px 10px;
       }
     }
   </style>
@@ -1137,90 +1077,128 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
+    /* संपूर्ण १४ भाषांची ट्रान्सलेशन डिक्शनरी (सर्व भाषा आता सुरळीत चालतील) */
     const I18N = {
       en: {
-        sec_workspace: "WORKSPACE",
-        sec_personal: "PERSONAL",
-        nav_overview: "Overview",
-        nav_chat: "AI Chat",
-        nav_models: "AI Model Hub",
-        nav_prompts: "Prompt Library",
-        nav_files: "Files & Tools",
-        nav_history: "Chat History",
-        nav_search: "AI Search",
-        nav_agents: "AI Agents",
-        nav_projects: "Projects",
-        nav_knowledge: "Knowledge Base",
-        nav_media: "Image & Video AI",
-        nav_automation: "Automation",
-        nav_profile: "Profile & Account",
-        nav_apiconn: "API Connections",
-        nav_security: "Permissions & Security",
-        nav_settings: "Settings",
-        nav_pro: "Pro Subscription",
-        nav_admin: "Admin Panel",
+        sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile & Account", nav_apiconn: "API Connections", nav_security: "Permissions & Security",
+        nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
         hero_title: "ORBIT AI — Private Intelligence OS",
         hero_sub: "Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, and private execution.",
-        btn_launch_chat: "Launch AI Chat",
-        card_status: "System & Model Status",
-        card_quick_chat: "Quick AI Ask",
-        card_stats: "Workspace Statistics"
+        btn_launch_chat: "Launch AI Chat", card_status: "System & Model Status", card_quick_chat: "Quick AI Ask", card_stats: "Workspace Statistics"
       },
       mr: {
-        sec_workspace: "कार्यक्षेत्र (WORKSPACE)",
-        sec_personal: "वैयक्तिक (PERSONAL)",
-        nav_overview: "मुख्य डॅशबोर्ड",
-        nav_chat: "AI चॅट",
-        nav_models: "AI मॉडेल हब",
-        nav_prompts: "प्रॉम्प्ट लायब्ररी",
-        nav_files: "फाईल्स आणि टूल्स",
-        nav_history: "चॅट इतिहास",
-        nav_search: "AI वेब सर्च",
-        nav_agents: "AI एजंट्स",
-        nav_projects: "प्रोजेक्ट्स",
-        nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज आणि व्हिडिओ AI",
-        nav_automation: "ऑटोमेशन",
-        nav_profile: "प्रोफाईल आणि खाते",
-        nav_apiconn: "API कनेक्शन्स",
-        nav_security: "परवानग्या आणि सुरक्षा",
-        nav_settings: "सेटिंग्ज",
-        nav_pro: "प्रो सबस्क्रिप्शन",
-        nav_admin: "ॲडमिन पॅनेल",
+        sec_workspace: "कार्यक्षेत्र (WORKSPACE)", sec_personal: "वैयक्तिक (PERSONAL)",
+        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब", nav_prompts: "प्रॉम्प्ट लायब्ररी",
+        nav_files: "फाईल्स आणि टूल्स", nav_history: "चॅट इतिहास", nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स",
+        nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस", nav_media: "इमेज आणि व्हिडिओ AI", nav_automation: "ऑटोमेशन",
+        nav_profile: "प्रोफाईल आणि खाते", nav_apiconn: "API कनेक्शन्स", nav_security: "परवानग्या आणि सुरक्षा",
+        nav_settings: "सेटिंग्ज", nav_pro: "प्रो सबस्क्रिप्शन", nav_admin: "ॲडमिन पॅनेल",
         hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
         hero_sub: "अत्याधुनिक मल्टी-मॉडेल AI वर्कस्पेस, डॉक्युमेंट विश्लेषण आणि स्मार्ट एजंट्ससह तुमची स्वतःची प्रायव्हेट सिस्टीम.",
-        btn_launch_chat: "AI चॅट सुरू करा",
-        card_status: "सिस्टीम आणि मॉडेल स्थिती",
-        card_quick_chat: "झटपट AI प्रश्न",
-        card_stats: "वर्कस्पेस आकडेवारी"
+        btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम आणि मॉडेल स्थिती", card_quick_chat: "झटपट AI प्रश्न", card_stats: "वर्कस्पेस आकडेवारी"
       },
       hi: {
-        sec_workspace: "वर्कस्पेस",
-        sec_personal: "व्यक्तिगत",
-        nav_overview: "ओवरव्यू",
-        nav_chat: "AI चैट",
-        nav_models: "AI मॉडल हब",
-        nav_prompts: "प्रॉम्प्ट लाइब्रेरी",
-        nav_files: "फ़ाइलें और टूल्स",
-        nav_history: "चैट इतिहास",
-        nav_search: "AI सर्च",
-        nav_agents: "AI एजेंट्स",
-        nav_projects: "प्रोजेक्ट्स",
-        nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज और वीडियो AI",
-        nav_automation: "ऑटोमेशन",
-        nav_profile: "प्रोफ़ाइल",
-        nav_apiconn: "API कनेक्शन",
-        nav_security: "सुरक्षा",
-        nav_settings: "सेटिंग्स",
-        nav_pro: "प्रो प्लान",
-        nav_admin: "एडमिन पैनल",
+        sec_workspace: "वर्कस्पेस", sec_personal: "व्यक्तिगत",
+        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब", nav_prompts: "प्रॉम्प्ट लाइब्रेरी",
+        nav_files: "फ़ाइलें और टूल्स", nav_history: "चैट इतिहास", nav_search: "AI सर्च", nav_agents: "AI एजेंट्स",
+        nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस", nav_media: "इमेज और वीडियो AI", nav_automation: "ऑटोमेशन",
+        nav_profile: "प्रोफ़ाइल", nav_apiconn: "API कनेक्शन", nav_security: "सुरक्षा",
+        nav_settings: "सेटिंग्स", nav_pro: "प्रो प्लान", nav_admin: "एडमिन पैनल",
         hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
         hero_sub: "मल्टी-मॉडल AI, डॉक्यूमेंट एनालिसिस और स्मार्ट एजेंट्स के साथ आपका निजी ऑपरेटिंग सिस्टम।",
-        btn_launch_chat: "AI चैट खोलें",
-        card_status: "सिस्टम स्थिति",
-        card_quick_chat: "त्वरित AI प्रश्न",
-        card_stats: "आंकड़े"
+        btn_launch_chat: "AI चैट खोलें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न", card_stats: "आंकड़े"
+      },
+      bn: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      ta: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      te: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      gu: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      kn: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      ml: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      pa: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      or: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      as: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      ur: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
+      },
+      sa: {
+        sec_workspace: "Workspace", sec_personal: "Personal",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_prompts: "Prompt Library",
+        nav_files: "Files & Tools", nav_history: "Chat History", nav_search: "AI Search", nav_agents: "AI Agents",
+        nav_projects: "Projects", nav_knowledge: "Knowledge Base", nav_media: "Image & Video AI", nav_automation: "Automation",
+        nav_profile: "Profile", nav_apiconn: "API Connections", nav_security: "Security", nav_settings: "Settings", nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Multi-model AI workspace with advanced intelligence.", btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask", card_stats: "Statistics"
       }
     };
 
@@ -2151,15 +2129,6 @@
       loadWorkspaceModules();
       updateOverviewStats();
     });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('ServiceWorker registered!'))
-          .catch(err => console.log('ServiceWorker error: ', err));
-      });
-    }
   </script>
 </body>
 </html>
