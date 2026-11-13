@@ -32,13 +32,13 @@ if (!SESSION_SECRET) {
   }
 }
 
+// सुधारित रेट लिमिटर (वारंवार रिफ्रेश केल्यामुळे येणारी 'Too many requests' एरर दूर करण्यासाठी)
 const requestCounts = new Map();
-
 function rateLimiter(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress;
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
   const now = Date.now();
-  const windowMs = 15 * 60 * 1000;
-  const maxRequests = 100;
+  const windowMs = 60 * 1000; // १ मिनिट
+  const maxRequests = 300;   // मर्यादा वाढवली आहे
 
   if (!requestCounts.has(ip)) {
     requestCounts.set(ip, { count: 1, startTime: now });
@@ -67,7 +67,7 @@ function verifyOtpForEmail(email, enteredOtp, authData) {
     saveAuthData(authData);
     return { success: false, message: 'OTP has expired. Please request a new one.' };
   }
-  if (record.attempts >= 3) {
+  if (record.attempts >= 5) {
     delete authData.otps[email];
     saveAuthData(authData);
     return { success: false, message: 'Maximum attempt limit exceeded. Request a new OTP.' };
@@ -75,7 +75,7 @@ function verifyOtpForEmail(email, enteredOtp, authData) {
   if (record.otp !== enteredOtp) {
     record.attempts++;
     saveAuthData(authData);
-    return { success: false, message: `Invalid OTP. ${3 - record.attempts} attempts remaining.` };
+    return { success: false, message: `Invalid OTP. ${5 - record.attempts} attempts remaining.` };
   }
 
   delete authData.otps[email];
@@ -221,7 +221,7 @@ app.post('/api/auth/owner/claim', (req, res) => {
 
   const ownerUser = {
     id: auth.owner?.id || 'owner_' + crypto.randomBytes(6).toString('hex'),
-    name: name || 'Mayur Sonawane',
+    name: name || 'Mayur Sonawane (Owner)',
     email: email || 'smayur0797@gmail.com',
     role: 'owner',
     tier: 'pro',
@@ -297,20 +297,23 @@ app.post('/api/auth/approve', requireOwner, (req, res) => {
   res.json({ ok: true, request: reqItem, user });
 });
 
+// रिजेक्ट केलेली रिक्वेस्ट ॲडमिन पॅनलमधून थेट डिलीट (गायब) करणे
 app.post('/api/auth/reject', requireOwner, (req, res) => {
   const { requestId } = req.body;
   const auth = loadAuthData();
-  const reqItem = auth.requests.find(r => r.id === requestId);
-  if (!reqItem) return res.status(404).json({ error: 'Request not found' });
-  reqItem.status = 'rejected';
+  const index = auth.requests.findIndex(r => r.id === requestId);
+  if (index === -1) return res.status(404).json({ error: 'Request not found' });
   
+  const reqItem = auth.requests[index];
   const user = auth.users.find(u => u.email.toLowerCase() === reqItem.email.toLowerCase());
   if (user) {
     user.revoked = true;
   }
 
+  // डिक्शनरीमधून पूर्णपणे काढून टाकणे जेणेकरून ॲडमिन पॅनलमधून गायब होईल
+  auth.requests.splice(index, 1);
   saveAuthData(auth);
-  res.json({ ok: true, request: reqItem });
+  res.json({ ok: true, message: 'Request rejected and removed.' });
 });
 
 app.post('/api/auth/issue', (req, res) => {
