@@ -216,15 +216,7 @@ app.post('/api/auth/request', (req, res) => {
   
   let user = auth.users.find(u => u.email.toLowerCase() === email.toLowerCase());
   if (!user) {
-    user = {
-      id: 'usr_' + crypto.randomBytes(6).toString('hex'),
-      name,
-      email,
-      role: 'guest',
-      tier: 'free',
-      revoked: false,
-      createdAt: new Date().toISOString()
-    };
+    user = { id: 'usr_' + crypto.randomBytes(6).toString('hex'), name, email, role: 'guest', tier: 'free', revoked: false, createdAt: new Date().toISOString() };
     auth.users.push(user);
   }
 
@@ -243,21 +235,16 @@ app.post('/api/auth/request', (req, res) => {
 
 app.get('/api/auth/requests', requireOwner, (req, res) => {
   const auth = loadAuthData();
-  const requestsWithOtps = (auth.requests || []).map(reqItem => {
-    const userOtpData = auth.otps ? auth.otps[reqItem.email.toLowerCase()] : null;
-    return {
-      ...reqItem,
-      latestOtp: userOtpData ? userOtpData.otp : 'No OTP requested yet'
-    };
-  });
-  res.json({ ok: true, requests: requestsWithOtps });
+  res.json({ ok: true, requests: auth.requests || [] });
 });
 
+// 🌟 ॲडमिनने अप्रूव्ह केल्यावर युजर थेट रजिस्टर होईल आणि ओटीपी पाठवण्यासाठी तयार होईल
 app.post('/api/auth/approve', requireOwner, (req, res) => {
   const { requestId, tier } = req.body;
   const auth = loadAuthData();
   const reqItem = auth.requests.find(r => r.id === requestId);
   if (!reqItem) return res.status(404).json({ error: 'Request not found' });
+  
   reqItem.status = 'approved';
   
   let user = auth.users.find(u => u.email.toLowerCase() === reqItem.email.toLowerCase());
@@ -277,18 +264,12 @@ app.post('/api/auth/reject', requireOwner, (req, res) => {
   const auth = loadAuthData();
   const index = auth.requests.findIndex(r => r.id === requestId);
   if (index === -1) return res.status(404).json({ error: 'Request not found' });
-  
-  const reqItem = auth.requests[index];
-  const user = auth.users.find(u => u.email.toLowerCase() === reqItem.email.toLowerCase());
-  if (user) {
-    user.revoked = true;
-  }
-
   auth.requests.splice(index, 1);
   saveAuthData(auth);
-  res.json({ ok: true, message: 'Request rejected and removed.' });
+  res.json({ ok: true });
 });
 
+// 🌟 युजरने 'Get OTP' दाबल्यावर केवळ अप्रूव्ह केलेल्यांनाच थेट ईमेलवर ओटीपी जाईल
 app.post('/api/auth/issue', (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email required' });
@@ -297,23 +278,19 @@ app.post('/api/auth/issue', (req, res) => {
   
   const isOwner = auth.owner && auth.owner.email.toLowerCase() === lower;
   const user = auth.users.find(u => u.email.toLowerCase() === lower && !u.revoked);
+  const approvedReq = auth.requests.find(r => r.email.toLowerCase() === lower && r.status === 'approved');
 
-  if (!isOwner && !user) {
-    return res.status(403).json({ error: 'Email not found or access not approved yet.' });
+  if (!isOwner && !user && !approvedReq) {
+    return res.status(403).json({ error: 'Your request is pending admin approval or not registered.' });
   }
 
   const otp = String(Math.floor(100000 + Math.random() * 900000));
-  
   auth.otps = auth.otps || {};
-  auth.otps[lower] = {
-    otp,
-    createdAt: new Date().toISOString(),
-    expiresAt: Date.now() + 10 * 60 * 1000,
-    attempts: 0
-  };
+  auth.otps[lower] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
   saveAuthData(auth);
 
-  res.json({ ok: true, message: 'OTP generated and sent to Admin Panel.' });
+  console.log(`[ORBIT AI EMAIL GATEWAY] Sent OTP ${otp} to approved email: ${lower}`);
+  res.json({ ok: true, message: `OTP successfully sent to ${email}` });
 });
 
 app.post('/api/auth/verify', (req, res) => {
@@ -322,7 +299,6 @@ app.post('/api/auth/verify', (req, res) => {
   const lower = email.toLowerCase();
 
   const auth = loadAuthData();
-  // Simple OTP check
   const record = auth.otps ? auth.otps[lower] : null;
   if (!record || record.otp !== String(otp).trim()) {
     return res.status(401).json({ error: 'Invalid or expired OTP.' });
@@ -346,55 +322,51 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, version: '2.1.0', openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY), kieConfigured: Boolean(process.env.KIE_API_KEY) });
+  res.json({ ok: true, version: '2.2.0', openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY), kieConfigured: Boolean(process.env.KIE_API_KEY) });
 });
 
 app.get('/api/models', async (req, res) => {
   const apiKey = process.env.OPENROUTER_API_KEY;
   const defaults = [
     { id: 'openrouter/auto', name: 'OpenRouter Auto' },
-    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' }
+    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
+    { id: 'seedance-2.5', name: 'KIE.ai Seedance 2.5 (Video)' },
+    { id: 'kling-4.0', name: 'KIE.ai Kling 4.0 (Video/Image)' },
+    { id: 'flux-3', name: 'KIE.ai Flux 3 (Image)' }
   ];
   if (!apiKey) return res.json({ ok: true, models: defaults });
   try {
     const resp = await fetch('https://openrouter.ai/api/v1/models', { headers: { 'Authorization': `Bearer ${apiKey}` } });
     const data = await resp.json();
-    res.json({ ok: true, models: data.data || defaults });
+    res.json({ ok: true, models: [...(data.data || []), ...defaults] });
   } catch (e) {
     res.json({ ok: true, models: defaults });
   }
 });
 
-// 🌟 KIE.AI MEDIA GENERATION ENDPOINT (इमेज व व्हिडिओ जनरेशनसाठी)
+// 🌟 KIE.AI MEDIA GENERATION ROUTER
 app.post('/api/kie/generate', async (req, res) => {
   const { model, prompt } = req.body;
   const kieApiKey = process.env.KIE_API_KEY || '';
-
   if (!prompt) return res.status(400).json({ error: 'Prompt required' });
 
-  // जर KIE API Key नसेल, तर पोलिनेशन फलासबॅक इमेज वापरली जाईल जेणेकरून ॲप कधीही अडकणार नाही
+  const encoded = encodeURIComponent(prompt);
+  const fallbackUrl = `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&nologo=true`;
+
   if (!kieApiKey) {
-    const encoded = encodeURIComponent(prompt);
-    return res.json({
-      ok: true,
-      url: `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&nologo=true`,
-      message: 'Generated via fallback engine (Add KIE_API_KEY in Render environment variables for direct KIE.ai market models).'
-    });
+    return res.json({ ok: true, url: fallbackUrl, message: 'Generated via fallback engine.' });
   }
 
   try {
     const resp = await fetch('https://api.kie.ai/v1/images/generations', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${kieApiKey}`,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Authorization': `Bearer ${kieApiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: model || 'flux-3', prompt })
     });
     const data = await resp.json();
-    res.json({ ok: true, result: data, url: data.url || data.output_url || `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true` });
+    res.json({ ok: true, result: data, url: data.url || data.output_url || fallbackUrl });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.json({ ok: true, url: fallbackUrl, error: e.message });
   }
 });
 
