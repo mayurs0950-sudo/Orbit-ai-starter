@@ -759,7 +759,7 @@
             <div class="composer-row">
               <input type="file" id="chatFileInput" style="display:none" onchange="handleChatFileAttach(this)" />
               <button class="btn-3d" onclick="document.getElementById('chatFileInput').click()" title="Attach File">📎</button>
-              <textarea id="chatInput" class="composer-input" placeholder="Message ORBIT AI... (Shift+Enter for new line)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+              <textarea id="chatInput" class="composer-input" placeholder="Message ORBIT AI..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
               <button class="btn-3d btn-peach-blue" onclick="sendMessage()">Send 🚀</button>
             </div>
           </div>
@@ -810,30 +810,12 @@
       </section>
 
       <!-- PRO VIEWS (OPEN WITH PRO UPGRADE BANNER) -->
-      <section class="workspace-view" id="view-search">
-        <div id="searchProBanner"></div>
-        <div class="card-3d"><h2>AI Search</h2><p>Search live web with deep citations and context.</p></div>
-      </section>
-      <section class="workspace-view" id="view-agents">
-        <div id="agentsProBanner"></div>
-        <div class="card-3d"><h2>AI Agents</h2><p>Build and run custom autonomous AI agents.</p></div>
-      </section>
-      <section class="workspace-view" id="view-projects">
-        <div id="projectsProBanner"></div>
-        <div class="card-3d"><h2>Projects</h2><p>Manage isolated project environments and contexts.</p></div>
-      </section>
-      <section class="workspace-view" id="view-knowledge">
-        <div id="knowledgeProBanner"></div>
-        <div class="card-3d"><h2>Knowledge Base</h2><p>Store documents and vectorize notes for AI chat.</p></div>
-      </section>
-      <section class="workspace-view" id="view-media">
-        <div id="mediaProBanner"></div>
-        <div class="card-3d"><h2>Image & Video AI</h2><p>Generate 8K Ultra HD cinematic visual content.</p></div>
-      </section>
-      <section class="workspace-view" id="view-automation">
-        <div id="automationProBanner"></div>
-        <div class="card-3d"><h2>Automation</h2><p>Execute multi-step autonomous workflows.</p></div>
-      </section>
+      <section class="workspace-view" id="view-search"><div id="searchProBanner"></div><div class="card-3d"><h2>AI Search</h2><p>Search live web with deep citations.</p></div></section>
+      <section class="workspace-view" id="view-agents"><div id="agentsProBanner"></div><div class="card-3d"><h2>AI Agents</h2><p>Build and run custom autonomous AI agents.</p></div></section>
+      <section class="workspace-view" id="view-projects"><div id="projectsProBanner"></div><div class="card-3d"><h2>Projects</h2><p>Manage isolated project environments.</p></div></section>
+      <section class="workspace-view" id="view-knowledge"><div id="knowledgeProBanner"></div><div class="card-3d"><h2>Knowledge Base</h2><p>Store documents and vectorize notes.</p></div></section>
+      <section class="workspace-view" id="view-media"><div id="mediaProBanner"></div><div class="card-3d"><h2>Image & Video AI</h2><p>Generate 8K Ultra HD cinematic visuals.</p></div></section>
+      <section class="workspace-view" id="view-automation"><div id="automationProBanner"></div><div class="card-3d"><h2>Automation</h2><p>Execute multi-step autonomous workflows.</p></div></section>
       <section class="workspace-view" id="view-academic">
         <div id="academicProBanner"></div>
         <div class="card-3d">
@@ -846,7 +828,6 @@
         <div class="card-3d tilt-glass">
           <div class="card-title" data-i18n="nav_profile">Profile & Account</div>
           <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px; font-size:1.05rem;"></div>
-          
           <div style="margin: 16px 0; padding: 14px; border-radius: 14px; background: rgba(141,185,240,0.1); border: 1px solid var(--powder-blue);">
             <strong>Subscription Tier View (Owner Mode):</strong>
             <div style="display:flex; gap:10px; margin-top:8px;">
@@ -854,28 +835,13 @@
               <button class="btn-3d btn-peach-blue" id="btnTierPro" onclick="switchUserTier('pro')">Pro Tier View</button>
             </div>
           </div>
-
-          <div class="form-group">
-            <label>Backend Server URL:</label>
-            <input id="apiBaseUrlInput" class="input-3d" placeholder="http://localhost:3000" />
-          </div>
+          <div class="form-group"><label>Backend Server URL:</label><input id="apiBaseUrlInput" class="input-3d" placeholder="http://localhost:3000" /></div>
           <button class="btn-3d btn-peach-blue" onclick="saveApiBaseUrl()">Save Server URL</button>
         </div>
       </section>
 
-      <section class="workspace-view" id="view-security">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Security & Session Protection</div>
-          <p>Mobile Number OTP Login Active.</p>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-settings">
-        <h2 style="margin-bottom: 14px;" data-i18n="nav_settings">Workspace Settings</h2>
-        <div class="grid-3d">
-          <div class="card-3d tilt-glass"><div class="card-title">Appearance</div><button class="btn-3d" onclick="toggleTheme()">Switch Dark / Light</button></div>
-        </div>
-      </section>
+      <section class="workspace-view" id="view-security"><div class="card-3d"><h2>Security</h2></div></section>
+      <section class="workspace-view" id="view-settings"><div class="card-3d"><h2>Settings</h2></div></section>
 
       <section class="workspace-view" id="view-subscription">
         <div class="grid-3d">
@@ -886,17 +852,15 @@
           </div>
           <div class="card-3d tilt-glass" style="border-bottom-color: var(--sunset-peach);">
             <div class="card-title">ORBIT AI PRO (₹799) 💠</div>
-            <p style="line-height: 1.7; margin-bottom:14px;">Unlock all advanced features instantly via QR code payment.</p>
-            <div id="subProStatus">
-              <button class="btn-3d btn-peach-blue" onclick="redirectToRazorpay()">Upgrade to Pro (₹799 - Pay via QR / UPI)</button>
-            </div>
+            <p>Unlock all advanced features instantly via QR code payment.</p>
+            <div id="subProStatus"><button class="btn-3d btn-peach-blue" onclick="redirectToRazorpay()">Upgrade to Pro (₹799)</button></div>
           </div>
         </div>
       </section>
 
       <section class="workspace-view" id="view-admin">
         <div class="card-3d tilt-glass">
-          <div class="card-title">👑 Admin Panel — Registered Users & Payments</div>
+          <div class="card-title">👑 Admin Panel</div>
           <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 14px;">Refresh Data</button>
           <div id="adminUsersList"></div>
         </div>
@@ -939,7 +903,6 @@
       document.getElementById('sidebar').classList.remove('open');
       if (name === 'admin') loadAdminData();
       if (name === 'history') renderHistoryList();
-      
       checkProBanners();
       setTimeout(attach3DGlassTilt, 60);
     }
@@ -956,7 +919,7 @@
             bannerContainer.innerHTML = `
               <div class="pro-banner">
                 <div>🔒 <strong>Pro Feature:</strong> Upgrade to ORBIT AI Pro (₹799) to unlock full execution and features.</div>
-                <button class="btn-3d btn-peach-blue" onclick="switchView('subscription')">Upgrade Now</button>
+                <button class="btn-3d btn-peach-blue" onclick="switchView('subscription')">Upgrade Now (₹799)</button>
               </div>`;
           } else {
             bannerContainer.innerHTML = '';
@@ -992,14 +955,9 @@
         const data = await apiFetch('/api/auth/status');
         currentUser = data.user;
         updateAuthUI();
-        if (currentUser) {
-          closeAuthModal();
-        } else {
-          openAuthModal();
-        }
-      } catch (e) {
-        openAuthModal();
-      }
+        if (currentUser) closeAuthModal();
+        else openAuthModal();
+      } catch (e) { openAuthModal(); }
     }
 
     let activeUserTier = 'free';
@@ -1042,41 +1000,25 @@
 
     async function issuePhoneOtp() {
       const phone = document.getElementById('loginPhone').value.trim();
-      if (!phone || phone.length < 10) {
-        alert('Please enter a valid mobile number.');
-        return;
-      }
+      if (!phone || phone.length < 10) { alert('Please enter a valid mobile number.'); return; }
       try {
-        const res = await apiFetch('/api/auth/issue-phone', {
-          method: 'POST',
-          body: JSON.stringify({ phone })
-        });
+        const res = await apiFetch('/api/auth/issue-phone', { method: 'POST', body: JSON.stringify({ phone }) });
         document.getElementById('authStatusMsg').innerHTML = `<span style="color:#2ecc71;">${res.message}</span>`;
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
+      } catch (e) { document.getElementById('authStatusMsg').textContent = e.message; }
     }
 
     async function verifyPhoneOtp() {
       const phone = document.getElementById('loginPhone').value.trim();
       const otp = document.getElementById('loginOtp').value.trim();
-      if (!phone || !otp) {
-        alert('Please enter both mobile number and OTP.');
-        return;
-      }
+      if (!phone || !otp) { alert('Please enter both mobile number and OTP.'); return; }
       try {
-        const res = await apiFetch('/api/auth/verify-phone', {
-          method: 'POST',
-          body: JSON.stringify({ phone, otp })
-        });
+        const res = await apiFetch('/api/auth/verify-phone', { method: 'POST', body: JSON.stringify({ phone, otp }) });
         if (res.token) localStorage.setItem('orbit_token', res.token);
         currentUser = res.user;
         updateAuthUI();
         closeAuthModal();
         switchView('overview');
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
+      } catch (e) { document.getElementById('authStatusMsg').textContent = e.message; }
     }
 
     async function claimOwner() {
@@ -1084,26 +1026,17 @@
         const name = document.getElementById('ownName').value;
         const phone = document.getElementById('ownPhone').value;
         const claimCode = document.getElementById('ownCode').value;
-        const res = await apiFetch('/api/auth/owner/claim', {
-          method: 'POST',
-          body: JSON.stringify({ name, phone, claimCode })
-        });
+        const res = await apiFetch('/api/auth/owner/claim', { method: 'POST', body: JSON.stringify({ name, phone, claimCode }) });
         if (res.token) localStorage.setItem('orbit_token', res.token);
         currentUser = res.user;
         updateAuthUI();
         closeAuthModal();
         switchView('overview');
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
+      } catch (e) { document.getElementById('authStatusMsg').textContent = e.message; }
     }
 
     function switchUserTier(tier) {
-      if (!currentUser && tier === 'pro') {
-        alert('Please login first.');
-        openAuthModal();
-        return;
-      }
+      if (!currentUser && tier === 'pro') { alert('Please login first.'); openAuthModal(); return; }
       activeUserTier = tier;
       document.getElementById('btnTierFree').classList.remove('btn-peach-blue');
       document.getElementById('btnTierPro').classList.remove('btn-peach-blue');
@@ -1118,44 +1051,29 @@
     }
 
     function redirectToRazorpay() {
-      if (!currentUser) {
-        alert('Please login first.');
-        openAuthModal();
-        return;
-      }
-      
-      if (currentUser.role === 'owner' || activeUserTier === 'pro') {
-        alert('You are already Pro or Admin!');
-        return;
-      }
+      if (!currentUser) { alert('Please login first.'); openAuthModal(); return; }
+      if (currentUser.role === 'owner' || activeUserTier === 'pro') { alert('You are already Pro or Admin!'); return; }
 
       const modalHTML = `
         <div id="paymentModal" style="position:fixed; inset:0; background:rgba(12,14,20,0.92); backdrop-filter:blur(20px); z-index:20000; display:flex; align-items:center; justify-content:center; padding:16px;">
           <div style="background:var(--glass-surface); border:2px solid var(--powder-blue); border-radius:24px; padding:24px; max-width:400px; width:100%; text-align:center; box-shadow:var(--glass-3d-shadow);">
             <h3 style="color:var(--powder-blue); margin-bottom:10px;">ORBIT AI Pro Subscription</h3>
             <p style="font-size:1.1rem; color:var(--sunset-peach); font-weight:bold; margin-bottom:15px;">Price: ₹799</p>
-            
             <p style="font-size:0.85rem; margin-bottom:10px; opacity:0.85;">Scan the QR code below or pay via UPI:</p>
-            
             <div style="background:#fff; padding:10px; border-radius:12px; display:inline-block; margin-bottom:15px;">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=mayur0797@axl&pn=Mayur%20Sonawane&am=799&cu=INR" alt="Payment QR Code" style="width:180px; height:180px; object-fit:contain;" />
             </div>
-            
             <p style="font-size:0.8rem; margin-bottom:12px; color:var(--powder-blue);">UPI ID: <strong>mayur0797@axl</strong></p>
-
             <div class="form-group" style="text-align:left;">
               <label style="font-size:0.8rem;">Enter UPI Transaction ID (UTR) after payment:</label>
               <input type="text" id="upiTxnId" class="input-3d" placeholder="e.g. 4321XXXXXXXX" style="width:100%; margin-top:5px;" />
             </div>
-
             <div style="display:flex; gap:10px; margin-top:15px;">
               <button class="btn-3d btn-peach-blue" style="flex:1;" onclick="verifyUserPayment()">Confirm Payment</button>
               <button class="btn-3d" style="flex:1; background:rgba(255,255,255,0.1);" onclick="document.getElementById('paymentModal').remove()">Close</button>
             </div>
           </div>
-        </div>
-      `;
-
+        </div>`;
       const existing = document.getElementById('paymentModal');
       if (existing) existing.remove();
       document.body.insertAdjacentHTML('beforeend', modalHTML);
@@ -1163,15 +1081,9 @@
 
     async function verifyUserPayment() {
       const txnId = document.getElementById('upiTxnId').value.trim();
-      if (!txnId) {
-        alert('Please enter the transaction ID.');
-        return;
-      }
+      if (!txnId) { alert('Please enter the transaction ID.'); return; }
       try {
-        const res = await apiFetch('/api/payment/verify-manual', {
-          method: 'POST',
-          body: JSON.stringify({ paymentId: txnId, upiId: 'UPI / QR Payment' })
-        });
+        const res = await apiFetch('/api/payment/verify-manual', { method: 'POST', body: JSON.stringify({ paymentId: txnId, upiId: 'UPI / QR Payment' }) });
         if (res.ok) {
           currentUser = res.user;
           if (res.token) localStorage.setItem('orbit_token', res.token);
@@ -1180,9 +1092,7 @@
           alert('Congratulations! Your payment has been verified and ORBIT AI Pro Subscription is now active!');
           switchView('overview');
         }
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
+      } catch (e) { alert('Error: ' + e.message); }
     }
 
     function getActiveConversation() {
@@ -1206,7 +1116,7 @@
         box.innerHTML = `<div class="card-3d" style="text-align:center; max-width:520px; margin:40px auto;"><div class="card-title" style="justify-content:center;">🔴 ORBIT AI 3D Glass Chat</div><p style="color:var(--lavender-white);">Select any AI model and start conversing.</p></div>`;
         return;
       }
-      box.innerHTML = conv.messages.map((m, idx) => `<div class="msg-bubble ${m.role === 'user' ? 'msg-user' : 'msg-ai'}"><div>${window.marked ? marked.parse(m.content) : m.content}</div></div>`).join('');
+      box.innerHTML = conv.messages.map((m) => `<div class="msg-bubble ${m.role === 'user' ? 'msg-user' : 'msg-ai'}"><div>${window.marked ? marked.parse(m.content) : m.content}</div></div>`).join('');
       box.scrollTop = box.scrollHeight;
     }
 
