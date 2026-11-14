@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ORBIT AI — Private Intelligence OS (Ultimate Liquid Glass Edition)</title>
+  <title>ORBIT AI — Private Intelligence OS (Complete Ultimate Edition)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -19,27 +19,26 @@
       --sunset-peach-glow: rgba(245, 182, 158, 0.42);
       --crimson-glow: rgba(255, 38, 0, 0.55);
 
-      /* 🌟 Liquid Glass Refinement Surface */
       --glass-surface: linear-gradient(
         135deg,
-        rgba(233, 232, 248, 0.15) 0%,
-        rgba(141, 185, 240, 0.08) 48%,
-        rgba(245, 182, 158, 0.10) 100%
+        rgba(233, 232, 248, 0.18) 0%,
+        rgba(141, 185, 240, 0.10) 48%,
+        rgba(245, 182, 158, 0.12) 100%
       );
       --glass-sidebar: linear-gradient(
         165deg,
-        rgba(233, 232, 248, 0.14) 0%,
-        rgba(30, 34, 45, 0.55) 55%,
-        rgba(20, 22, 29, 0.75) 100%
+        rgba(233, 232, 248, 0.16) 0%,
+        rgba(30, 34, 45, 0.58) 55%,
+        rgba(20, 22, 29, 0.78) 100%
       );
-      --glass-border-top: rgba(233, 232, 248, 0.55);
-      --glass-border-side: rgba(141, 185, 240, 0.28);
-      --glass-border-bottom: rgba(245, 182, 158, 0.35);
+      --glass-border-top: rgba(233, 232, 248, 0.62);
+      --glass-border-side: rgba(141, 185, 240, 0.32);
+      --glass-border-bottom: rgba(245, 182, 158, 0.42);
 
       --glass-3d-shadow:
-        0 26px 55px -10px rgba(8, 10, 15, 0.85),
-        0 10px 24px -6px rgba(141, 185, 240, 0.18),
-        inset 0 2px 4px rgba(233, 232, 248, 0.5);
+        0 26px 55px -10px rgba(8, 10, 15, 0.88),
+        0 10px 24px -6px rgba(141, 185, 240, 0.22),
+        inset 0 2px 4px rgba(233, 232, 248, 0.65);
 
       --radius-lg: 24px;
       --radius-md: 16px;
@@ -69,9 +68,9 @@
       background: radial-gradient(circle at 50% 20%, #202534 0%, #12141B 75%);
     }
 
-    .glow-orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.75; }
-    .orb-blue { width: 460px; height: 460px; background: rgba(141, 185, 240, 0.3); top: -10%; right: 10%; }
-    .orb-peach { width: 500px; height: 500px; background: rgba(245, 182, 158, 0.3); bottom: -12%; left: 12%; }
+    .glow-orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.78; }
+    .orb-blue { width: 460px; height: 460px; background: radial-gradient(circle, #8DB9F0 0%, rgba(141, 185, 240, 0) 70%); top: -10%; right: 10%; }
+    .orb-peach { width: 500px; height: 500px; background: radial-gradient(circle, #F5B69E 0%, rgba(245, 182, 158, 0) 70%); bottom: -12%; left: 12%; }
 
     #bg3dCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
@@ -107,12 +106,12 @@
 
     .nav-btn {
       width: 100%; text-align: left; padding: 11px 15px; margin-bottom: 6px; border-radius: 14px;
-      border: 1px solid rgba(233, 232, 248, 0.1); background: rgba(233, 232, 248, 0.05);
+      border: 1px solid rgba(233, 232, 248, 0.1); background: linear-gradient(135deg, rgba(233, 232, 248, 0.07), rgba(141, 185, 240, 0.02));
       color: var(--lavender-white); font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
     }
     .nav-btn:hover, .nav-btn.active {
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.28), rgba(245, 182, 158, 0.22));
+      background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.32));
       border-color: var(--powder-blue); transform: translateX(4px);
     }
 
@@ -131,19 +130,19 @@
     .mobile-menu-btn { display: none; background: var(--glass-surface); color: var(--lavender-white); border: 1px solid var(--glass-border-top); padding: 8px 14px; border-radius: 12px; cursor: pointer; }
 
     .pill-select, .btn-3d, .input-3d {
-      background: linear-gradient(135deg, rgba(233, 232, 248, 0.14), rgba(20, 22, 29, 0.55));
+      background: linear-gradient(135deg, rgba(233, 232, 248, 0.16), rgba(20, 22, 29, 0.58));
       backdrop-filter: blur(18px); color: var(--lavender-white);
-      border-top: 1.5px solid rgba(233, 232, 248, 0.5); border-left: 1.5px solid rgba(141, 185, 240, 0.35);
-      border-right: 1px solid rgba(245, 182, 158, 0.2); border-bottom: 2px solid rgba(0, 0, 0, 0.4);
-      padding: 9px 15px; border-radius: 14px; font-size: 0.88rem; outline: none; transition: all 0.2s ease;
+      border-top: 1.5px solid rgba(233, 232, 248, 0.55); border-left: 1.5px solid rgba(141, 185, 240, 0.4);
+      border-right: 1px solid rgba(245, 182, 158, 0.25); border-bottom: 2px solid rgba(0, 0, 0, 0.45);
+      padding: 9px 15px; border-radius: 14px; font-size: 0.88rem; outline: none; transition: all 0.22s ease;
     }
     .pill-select option { background: #181B24; color: #E9E8F8; }
     .btn-3d { cursor: pointer; font-weight: 700; white-space: nowrap; }
-    .btn-3d:hover { transform: translateY(-2px); border-top-color: #fff; box-shadow: 0 8px 20px var(--powder-blue-glow); }
+    .btn-3d:hover { transform: translateY(-3px); border-top-color: #ffffff; box-shadow: 0 14px 28px rgba(0,0,0,0.5), 0 0 18px var(--powder-blue-glow); }
     .btn-peach-blue {
-      background: linear-gradient(135deg, var(--powder-blue) 0%, var(--sunset-peach) 100%);
-      color: #14161D; border: none; font-weight: 800;
-      box-shadow: 0 8px 22px rgba(141, 185, 240, 0.35);
+      background: linear-gradient(135deg, var(--powder-blue) 0%, var(--lavender-white) 48%, var(--sunset-peach) 100%);
+      color: #14161D; border-top: 1.5px solid #ffffff; font-weight: 800;
+      box-shadow: 0 10px 25px rgba(141, 185, 240, 0.4), 0 4px 15px rgba(245, 182, 158, 0.35);
     }
 
     .workspace-view { flex: 1; overflow-y: auto; padding: 6px 6px 24px; display: none; -webkit-overflow-scrolling: touch; }
@@ -162,34 +161,35 @@
 
     .orbit-core-hero {
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px;
-      background: var(--glass-surface); backdrop-filter: blur(34px) saturate(210%);
-      border-top: 2px solid var(--lavender-white); border-left: 2px solid var(--powder-blue);
-      border-right: 1.5px solid var(--sunset-peach); border-bottom: 3px solid var(--sunset-peach);
-      border-radius: 28px; padding: 28px; box-shadow: 0 32px 70px rgba(0,0,0,0.75), 0 0 40px var(--powder-blue-glow);
+      background: linear-gradient(135deg, rgba(233, 232, 248, 0.20) 0%, rgba(141, 185, 240, 0.16) 48%, rgba(245, 182, 158, 0.18) 100%);
+      backdrop-filter: blur(34px) saturate(210%); border-top: 2px solid var(--lavender-white);
+      border-left: 2px solid var(--powder-blue); border-right: 1.5px solid var(--sunset-peach); border-bottom: 3px solid var(--sunset-peach);
+      border-radius: 28px; padding: 28px; box-shadow: 0 32px 70px rgba(0,0,0,0.78), 0 0 40px var(--powder-blue-glow);
     }
     #orbitCoreContainer {
-      width: 260px; height: 260px; position: relative; margin: 0 auto; border-radius: 50%;
-      background: radial-gradient(circle at 50% 58%, rgba(255, 60, 0, 0.45) 0%, rgba(20, 10, 18, 0) 70%);
-      display: flex; align-items: center; justify-content: center;
+      width: 270px; height: 270px; position: relative; margin: 0 auto; border-radius: 50%;
+      background: radial-gradient(circle at 50% 58%, rgba(255, 60, 0, 0.42) 0%, rgba(190, 10, 30, 0.22) 45%, rgba(20, 10, 18, 0) 72%);
+      display: flex; align-items: center; justify-content: center; cursor: grab;
     }
     .core-status-badge {
       display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 800;
       background: linear-gradient(135deg, rgba(255, 60, 20, 0.35), rgba(141, 185, 240, 0.28));
-      border: 1px solid var(--lavender-white); color: var(--lavender-white); margin-bottom: 12px;
+      border-top: 1px solid var(--lavender-white); color: var(--lavender-white); margin-bottom: 12px;
     }
 
     .chat-layout {
       display: flex; flex-direction: column; flex: 1; height: 100%; max-height: calc(100dvh - 90px);
       background: var(--glass-surface); backdrop-filter: blur(28px); border-radius: var(--radius-lg);
-      border: 1.5px solid var(--glass-border-top); overflow: hidden; box-shadow: var(--glass-3d-shadow);
+      border-top: 1.5px solid var(--glass-border-top); border-left: 1.5px solid var(--glass-border-top);
+      box-shadow: var(--glass-3d-shadow); overflow: hidden;
     }
     .chat-messages { flex: 1; overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 16px; }
     .msg-bubble { max-width: 82%; padding: 15px 20px; border-radius: 20px; line-height: 1.58; font-size: 0.95rem; }
-    .msg-user { align-self: flex-end; background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.35)); border: 1.5px solid var(--lavender-white); color: #fff; }
-    .msg-ai { align-self: flex-start; background: rgba(20, 22, 29, 0.72); border: 1.5px solid rgba(233, 232, 248, 0.3); color: var(--lavender-white); }
+    .msg-user { align-self: flex-end; background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.35)); border-top: 1.5px solid var(--lavender-white); color: #fff; }
+    .msg-ai { align-self: flex-start; background: linear-gradient(135deg, rgba(233, 232, 248, 0.16), rgba(20, 22, 29, 0.72)); border-top: 1.5px solid rgba(233, 232, 248, 0.5); color: var(--lavender-white); }
 
-    .chat-composer { padding: 16px; border-top: 1px solid rgba(233, 232, 248, 0.2); background: rgba(20, 22, 29, 0.6); display: flex; gap: 10px; align-items: center; }
-    .composer-input { flex: 1; background: rgba(16, 18, 25, 0.7); border: 1.5px solid rgba(141, 185, 240, 0.35); border-radius: 16px; padding: 12px 16px; color: #fff; resize: none; height: 52px; }
+    .chat-composer { padding: 16px; border-top: 1px solid rgba(233, 232, 248, 0.24); background: linear-gradient(180deg, rgba(233, 232, 248, 0.08), rgba(20, 22, 29, 0.68)); display: flex; gap: 10px; align-items: center; }
+    .composer-input { flex: 1; background: linear-gradient(135deg, rgba(233, 232, 248, 0.14), rgba(16, 18, 25, 0.68)); border-top: 1.5px solid rgba(233, 232, 248, 0.48); border-radius: 16px; padding: 12px 16px; color: #fff; resize: none; height: 52px; }
 
     .auth-overlay {
       position: fixed; inset: 0; background: rgba(12, 14, 20, 0.95); backdrop-filter: blur(35px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px;
@@ -202,7 +202,7 @@
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; }
     .form-group input, .form-group textarea, .form-group select {
-      width: 100%; padding: 11px 14px; border-radius: 12px; border: 1px solid rgba(141, 185, 240, 0.35); background: rgba(16, 18, 25, 0.65); color: #fff;
+      width: 100%; padding: 11px 14px; border-radius: 12px; border-top: 1px solid rgba(233, 232, 248, 0.48); background: rgba(16, 18, 25, 0.65); color: #fff;
     }
 
     @media (max-width: 860px) {
@@ -217,6 +217,7 @@
   <div class="ambient-stage">
     <div class="glow-orb orb-blue"></div>
     <div class="glow-orb orb-peach"></div>
+    <div class="glow-orb" style="width: 390px; height: 390px; background: rgba(233,232,248,0.4); top: 38%; left: 44%;"></div>
   </div>
 
   <canvas id="bg3dCanvas"></canvas>
@@ -224,8 +225,8 @@
   <!-- 🔐 ऑथेंटिकेशन फॉर्म (ओनर ईमेल आणि कोड पूर्णपणे रिकामे) -->
   <div class="auth-overlay" id="forceAuthModal" style="display: flex;">
     <div class="auth-card">
-      <div class="card-title" style="justify-content: center;"><span>🔐 ORBIT AI Access</span></div>
-      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">Please enter owner credentials.</p>
+      <div class="card-title" style="justify-content: center; font-size: 1.35rem;"><span>🔐 ORBIT AI Access</span></div>
+      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">Please enter owner credentials to claim workspace.</p>
 
       <div style="display: flex; gap: 6px; margin-bottom: 16px;">
         <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
@@ -236,21 +237,21 @@
       <div id="authTabOwner">
         <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
         <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter claim code" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Workspace</button>
+        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter owner claim code" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
       </div>
 
       <div id="authTabGuest" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Name" /></div>
-        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="Email" /></div>
-        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Collaboration" /></div>
+        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
+        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
+        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
       </div>
 
       <div id="authTabOtp" style="display:none;">
-        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="Email" /></div>
+        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
         <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP to Email</button>
-        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="OTP" /></div>
+        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
       </div>
       <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: #ff6b6b; text-align:center;"></div>
@@ -271,17 +272,27 @@
         <div class="nav-section-label" data-i18n="sec_workspace">WORKSPACE</div>
         <button class="nav-btn active" onclick="switchView('overview')">🔴 <span data-i18n="nav_overview">Overview</span></button>
         <button class="nav-btn" onclick="switchView('chat')">💬 <span data-i18n="nav_chat">AI Chat</span></button>
-        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">KIE.ai Model Hub</span></button>
-        <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic Project Suite</span></button>
-        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_kie_media">KIE Media Studio</span></button>
-        <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Server Storage</span></button>
-        <button class="nav-btn" onclick="switchView('history')">🕒 <span data-i18n="nav_history">Code Memory</span></button>
+        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub</span></button>
+        <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic & Pharmacy Suite</span></button>
+        <button class="nav-btn" onclick="switchView('prompts')">✨ <span data-i18n="nav_prompts">Prompt Library</span></button>
+        <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Files & Server Storage</span></button>
+        <button class="nav-btn" onclick="switchView('history')">🕒 <span data-i18n="nav_history">Chat History & Code Memory</span></button>
         <button class="nav-btn" onclick="switchView('search')">🔍 <span data-i18n="nav_search">AI Search</span></button>
+        <button class="nav-btn" onclick="switchView('agents')">🤖 <span data-i18n="nav_agents">AI Agents</span></button>
+        <button class="nav-btn" onclick="switchView('projects')">📁 <span data-i18n="nav_projects">Projects</span></button>
+        <button class="nav-btn" onclick="switchView('knowledge')">📚 <span data-i18n="nav_knowledge">Knowledge Base</span></button>
+        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_media">Image & Video Studio</span></button>
+        <button class="nav-btn" onclick="switchView('automation')">⚡ <span data-i18n="nav_automation">Automation</span></button>
+        <button class="nav-btn" onclick="switchView('nlp')">🧠 <span data-i18n="nav_nlp">NLP Intent Engine</span></button>
+        <button class="nav-btn" onclick="switchView('pipeline')">🚀 <span data-i18n="nav_pipeline">Multi-Agent Swarm</span></button>
+        <button class="nav-btn" onclick="switchView('vault')">🔒 <span data-i18n="nav_vault">Self-Destruct Vault</span></button>
 
         <div class="nav-section-label" data-i18n="sec_personal">PERSONAL</div>
-        <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile</span></button>
-        <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
+        <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile & Account</span></button>
+        <button class="nav-btn owner-only" onclick="switchView('apiconn')" style="display:none;">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
+        <button class="nav-btn" onclick="switchView('security')">🛡️ <span data-i18n="nav_security">Permissions & Security</span></button>
         <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
+        <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
       </div>
     </aside>
 
@@ -311,7 +322,7 @@
             <option value="ur">اردو (Urdu)</option>
             <option value="sa">संस्कृतम् (Sanskrit)</option>
           </select>
-          <button class="btn-3d" onclick="toggleTheme()">Theme</button>
+          <button class="btn-3d" onclick="toggleTheme()" id="themeBtn">🌗 Theme</button>
           <button class="btn-3d" onclick="logoutUser()">Logout</button>
         </div>
       </header>
@@ -320,67 +331,77 @@
       <section class="workspace-view active" id="view-overview">
         <div class="orbit-core-hero">
           <div style="flex: 1; min-width: 260px;">
-            <span class="core-status-badge">ORBIT CORE: LIQUID GLASS & KIE.AI ACTIVE</span>
-            <h1 style="font-size: 2.1rem; margin-bottom: 12px;" data-i18n="hero_title">ORBIT AI — Private Intelligence OS</h1>
-            <p style="color: var(--lavender-white); opacity:0.9; margin-bottom: 20px;" data-i18n="hero_sub">
-              Liquid glassy 3D dashboard with KIE.ai multi-model integration and Academic Project Suite.
+            <span class="core-status-badge" id="coreStateBadge">ORBIT CORE: HIGH-RES VIDEO & STORAGE ACTIVE</span>
+            <h1 style="font-size: 2.15rem; margin-bottom: 12px; text-shadow: 0 4px 18px rgba(0,0,0,0.5);" data-i18n="hero_title">ORBIT AI — Private Intelligence OS</h1>
+            <p style="color: var(--lavender-white); opacity:0.92; margin-bottom: 22px; line-height:1.6; font-size: 1rem;" data-i18n="hero_sub">
+              Equipped with persistent server file storage, instant code memory recall, KIE.ai market models, and Academic Project Suite.
             </p>
-            <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
+              <button class="btn-3d" onclick="switchView('academic')">🎓 Academic Project Suite</button>
+              <button class="btn-3d" onclick="switchView('models')">🧠 KIE.ai Model Hub</button>
+            </div>
           </div>
-          <div id="orbitCoreContainer"></div>
+          <div id="orbitCoreContainer" title="3D Glossy Crimson Glass Orb"></div>
+        </div>
+
+        <div class="grid-3d">
+          <div class="card-3d">
+            <div class="card-title"><span data-i18n="card_status">System & Model Status</span> <span>🟢</span></div>
+            <p id="overviewStatusText" style="font-size: 0.92rem; line-height:1.7;">Checking backend health...</p>
+          </div>
+          <div class="card-3d">
+            <div class="card-title"><span data-i18n="card_quick_chat">Quick AI Ask</span> <span>⚡</span></div>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <input id="quickAskInput" class="input-3d" style="flex:1;" placeholder="Ask ORBIT AI anything..." />
+              <button class="btn-3d btn-peach-blue" onclick="runQuickAsk()">Send</button>
+            </div>
+          </div>
+          <div class="card-3d">
+            <div class="card-title"><span data-i18n="card_stats">Workspace Statistics</span> <span>📊</span></div>
+            <div id="overviewStats" style="font-size: 0.92rem; line-height: 1.8;"></div>
+          </div>
         </div>
       </section>
 
-      <!-- 2. CHAT -->
+      <!-- 2. AI CHAT WITH CODE RECALL -->
       <section class="workspace-view" id="view-chat">
         <div class="chat-layout">
-          <div style="padding: 14px 20px; border-bottom: 1px solid rgba(233,232,248,0.2); display: flex; justify-content: space-between;">
-            <button class="btn-3d" onclick="newConversation()">+ New Chat</button>
-            <button class="btn-3d" onclick="recallPreviousCode()">💻 Recall Last Code</button>
+          <div style="padding: 14px 20px; border-bottom: 1px solid rgba(233,232,248,0.22); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="btn-3d" onclick="newConversation()">+ New Chat</button>
+              <select id="chatProjectSelect" class="pill-select"><option value="">No Project Context</option></select>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-3d" onclick="recallPreviousCode()">💻 Recall Last Code</button>
+              <button class="btn-3d" onclick="regenerateLast()">🔄 Regenerate</button>
+              <button class="btn-3d" onclick="exportCurrentChat()">⬇ Export</button>
+            </div>
           </div>
           <div class="chat-messages" id="chatMessages"></div>
           <div class="chat-composer">
             <input type="file" id="chatFileInput" style="display:none" onchange="handleChatFileAttach(this)" />
             <button class="btn-3d" onclick="document.getElementById('chatFileInput').click()">📎</button>
-            <textarea id="chatInput" class="composer-input" placeholder="Message ORBIT AI..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="sendMessage()">Send</button>
+            <textarea id="chatInput" class="composer-input" placeholder="Message ORBIT AI... (Shift+Enter for new line)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+            <button class="btn-3d btn-peach-blue" onclick="sendMessage()">Send 🚀</button>
           </div>
         </div>
       </section>
 
-      <!-- 3. KIE.AI MODEL HUB -->
+      <!-- 3. AI MODEL HUB & KIE.AI MARKET -->
       <section class="workspace-view" id="view-models">
-        <h2 style="margin-bottom: 12px;" data-i18n="nav_models">KIE.ai Comprehensive Model Hub</h2>
-        <p style="font-size: 0.88rem; color: var(--sunset-peach); margin-bottom: 16px;">Explore and use all video, image, and chat models from KIE.ai market.</p>
-        <div class="grid-3d">
-          <div class="card-3d">
-            <div class="card-title">ByteDance Seedance 2.5 <span>Video</span></div>
-            <p style="font-size: 0.85rem; margin-bottom: 12px;">Advanced AI video generation for longer motion.</p>
-            <button class="btn-3d btn-peach-blue" onclick="selectKieModel('seedance-2.5')">Use Model</button>
-          </div>
-          <div class="card-3d">
-            <div class="card-title">Kling 4.0 <span>Video / Image</span></div>
-            <p style="font-size: 0.85rem; margin-bottom: 12px;">High-fidelity text-to-video capabilities.</p>
-            <button class="btn-3d btn-peach-blue" onclick="selectKieModel('kling-4.0')">Use Model</button>
-          </div>
-          <div class="card-3d">
-            <div class="card-title">Black Forest Labs Flux 3 <span>Image</span></div>
-            <p style="font-size: 0.85rem; margin-bottom: 12px;">Ultra-rich high-resolution image rendering.</p>
-            <button class="btn-3d btn-peach-blue" onclick="selectKieModel('flux-3')">Use Model</button>
-          </div>
-          <div class="card-3d">
-            <div class="card-title">Google Gemini 4 Hydrogen <span>Chat</span></div>
-            <p style="font-size: 0.85rem; margin-bottom: 12px;">Multimodal reasoning and expert intelligence.</p>
-            <button class="btn-3d btn-peach-blue" onclick="selectKieModel('gemini-4-hydrogen')">Use Model</button>
-          </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <h2 data-i18n="nav_models">AI Model Hub & KIE.ai Market Integration</h2>
+          <input id="modelSearchInput" class="input-3d" placeholder="Search OpenRouter / KIE.ai models..." oninput="renderModelsGrid()" />
         </div>
+        <div class="grid-3d" id="modelsGrid"></div>
       </section>
 
-      <!-- 4. 🎓 ACADEMIC PROJECT SUITE -->
+      <!-- 4. 🎓 ACADEMIC & B.PHARMACY PROJECT SUITE -->
       <section class="workspace-view" id="view-academic">
         <div class="card-3d">
           <div class="card-title" data-i18n="academic_title">🎓 Academic & B.Pharmacy Project Suite</div>
-          <p style="font-size: 0.88rem; margin-bottom: 14px; opacity: 0.85;">Generate complete structured project files, Theory, Practical methodologies, and Conclusions for Engineering & Pharmacy students.</p>
+          <p style="font-size: 0.9rem; margin-bottom: 14px; opacity: 0.9;">Generate professional project reports, theory, practical work, and conclusions for Engineering, Pharmacy, and Science students.</p>
           <div class="form-group">
             <label>Project Title / Topic:</label>
             <input id="acadTopic" class="input-3d" placeholder="e.g., Formulation and Evaluation of Herbal Anti-Acne Gel..." />
@@ -393,50 +414,186 @@
               <option value="general">General Science / Research</option>
             </select>
           </div>
-          <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="generateAcademicProject()">Generate Project File 📑</button>
-          <div id="acadResultBox" style="margin-top: 16px; line-height: 1.6;"></div>
+          <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="generateAcademicProject()">Generate Complete Project Report 📑</button>
+          <div id="acadResultBox" style="margin-top: 16px; line-height: 1.7;"></div>
         </div>
       </section>
 
-      <!-- 5. KIE MEDIA STUDIO -->
-      <section class="workspace-view" id="view-media">
+      <!-- 5. PROMPT LIBRARY -->
+      <section class="workspace-view" id="view-prompts">
         <div class="card-3d">
-          <div class="card-title">🎨 KIE Media Generation Studio</div>
-          <div class="form-group">
-            <label>Prompt:</label>
-            <textarea id="kiePromptInput" class="input-3d" rows="3" placeholder="Enter prompt..."></textarea>
+          <div class="card-title">Create / Save Prompt</div>
+          <div style="display: grid; gap: 10px;">
+            <input id="promptTitle" class="input-3d" placeholder="Prompt Title" />
+            <textarea id="promptContent" class="input-3d" rows="3" placeholder="Write prompt template..."></textarea>
+            <button class="btn-3d btn-peach-blue" onclick="savePromptItem()">Save Prompt</button>
           </div>
-          <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="runKieGeneration()">Generate ⚡</button>
-          <div id="kieResultContainer" style="margin-top: 14px; text-align: center;"></div>
         </div>
+        <div class="grid-3d" id="promptsGrid"></div>
       </section>
 
-      <!-- 6. FILES -->
+      <!-- 6. SERVER FILES & STORAGE -->
       <section class="workspace-view" id="view-files">
         <div class="card-3d">
-          <div class="card-title">Server Storage</div>
-          <input type="file" id="workspaceFileInput" class="input-3d" style="margin-bottom:10px;" />
-          <button class="btn-3d btn-peach-blue" onclick="uploadWorkspaceFile()">Upload File</button>
-          <div id="filesGrid" class="grid-3d" style="margin-top:14px;"></div>
+          <div class="card-title">📂 Server File Storage & Document Intelligence</div>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <input type="file" id="workspaceFileInput" class="input-3d" />
+            <button class="btn-3d btn-peach-blue" onclick="uploadWorkspaceFile()">Upload to Server ☁️</button>
+          </div>
+        </div>
+        <div class="grid-3d" id="filesGrid"></div>
+      </section>
+
+      <!-- 7. CHAT HISTORY -->
+      <section class="workspace-view" id="view-history">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 data-i18n="nav_history">Chat History & Code Memory</h2>
+          <input id="historySearch" class="input-3d" placeholder="Search..." oninput="renderHistoryList()" />
+        </div>
+        <div class="grid-3d" id="historyGrid"></div>
+      </section>
+
+      <!-- 8. AI SEARCH -->
+      <section class="workspace-view" id="view-search">
+        <div class="card-3d">
+          <div class="card-title">AI Live Web Search</div>
+          <div style="display: flex; gap: 10px;">
+            <input id="aiSearchInput" class="input-3d" style="flex:1;" placeholder="Search live web..." />
+            <button class="btn-3d btn-peach-blue" onclick="runAiWebSearch()">Search 🌐</button>
+          </div>
+          <div id="aiSearchResults" style="margin-top: 16px;"></div>
         </div>
       </section>
 
-      <!-- 7. HISTORY -->
-      <section class="workspace-view" id="view-history"><div class="card-3d"><div class="card-title">Code Memory</div><div id="historyGrid"></div></div></section>
-      <!-- 8. SEARCH -->
-      <section class="workspace-view" id="view-search"><div class="card-3d"><div class="card-title">AI Search</div><div style="display:flex; gap:8px;"><input id="aiSearchInput" class="input-3d" style="flex:1;" /><button class="btn-3d btn-peach-blue" onclick="runAiWebSearch()">Search</button></div><div id="aiSearchResults" style="margin-top:10px;"></div></div></section>
-      <!-- 9. PROFILE -->
-      <section class="workspace-view" id="view-profile"><div class="card-3d"><div class="card-title">Profile</div><div id="profileDetails"></div></div></section>
-      <!-- 10. ADMIN PANEL -->
+      <!-- 9. AI AGENTS -->
+      <section class="workspace-view" id="view-agents">
+        <div class="card-3d">
+          <div class="card-title">Create Custom AI Agent</div>
+          <div style="display: grid; gap: 10px;">
+            <input id="agentName" class="input-3d" placeholder="Agent Name" />
+            <textarea id="agentInstructions" class="input-3d" rows="2" placeholder="Instructions..."></textarea>
+            <button class="btn-3d btn-peach-blue" onclick="createAgent()">Create Agent 🤖</button>
+          </div>
+        </div>
+        <div class="grid-3d" id="agentsGrid"></div>
+      </section>
+
+      <!-- 10. PROJECTS -->
+      <section class="workspace-view" id="view-projects">
+        <div class="card-3d">
+          <div class="card-title">Create Project Workspace</div>
+          <div style="display: grid; gap: 10px;">
+            <input id="projName" class="input-3d" placeholder="Project Name" />
+            <textarea id="projInstructions" class="input-3d" rows="2" placeholder="Context..."></textarea>
+            <button class="btn-3d btn-peach-blue" onclick="createProject()">Create Project 📁</button>
+          </div>
+        </div>
+        <div class="grid-3d" id="projectsGrid"></div>
+      </section>
+
+      <!-- 11. KNOWLEDGE BASE -->
+      <section class="workspace-view" id="view-knowledge">
+        <div class="card-3d">
+          <div class="card-title">Add Knowledge Base Document</div>
+          <div style="display: grid; gap: 10px;">
+            <input id="kbTitle" class="input-3d" placeholder="Title" />
+            <textarea id="kbContent" class="input-3d" rows="3" placeholder="Content..."></textarea>
+            <button class="btn-3d btn-peach-blue" onclick="addKnowledgeDoc()">Add 📚</button>
+          </div>
+        </div>
+        <div class="grid-3d" id="knowledgeGrid"></div>
+      </section>
+
+      <!-- 12. MEDIA STUDIO -->
+      <section class="workspace-view" id="view-media">
+        <div class="card-3d">
+          <div class="card-title">🎨 KIE.ai Media & Video Studio</div>
+          <textarea id="videoPromptInput" class="input-3d" rows="2" placeholder="Describe video or image..."></textarea>
+          <button class="btn-3d btn-peach-blue" style="width:100%; margin-top:10px;" onclick="generateCinematicVideo()">Generate Media 🎥</button>
+          <div id="videoResultContainer" style="margin-top: 16px; text-align: center;"></div>
+        </div>
+      </section>
+
+      <!-- 13. AUTOMATION -->
+      <section class="workspace-view" id="view-automation">
+        <div class="card-3d">
+          <div class="card-title">Automation Pipeline</div>
+          <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <input id="autoTaskInput" class="input-3d" style="flex:1;" placeholder="Goal..." />
+            <button class="btn-3d btn-peach-blue" onclick="runAutomationTask()">Run ⚡</button>
+          </div>
+          <div id="autoTaskOutput" style="margin-top: 14px;"></div>
+        </div>
+      </section>
+
+      <!-- 14. NLP INTENT -->
+      <section class="workspace-view" id="view-nlp">
+        <div class="card-3d">
+          <div class="card-title">NLP Intent Analyzer</div>
+          <textarea id="nlpInputText" class="input-3d" rows="2" placeholder="Text..."></textarea>
+          <button class="btn-3d btn-peach-blue" style="margin-top:10px;" onclick="runNlpAnalysis()">Analyze</button>
+          <div id="nlpResultBox" style="margin-top: 12px;"></div>
+        </div>
+      </section>
+
+      <!-- 15. MULTI-AGENT SWARM -->
+      <section class="workspace-view" id="view-pipeline">
+        <div class="card-3d">
+          <div class="card-title">Multi-Agent Swarm</div>
+          <input id="multiAgentGoal" class="input-3d" placeholder="Grand Objective..." />
+          <button class="btn-3d btn-peach-blue" style="margin-top:10px;" onclick="runMultiAgentSwarm()">Deploy Swarm</button>
+          <div id="agentSwarmOutput" style="margin-top: 12px;"></div>
+        </div>
+      </section>
+
+      <!-- 16. SELF-DESTRUCT VAULT -->
+      <section class="workspace-view" id="view-vault">
+        <div class="card-3d">
+          <div class="card-title">🔒 Self-Destruct Vault</div>
+          <input id="vaultTitle" class="input-3d" placeholder="Title" style="margin-bottom:8px;" />
+          <textarea id="vaultContent" class="input-3d" rows="2" placeholder="Secret..." style="margin-bottom:8px;"></textarea>
+          <button class="btn-3d btn-peach-blue" onclick="saveVaultNote()">Lock Note</button>
+          <div id="vaultNotesGrid" style="margin-top: 14px;"></div>
+        </div>
+      </section>
+
+      <!-- 17. PROFILE -->
+      <section class="workspace-view" id="view-profile">
+        <div class="card-3d">
+          <div class="card-title">Profile & Server URL</div>
+          <div id="profileDetails" style="margin-bottom: 12px; line-height: 1.7;"></div>
+          <input id="apiBaseUrlInput" class="input-3d" placeholder="http://localhost:3000" style="margin-bottom:8px;" />
+          <button class="btn-3d btn-peach-blue" onclick="saveApiBaseUrl()">Save URL</button>
+        </div>
+      </section>
+
+      <!-- 18. API CONNECTIONS -->
+      <section class="workspace-view" id="view-apiconn">
+        <div class="card-3d">
+          <div class="card-title">API Connections</div>
+          <input type="password" id="cfgOpenRouterKey" class="input-3d" placeholder="OpenRouter API Key" style="margin-bottom:8px;" />
+          <button class="btn-3d btn-peach-blue" onclick="saveProviderConfig()">Save Keys</button>
+        </div>
+      </section>
+
+      <!-- 19. SECURITY -->
+      <section class="workspace-view" id="view-security">
+        <div class="card-3d"><div class="card-title">Security</div><p>HMAC-SHA256 Token Session Active.</p></div>
+      </section>
+
+      <!-- 20. SETTINGS -->
+      <section class="workspace-view" id="view-settings">
+        <div class="card-3d"><div class="card-title">Settings</div><button class="btn-3d" onclick="toggleTheme()">Toggle Theme</button></div>
+      </section>
+
+      <!-- 21. ADMIN PANEL -->
       <section class="workspace-view" id="view-admin">
         <div class="card-3d">
-          <div class="card-title">Admin Panel — Guest Requests</div>
-          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom:12px;">Refresh Requests</button>
+          <div class="card-title">👑 Admin Panel — Guest Requests & OTP Approval</div>
+          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 12px;">Refresh Requests</button>
           <div id="adminRequestsList"></div>
         </div>
       </section>
-      <!-- 11. SETTINGS -->
-      <section class="workspace-view" id="view-settings"><div class="card-3d"><div class="card-title">Settings</div><button class="btn-3d" onclick="toggleTheme()">Toggle Theme</button></div></section>
     </div>
   </div>
 
@@ -445,13 +602,65 @@
     let API_BASE = localStorage.getItem('orbit_api_base') || defaultBase;
     let currentUser = null;
     let currentModel = localStorage.getItem('orbit_model') || 'openrouter/auto';
+    let allModels = [];
     let conversations = JSON.parse(localStorage.getItem('orbit_conversations') || '[]');
     let activeConvId = null;
+    let pendingAttachments = [];
+    let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[]');
+    let vaultNotes = JSON.parse(localStorage.getItem('orbit_vault_notes') || '[]');
 
+    // 🌟 COMPLETE 15 LANGUAGES i18n
     const I18N = {
-      en: { sec_workspace: "WORKSPACE", sec_personal: "PERSONAL", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_academic: "Academic Project Suite", nav_kie_media: "KIE Media Studio", nav_files: "Server Storage", nav_history: "Code Memory", nav_search: "AI Search", nav_profile: "Profile", nav_admin: "Admin Panel", nav_settings: "Settings", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Liquid glassy 3D dashboard with KIE.ai multi-model integration and Academic Project Suite.", btn_launch_chat: "Launch AI Chat", auth_sub: "Please enter owner credentials.", academic_title: "🎓 Academic & B.Pharmacy Project Suite" },
-      mr: { sec_workspace: "कार्यक्षेत्र", sec_personal: "वैयक्तिक", nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब", nav_academic: "ॲकॅडमिक प्रोजेक्ट सुइट", nav_kie_media: "KIE मीडिया स्टुडिओ", nav_files: "सर्व्हर स्टोरेज", nav_history: "कोड मेमरी", nav_search: "AI वेब सर्च", nav_profile: "प्रोफाईल", nav_admin: "ॲडमिन", nav_settings: "सेटिंग्ज", hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS", hero_sub: "लिक्विड ग्लासी 3D डॅशबोर्ड, KIE.ai मॉडेल्स आणि प्रोजेक्ट रिपोर्ट सुइट.", btn_launch_chat: "AI चॅट सुरू करा", auth_sub: "कृपया क्रेडेंशियल्स प्रविष्ट करा.", academic_title: "🎓 शैक्षणिक आणि बी-फार्मेसी प्रोजेक्ट सुइट" },
-      hi: { sec_workspace: "कार्यक्षेत्र", sec_personal: "व्यक्तिगत", nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब", nav_academic: "एकाडमिक प्रोजेक्ट सुइट", nav_kie_media: "KIE मीडिया स्टूडियो", nav_files: "फ़ाइल स्टोरेज", nav_history: "कोड मेमोरी", nav_search: "AI सर्च", nav_profile: "प्रोफ़ाइल", nav_admin: "एडमिन", nav_settings: "सेटिंग्स", hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS", nav_academic: "एकाडमिक प्रोजेक्ट सुइट", hero_sub: "लिक्विड ग्लास डिज़ाइन, KIE.ai मॉडल और प्रोजेक्ट रिपोर्ट सुइट।", btn_launch_chat: "AI चैट शुरू करें", auth_sub: "क्रेडेंशियल्स दर्ज करें।", academic_title: "🎓 एकेडमिक और बी-फार्मेसी प्रोजेक्ट सुइट" }
+      en: {
+        sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_academic: "Academic & Pharmacy Suite",
+        nav_prompts: "Prompt Library", nav_files: "Files & Storage", nav_history: "Chat & Code Memory",
+        nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base",
+        nav_media: "Image & Video Studio", nav_automation: "Automation", nav_nlp: "NLP Intent Engine",
+        nav_pipeline: "Multi-Agent Swarm", nav_vault: "Self-Destruct Vault", nav_profile: "Profile & Account",
+        nav_apiconn: "API Connections", nav_security: "Permissions & Security", nav_settings: "Settings", nav_admin: "Admin Panel",
+        hero_title: "ORBIT AI — Private Intelligence OS",
+        hero_sub: "Equipped with persistent server file storage, instant code memory recall, KIE.ai market models, and Academic Project Suite.",
+        btn_launch_chat: "Launch AI Chat", card_status: "System & Model Status", card_quick_chat: "Quick AI Ask", card_stats: "Workspace Statistics",
+        auth_sub: "Please enter owner credentials to claim workspace.", academic_title: "🎓 Academic & B.Pharmacy Project Suite"
+      },
+      mr: {
+        sec_workspace: "कार्यक्षेत्र (WORKSPACE)", sec_personal: "वैयक्तिक (PERSONAL)",
+        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब", nav_academic: "ॲकॅडमिक आणि फार्मसी सुइट",
+        nav_prompts: "प्रॉम्प्ट लायब्ररी", nav_files: "फाईल्स आणि सर्व्हर स्टोरेज", nav_history: "चॅट आणि कोड मेमरी",
+        nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
+        nav_media: "इमेज आणि व्हिडिओ स्टुडिओ", nav_automation: "ऑटोमेशन", nav_nlp: "NLP इंटेंट इंजिन",
+        nav_pipeline: "मल्टी-एजंट स्वाम", nav_vault: "सेल्फ-डिस्ट्रक्ट व्हॉल्ट", nav_profile: "प्रोफाईल आणि खाते",
+        nav_apiconn: "API कनेक्शन्स", nav_security: "परवानग्या आणि सुरक्षा", nav_settings: "सेटिंग्ज", nav_admin: "ॲडमिन पॅनेल",
+        hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
+        hero_sub: "सर्व्हर फाईल स्टोरेज, कोड मेमरी रिकॉल, KIE.ai मॉडेल्स आणि ॲकॅडमिक प्रोजेक्ट सुइटसह सज्ज.",
+        btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम आणि मॉडेल स्थिती", card_quick_chat: "झटपट AI प्रश्न", card_stats: "वर्कस्पेस आकडेवारी",
+        auth_sub: "कृपया वर्कस्पेस क्लेम करण्यासाठी ओनर क्रेडेंशियल्स प्रविष्ट करा.", academic_title: "🎓 शैक्षणिक आणि बी-फार्मेसी प्रोजेक्ट सुइट"
+      },
+      hi: {
+        sec_workspace: "कार्यक्षेत्र", sec_personal: "व्यक्तिगत",
+        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब", nav_academic: "एकाडमिक और फार्मसी सुइट",
+        nav_prompts: "प्रॉम्प्ट लाइब्रेरी", nav_files: "फ़ाइल स्टोरेज", nav_history: "कोड मेमोरी",
+        nav_search: "AI सर्च", nav_agents: "AI एजेंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
+        nav_media: "मीडिया स्टूडियो", nav_automation: "ऑटोमेशन", nav_nlp: "NLP इंजन",
+        nav_pipeline: "स्वाम पाइपलाइन", nav_vault: "सिक्योरिटी वॉल्ट", nav_profile: "प्रोफ़ाइल",
+        nav_apiconn: "API कनेクション", nav_security: "सुरक्षा", nav_settings: "सेटिंग्स", nav_admin: "एडमिन पैनल",
+        hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
+        hero_sub: "फाइल स्टोरेज, कोड मेमोरी, KIE.ai मॉडल और एकेडमिक प्रोजेक्ट सुइट के साथ।",
+        btn_launch_chat: "AI चैट शुरू करें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित प्रश्न", card_stats: "सांख्यिकी",
+        auth_sub: "कृपया ओनर क्रेडेंशियल्स दर्ज करें।", academic_title: "🎓 एकेडमिक और बी-फार्मेसी प्रोजेक्ट सुइट"
+      },
+      bn: { sec_workspace: "ওয়ার্কস্পেস", sec_personal: "ব্যক্তিগত", nav_overview: "ওভারভিউ", nav_chat: "এআই চ্যাট", nav_models: "মডেল হাব", nav_academic: "প্রজেক্ট সুট", nav_kie_media: "স্টুডিও", nav_files: "ফাইল", nav_history: "মেমরি", nav_search: "সার্চ", nav_profile: "প্রোফাইল", nav_admin: "অ্যাডমিন", nav_settings: "সেটিংস", hero_title: "ORBIT AI", hero_sub: "প্রাইভেট ইন্টেলিজেন্স OS", btn_launch_chat: "চ্যাট শুরু করুন" },
+      ta: { sec_workspace: "பணிক্ষেত্র", sec_personal: "தனிப்பட்ட", nav_overview: "கண்ணோட்டம்", nav_chat: "AI அரட்டை", nav_models: "மாதிரி மையம்", nav_academic: "திட்ட தொகுப்பு", nav_kie_media: "ஸ்டுடியோ", nav_files: "கோப்பு", nav_history: "நினைவகம்", nav_search: "தேடல்", nav_profile: "சுயவிவரம்", nav_admin: "நிர்வாகி", nav_settings: "அமைப்புகள்", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "அரட்டையைத் தொடங்கு" },
+      te: { sec_workspace: "వర్క్‌స్పేస్", sec_personal: "వ్యక్తిగతం", nav_overview: "అవలోకనం", nav_chat: "AI చాట్", nav_models: "మోడల్ హబ్", nav_academic: "ప్రాజెక్ట్", nav_kie_media: "స్టూడియో", nav_files: "ఫైల్", nav_history: "జ్ఞాపకం", nav_search: "శోధన", nav_profile: "ప్రొఫైల్", nav_admin: "అడ్మిన్", nav_settings: "సెట్టింగ్‌లు", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "చాట్ ప్రారంభించండి" },
+      gu: { sec_workspace: "વર્કસ્પેસ", sec_personal: "વ્યક્તિગત", nav_overview: "ઝાંખી", nav_chat: "AI ચેટ", nav_models: "મોડેલ હબ", nav_academic: "પ્રોજેક્ટ", nav_kie_media: "સ્ટુడియో", nav_files: "ફાઇલ", nav_history: "મેમરી", nav_search: "શોધ", nav_profile: "પ્રોફાઇલ", nav_admin: "એડમિન", nav_settings: "સેટિંગ્સ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ચેટ શરૂ કરો" },
+      kn: { sec_workspace: "ಕಾರ್ಯಕ್ಷೇತ್ರ", sec_personal: "ವೈಯಕ್ತಿಕ", nav_overview: "ಅವಲೋಕನ", nav_chat: "AI ಚಾಟ್", nav_models: "ಮಾದರಿ ಕೇಂದ್ರ", nav_academic: "ಯೋಜನೆ", nav_kie_media: "ಸ್ಟುಡಿಯೋ", nav_files: "ಫೈಲ್", nav_history: "ನೆನಪು", nav_search: "ಹುಡುಕಾಟ", nav_profile: "ಪ್ರೊಫೈಲ್", nav_admin: "ನಿರ್ವಾಹಕ", nav_settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ಚಾಟ್ ಪ್ರಾರಂಭಿಸಿ" },
+      ml: { sec_workspace: "വർക്ക്‌സ്‌പേസ്", sec_personal: "വ്യക്തിപരം", nav_overview: "അവലോകനം", nav_chat: "AI ചാറ്റ്", nav_models: "മോഡൽ ഹബ്", nav_academic: "പ്രോജക്റ്റ്", nav_kie_media: "സ്റ്റുഡിയോ", nav_files: "ഫയൽ", nav_history: "മെമ്മറി", nav_search: "തിരയൽ", nav_profile: "പ്രൊഫൈൽ", nav_admin: "അഡ്മിൻ", nav_settings: "ക്രമീകരണങ്ങൾ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ചാറ്റ് ആരംഭിക്കുക" },
+      pa: { sec_workspace: "ਵਰਕਸਪੇਸ", sec_personal: "ਨਿੱਜੀ", nav_overview: "ਸੰਖੇਪ", nav_chat: "AI ਚੈਟ", nav_models: "ਮਾਡਲ ਹੱਬ", nav_academic: "ਪ੍ਰੋਜੈਕਟ", nav_kie_media: "ਸਟুਡੀਓ", nav_files: "ਫਾਈਲ", nav_history: "ਯਾਦਸ਼ਾਤ", nav_search: "ਖੋਜ", nav_profile: "ਪ੍ਰੋਫाइਲ", nav_admin: "ਐਡਮਿਨ", nav_settings: "ਸੈਟਿੰਗਾਂ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ਚੈਟ ਸ਼ुरू ਕਰੋ" },
+      or: { sec_workspace: "ୱାର୍କସ୍ପେସ୍", sec_personal: "ବ୍ୟକ୍ତିଗତ", nav_overview: "ଓଭର୍ଭିୟୁ", nav_chat: "AI ଚାଟ୍", nav_models: "ମଡେଲ୍ ହବ୍", nav_academic: "ପ୍ରଜେକ୍ଟ", nav_kie_media: "ଷ୍ଟୁଡିଓ", nav_files: "ଫାଇଲ୍", nav_history: "ମେମୋରୀ", nav_search: "ସର୍ଚ୍ଚ", nav_profile: "ପ୍ରୋଫାଇଲ୍", nav_admin: "ଅଧିକାରୀ", nav_settings: "ସେଟିଂସ୍", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ" },
+      as: { sec_workspace: "ৱৰ্কস্পেচ", sec_personal: "ব্যক্তিগত", nav_overview: "অভাৰভিউ", nav_chat: "AI চাট", nav_models: "ম’ডেল হাব", nav_academic: "প্ৰজেক্ট", nav_kie_media: "ষ্টুডিও", nav_files: "ফাইল", nav_history: "মেমৰি", nav_search: "অনুসন্ধান", nav_profile: "প্ৰ'ফাইল", nav_admin: "এডমিন", nav_settings: "ছেটিংছ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "চাট আৰম্ভ কৰক" },
+      ur: { sec_workspace: "ورک اسپیس", sec_personal: "ذاتی", nav_overview: "جائزہ", nav_chat: "AI چیٹ", nav_models: "ماڈেল حب", nav_academic: "پروجیکٹ", nav_kie_media: "اسٹوڈیو", nav_files: "فائل", nav_history: "میموری", nav_search: "تلاش", nav_profile: "پروفائل", nav_admin: "ایڈمن", nav_settings: "ترتیبات", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "چیٹ شروع کریں" },
+      sa: { sec_workspace: "कार्यक्षेत्रम्", sec_personal: "वैयक्तिकम्", nav_overview: "अवलोकनम्", nav_chat: "AI सम्भाषणम्", nav_models: "आदर्शकेन्द्रम्", nav_academic: "प्रकल्पः", nav_kie_media: "स्टुडियो", nav_files: "सञ्चिका", nav_history: "स्मृतिः", nav_search: "अन्वेषणम्", nav_profile: "परिचयपत्रम्", nav_admin: "प्रशासनम्", nav_settings: "विन्यासः", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "सम्भाषणम् आरभत" }
     };
 
     function changeLanguage(lang) {
@@ -461,6 +670,28 @@
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.textContent = dict[key];
       });
+    }
+
+    // 🎓 ॲकॅडमिक आणि बी-फार्मेसी प्रोजेक्ट जनरेटर
+    async function generateAcademicProject() {
+      const topic = document.getElementById('acadTopic').value.trim();
+      const stream = document.getElementById('acadStream').value;
+      const box = document.getElementById('acadResultBox');
+      if (!topic) return alert('Please enter project topic.');
+
+      box.innerHTML = `<p style="color:var(--powder-blue);">Generating professional project report structure...</p>`;
+      try {
+        const res = await apiFetch('/api/chat', {
+          method: 'POST',
+          body: JSON.stringify({
+            model: currentModel,
+            messages: [{ role: 'user', content: `Create a professional academic project report structure for ${stream === 'bpharm' ? 'B.Pharmacy' : 'Engineering/Science'} on topic: "${topic}". Include sections: 1. Introduction & Objectives, 2. Literature Review, 3. Theory & Methodology / Experimental Work (Formulation, Evaluation for pharmacy), 4. Results & Discussion, 5. Practical Applications, 6. Conclusion & Future Scope.` }]
+          })
+        });
+        box.innerHTML = `<div class="card-3d">${marked.parse(res.reply)}</div>`;
+      } catch (e) {
+        box.innerHTML = `<p style="color:#ff6b6b;">Error: ${e.message}</p>`;
+      }
     }
 
     // 3D क्रिस्टल गोला (ओरिजिनल 3D ॲनिमेशन)
@@ -477,7 +708,7 @@
 
       const geometry = new THREE.SphereGeometry(1.3, 64, 64);
       const material = new THREE.MeshPhysicalMaterial({
-        color: 0xff3c14, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.85, wireframe: false
+        color: 0xff3c14, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.85
       });
       const sphere = new THREE.Mesh(geometry, material);
       scene.add(sphere);
@@ -494,39 +725,6 @@
         renderer.render(scene, camera);
       }
       animate();
-    }
-
-    async function generateAcademicProject() {
-      const topic = document.getElementById('acadTopic').value.trim();
-      const stream = document.getElementById('acadStream').value;
-      const box = document.getElementById('acadResultBox');
-      if (!topic) return alert('Please enter project topic.');
-
-      box.innerHTML = `<p style="color:var(--powder-blue);">Generating professional project report structure...</p>`;
-      try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: [{ role: 'user', content: `Create a professional academic project report structure for ${stream === 'bpharm' ? 'B.Pharmacy' : 'Engineering/Science'} on topic: "${topic}". Include sections: 1. Introduction & Objectives, 2. Literature Review, 3. Theory & Methodology / Experimental Work, 4. Results & Discussion, 5. Practical Applications, 6. Conclusion & Future Scope.` }]
-          })
-        });
-        box.innerHTML = `<div class="card-3d" style="background:rgba(10,12,18,0.7);">${marked.parse(res.reply)}</div>`;
-      } catch (e) {
-        box.innerHTML = `<p style="color:#ff6b6b;">Error: ${e.message}</p>`;
-      }
-    }
-
-    function selectKieModel(modelId) {
-      switchView('media');
-      document.getElementById('kiePromptInput').value = `[Using KIE.ai model: ${modelId}] `;
-    }
-
-    function runKieGeneration() {
-      const prompt = document.getElementById('kiePromptInput').value;
-      const container = document.getElementById('kieResultContainer');
-      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true`;
-      container.innerHTML = `<img src="${url}" style="max-width:100%; border-radius:12px; border:1px solid var(--glass-border);" />`;
     }
 
     async function apiFetch(endpoint, options = {}) {
@@ -574,19 +772,14 @@
     }
 
     async function claimOwner() {
-      try {
-        const name = document.getElementById('ownName').value;
-        const email = document.getElementById('ownEmail').value;
-        const claimCode = document.getElementById('ownCode').value;
-        const res = await apiFetch('/api/auth/owner/claim', { method: 'POST', body: JSON.stringify({ name, email, claimCode }) });
-        if (res.token) {
-          localStorage.setItem('orbit_token', res.token);
-          currentUser = res.user;
-          document.getElementById('forceAuthModal').style.display = 'none';
-          checkAuthStatus();
-        }
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
+      const name = document.getElementById('ownName').value;
+      const email = document.getElementById('ownEmail').value;
+      const claimCode = document.getElementById('ownCode').value;
+      const res = await apiFetch('/api/auth/owner/claim', { method: 'POST', body: JSON.stringify({ name, email, claimCode }) });
+      if (res.token) {
+        localStorage.setItem('orbit_token', res.token);
+        document.getElementById('forceAuthModal').style.display = 'none';
+        checkAuthStatus();
       }
     }
 
@@ -595,13 +788,13 @@
       const email = document.getElementById('reqEmail').value;
       const reason = document.getElementById('reqReason').value;
       await apiFetch('/api/auth/request', { method: 'POST', body: JSON.stringify({ name, email, reason }) });
-      alert('Request sent successfully!');
+      alert('Request sent!');
     }
 
     async function issueOtp() {
       const email = document.getElementById('otpEmail').value;
       const res = await apiFetch('/api/auth/issue', { method: 'POST', body: JSON.stringify({ email }) });
-      alert(res.message || 'OTP sent to email.');
+      alert(res.message || 'OTP sent.');
     }
 
     async function verifyOtpLogin() {
@@ -636,7 +829,7 @@
 
     async function approveReq(requestId) {
       await apiFetch('/api/auth/approve', { method: 'POST', body: JSON.stringify({ requestId }) });
-      alert('Approved! OTP generated for user.');
+      alert('Approved! OTP generated.');
       loadAdminData();
     }
 
