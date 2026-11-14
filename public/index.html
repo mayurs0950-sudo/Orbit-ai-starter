@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no" />
-  <title>ORBIT AI — Private Intelligence OS</title>
+  <title>ORBIT AI — Private Intelligence OS (Ultimate Edition)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -660,7 +660,7 @@
       box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
     }
 
-    /* Force Login Modal (Visible by default until claimed/logged in) */
+    /* Force Login Modal */
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -989,9 +989,9 @@
           </div>
         </div>
         
-        <!-- SECTION 1: KIE.AI MARKET MODELS -->
+        <!-- SECTION 1: KIE.AI MARKET MODELS (FULL 128+ SUITE) -->
         <div class="card-3d tilt-glass" style="margin-top:22px;">
-          <div class="card-title"><span>KIE.ai Market Models Hub</span> <span class="kie-tag">All Models</span></div>
+          <div class="card-title"><span>KIE.ai Market Models Hub</span> <span class="kie-tag">128+ Models</span></div>
           <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Complete suite of KIE.ai chat, image, music, and video market models.</p>
           <div class="grid-3d" id="kieGrid"></div>
         </div>
@@ -999,6 +999,13 @@
         <!-- SECTION 2: OPENROUTER MODELS -->
         <h3 style="margin-top:26px;margin-bottom:12px;color:var(--powder-blue);">OpenRouter Market Models</h3>
         <div class="grid-3d" id="modelsGrid"></div>
+
+        <!-- SECTION 3: DYNAMIC CUSTOM API KEY MODELS -->
+        <div class="card-3d tilt-glass" id="customApiModelsCard" style="margin-top:26px; display:none;">
+          <div class="card-title"><span>Custom API Models</span> <span class="kie-tag">Dynamic Key</span></div>
+          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Models loaded automatically from your custom API key connection.</p>
+          <div class="grid-3d" id="customApiGrid"></div>
+        </div>
       </section>
 
       <!-- 4. PROMPT LIBRARY -->
@@ -1087,29 +1094,30 @@
         <div class="grid-3d" id="knowledgeGrid"></div>
       </section>
 
-      <!-- 11. IMAGE & VIDEO AI -->
+      <!-- 11. IMAGE & VIDEO AI (8K ULTRA HD GENERATION) -->
       <section class="workspace-view" id="view-media">
         <div class="card-3d tilt-glass">
-          <div class="card-title">AI Image & Video Generation Studio</div>
+          <div class="card-title">AI Image & Video Generation Studio (8K Ultra HD)</div>
           <p style="color: var(--lavender-white); opacity:0.85; font-size: 0.9rem; margin-bottom: 12px;">
-            Generates 9:16 cinematic video prompts & photorealistic visual specs via ORBIT AI.
+            Generates 8K Ultra HD cinematic video prompts & photorealistic visual specs via KIE.ai 128+ market models.
           </p>
           <div style="display: flex; gap: 10px;">
-            <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 9:16 cinematic video or photorealistic graphic..." />
+            <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 8K Ultra HD cinematic video or graphic..." />
             <button class="btn-3d btn-peach-blue" onclick="generateMediaPrompt()">Generate Spec 🎨</button>
           </div>
           <div class="aca-grid" style="margin-top:14px;">
             <select id="mediaKieModel" class="pill-select"></select>
             <select id="mediaRatio" class="pill-select"><option value="9:16">9:16 Vertical</option><option value="16:9">16:9 Wide</option><option value="1:1">1:1 Square</option></select>
+            <select id="mediaQuality" class="pill-select"><option value="8K Ultra HD" selected>8K Ultra HD (Max Quality)</option><option value="4K UHD">4K UHD</option></select>
             <input id="mediaCustomModel" class="input-3d" placeholder="Custom KIE model ID (optional)" />
           </div>
-          <button class="btn-3d btn-peach-blue" onclick="generateKieMedia()">Generate with KIE.ai 🎬</button>
+          <button class="btn-3d btn-peach-blue" onclick="generateKieMedia()">Generate in 8K Ultra HD via KIE.ai 🎬</button>
           <div id="mediaKieOutput" class="media-result" style="margin-top:14px;"></div>
           <div id="mediaOutput" style="margin-top: 14px;"></div>
         </div>
       </section>
 
-      <!-- 11b. ACADEMIC PROJECT SUITE (UPGRADED WITH DEGREE, STREAM, YEAR, SEMESTER, LENGTH) -->
+      <!-- 11b. ACADEMIC PROJECT SUITE (DEGREE, STREAM, YEAR, SEMESTER, LENGTH) -->
       <section class="workspace-view" id="view-academic">
         <div class="card-3d tilt-glass">
           <div class="card-title"><span data-i18n="nav_academic">Academic Project Suite</span> <span>🎓</span></div>
@@ -1181,11 +1189,21 @@
         </div>
       </section>
 
-      <!-- 13. PROFILE & ACCOUNT (SHOWS CURRENT LOGGED-IN USER DATA) -->
+      <!-- 13. PROFILE & ACCOUNT (FREE vs PRO TIER SWITCH) -->
       <section class="workspace-view" id="view-profile">
         <div class="card-3d tilt-glass">
           <div class="card-title" data-i18n="nav_profile">Profile & Account</div>
           <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px; font-size:1.05rem;"></div>
+          
+          <!-- Free / Pro Tier Switch for Owner or Approved Guest -->
+          <div style="margin: 16px 0; padding: 14px; border-radius: 14px; background: rgba(141,185,240,0.1); border: 1px solid var(--powder-blue);">
+            <strong>Subscription Tier View:</strong>
+            <div style="display:flex; gap:10px; margin-top:8px;">
+              <button class="btn-3d" id="btnTierFree" onclick="switchUserTier('free')">Free Tier View (Limited Models)</button>
+              <button class="btn-3d btn-peach-blue" id="btnTierPro" onclick="switchUserTier('pro')">Pro Tier View (All Models & Features)</button>
+            </div>
+          </div>
+
           <div class="form-group">
             <label>Backend Server URL (Important for Android APK):</label>
             <input id="apiBaseUrlInput" class="input-3d" placeholder="http://localhost:3000" />
@@ -1194,24 +1212,25 @@
         </div>
       </section>
 
-      <!-- 14. API CONNECTIONS -->
+      <!-- 14. API CONNECTIONS (DYNAMIC CUSTOM API KEY ADAPTER) -->
       <section class="workspace-view" id="view-apiconn">
         <div class="card-3d tilt-glass">
-          <div class="card-title">Owner API Connections (Stored Server-Side Only)</div>
+          <div class="card-title">Dynamic Custom API Key Integration</div>
+          <p style="font-size:0.85rem; opacity:0.9; margin-bottom:12px;">Add any provider API key (OpenAI, Anthropic, Custom LLM). Models will instantly load into Model Hub.</p>
           <div class="form-group">
-            <label>OpenRouter API Key (Masked on Frontend)</label>
-            <input type="password" id="cfgOpenRouterKey" placeholder="sk-or-v1-..." />
+            <label>Custom API Provider Name (e.g. MyCustomAI)</label>
+            <input type="text" id="cfgCustomName" class="input-3d" placeholder="Custom Provider" />
           </div>
           <div class="form-group">
-            <label>Tavily Web Search API Key (Optional for Live Search)</label>
-            <input type="password" id="cfgTavilyKey" placeholder="tvly-..." />
+            <label>Custom API Key</label>
+            <input type="password" id="cfgCustomKey" class="input-3d" placeholder="key-..." />
           </div>
           <div class="form-group">
-            <label>Custom AI Endpoint URL</label>
-            <input type="text" id="cfgCustomUrl" placeholder="https://..." />
+            <label>Custom API Endpoint Base URL</label>
+            <input type="text" id="cfgCustomEndpoint" class="input-3d" placeholder="https://api.example.com/v1" />
           </div>
-          <button class="btn-3d btn-peach-blue" onclick="saveProviderConfig()">Save & Verify Connections 🔑</button>
-          <div id="providerStatusMsg" style="margin-top: 12px; font-size: 0.9rem;"></div>
+          <button class="btn-3d btn-peach-blue" onclick="saveCustomApiKeyAdapter()">Save & Load Custom Models 🔑</button>
+          <div id="customApiStatusMsg" style="margin-top: 12px; font-size: 0.9rem;"></div>
         </div>
       </section>
 
@@ -1237,30 +1256,40 @@
           <div class="card-3d tilt-glass"><div class="card-title">3. Voice & Speech</div><button class="btn-3d" onclick="speakText('ORBIT AI Private Intelligence OS is online.')">Test Voice Output 🔊</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">4. Data Export & Control</div><button class="btn-3d" onclick="exportAllWorkspaceData()">Export Full Local Data 📦</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">5. Diagnostics & Health</div><button class="btn-3d btn-peach-blue" onclick="checkHealth()">Run System Check 🩺</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">6. Owner Tools 👑</div><button class="btn-3d btn-peach-blue owner-only" style="display:none;" onclick="switchView('admin')">Open Admin Panel</button><p style="font-size:0.85rem;">Guest requests, auto-OTP approval and user access (owner only).</p></div>
+          <div class="card-3d tilt-glass"><div class="card-title">6. Owner Tools 👑</div><button class="btn-3d btn-peach-blue owner-only" style="display:none;" onclick="switchView('admin')">Open Admin Panel</button><p style="font-size:0.85rem;">Guest requests, auto-OTP approval and pro subscription requests (owner only).</p></div>
         </div>
       </section>
 
-      <!-- 17. PRO SUBSCRIPTION -->
+      <!-- 17. PRO SUBSCRIPTION (GUEST UPGRADE REQUEST) -->
       <section class="workspace-view" id="view-subscription">
         <div class="grid-3d">
           <div class="card-3d tilt-glass">
             <div class="card-title">Free Personal Tier</div>
-            <p>Standard local workspace access & basic chat.</p>
+            <p>Access to standard models (OpenRouter Auto & basic chat). Upgrade to Pro for 128+ KIE.ai market models and advanced features.</p>
+            <div style="margin-top:16px;" id="subFreeStatus"></div>
           </div>
           <div class="card-3d tilt-glass" style="border-bottom-color: var(--sunset-peach);">
-            <div class="card-title">ORBIT AI PRO (Active Private OS) 💠</div>
-            <p style="line-height: 1.7;">Unlimited Multi-Model Routing, Real PDF/DOCX Parsing, Custom Agents, 3D Glass Design & Android APK Support.</p>
+            <div class="card-title">ORBIT AI PRO (Ultimate Edition) 💠</div>
+            <p style="line-height: 1.7; margin-bottom:14px;">128+ KIE.ai models, Unlimited Multi-Model Routing, Real PDF/DOCX Parsing, Academic Project Suite & 8K Ultra HD Media.</p>
+            <div id="subProStatus">
+              <button class="btn-3d btn-peach-blue" onclick="requestProUpgrade()">Request Pro Subscription Upgrade 🚀</button>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- 18. ADMIN PANEL -->
+      <!-- 18. ADMIN PANEL (PRO UPGRADE REQUESTS SECTION) -->
       <section class="workspace-view" id="view-admin">
         <div class="card-3d tilt-glass">
-          <div class="card-title">👑 Owner Admin Panel — Guest Requests & Users</div>
-          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 14px;">Refresh Requests & Users</button>
+          <div class="card-title">👑 Owner Admin Panel — Guest Requests, Pro Upgrades & Users</div>
+          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 14px;">Refresh Admin Data</button>
+          
+          <h4 style="margin-top:10px; color:var(--sunset-peach);">Pro Subscription Upgrade Requests</h4>
+          <div id="adminProRequestsList" style="margin-bottom:18px;"></div>
+
+          <h4 style="margin-top:10px;">Guest Access Requests</h4>
           <div id="adminRequestsList"></div>
+
           <hr style="border-color: rgba(233,232,248,0.22); margin: 18px 0;" />
           <div id="adminUsersList"></div>
         </div>
@@ -1331,7 +1360,7 @@
       gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
       kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","ಅಕಾಡೆಮಿಕ್ ಪ್ರಾಜೆಕ್ಟ್ ಸೂಟ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
       ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ്","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","അക്കാദമിക് പ്രോജക്ട് സ്യൂട്ട്","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ ਅਤੇ ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮਿਨ ਪੈਨਲ","ਅਕਾਦਮਿਕ ਪ੍ਰੋਜੈਕਟ ਸੂਟ","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ ਅਤੇ ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡमिन ਪੈਨਲ","ਅਕਾਦਮਿਕ ਪ੍ਰੋਜੈਕਟ ਸੂਟ","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
       or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","ଏକାଡେମିକ୍ ପ୍ରୋଜେକ୍ଟ ସୁଟ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
       as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","একাডেমিক প্ৰকল্প স্যুট","AI চেট আৰম্ভ কৰক"],
       ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل ہب","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","اکیڈمک پروجیکٹ سوٹ","AI چیٹ شروع کریں"],
@@ -1667,6 +1696,7 @@
       }
     }
 
+    let activeUserTier = 'free'; // 'free' or 'pro'
     function updateAuthUI() {
       const roleBadge = document.getElementById('roleBadge');
       const authBtn = document.getElementById('authBtn');
@@ -1679,16 +1709,57 @@
       if (currentUser) {
         roleBadge.textContent = `${currentUser.name} (${currentUser.role.toUpperCase()})`;
         authBtn.textContent = currentUser.name;
+        activeUserTier = isOwner ? 'pro' : (currentUser.tier || 'free');
       } else {
         roleBadge.textContent = 'Private Intelligence OS';
         authBtn.textContent = 'Login / Setup';
+        activeUserTier = 'free';
       }
 
       const prof = document.getElementById('profileDetails');
       if (prof) {
         prof.innerHTML = currentUser
-          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Tier:</strong> ${esc(currentUser.tier || 'Free')}`
+          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Active Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
           : `Not logged in. Click "Login / Setup" in the top bar.`;
+      }
+      
+      const subFree = document.getElementById('subFreeStatus');
+      const subPro = document.getElementById('subProStatus');
+      if (subFree && subPro) {
+        if (activeUserTier === 'free') {
+          subFree.innerHTML = '<span style="color:var(--powder-blue);">✓ Currently Active</span>';
+        } else {
+          subFree.innerHTML = '';
+        }
+      }
+    }
+
+    function switchUserTier(tier) {
+      if (!currentUser && tier === 'pro') {
+        alert('Please login first.');
+        openAuthModal();
+        return;
+      }
+      activeUserTier = tier;
+      document.getElementById('btnTierFree').classList.remove('btn-peach-blue');
+      document.getElementById('btnTierPro').classList.remove('btn-peach-blue');
+      if (tier === 'pro') {
+        document.getElementById('btnTierPro').classList.add('btn-peach-blue');
+        alert('Switched to Pro Tier View (All 128+ models & Academic Suite unlocked).');
+      } else {
+        document.getElementById('btnTierFree').classList.add('btn-peach-blue');
+        alert('Switched to Free Tier View (Restricted to OpenRouter Auto & basic models).');
+      }
+      loadModels();
+    }
+
+    async function requestProUpgrade() {
+      if (!currentUser) { openAuthModal(); return; }
+      try {
+        const res = await apiFetch('/api/auth/pro-request', { method: 'POST', body: JSON.stringify({ email: currentUser.email, name: currentUser.name }) });
+        alert(res.message || 'Pro upgrade request sent to Admin successfully!');
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
@@ -1922,7 +1993,13 @@
         allModels = data.models || [];
         const sel = document.getElementById('globalModelSelect');
         const autoOpt = `<option value="openrouter/auto">openrouter/auto (Auto Select)</option>`;
-        sel.innerHTML = autoOpt + allModels.slice(0, 80).map(m => `<option value="${m.id}" ${m.id === currentModel ? 'selected' : ''}>${m.name}</option>`).join('') + kieOptionsHtml();
+        
+        let availableOpenRouter = allModels;
+        if (activeUserTier === 'free') {
+          availableOpenRouter = allModels.slice(0, 3); // Free tier gets limited models
+        }
+
+        sel.innerHTML = autoOpt + availableOpenRouter.map(m => `<option value="${m.id}" ${m.id === currentModel ? 'selected' : ''}>${m.name}</option>`).join('') + (activeUserTier === 'pro' ? kieOptionsHtml() : '');
         renderModelsGrid();
         renderKieHub();
       } catch (e) {}
@@ -1938,7 +2015,9 @@
       const q = (document.getElementById('modelSearchInput')?.value || '').toLowerCase();
       const grid = document.getElementById('modelsGrid');
       if (!grid) return;
-      const filtered = allModels.filter(m => m.id.toLowerCase().includes(q) || (m.name || '').toLowerCase().includes(q)).slice(0, 36);
+      let sourceModels = allModels;
+      if (activeUserTier === 'free') sourceModels = allModels.slice(0, 3);
+      const filtered = sourceModels.filter(m => m.id.toLowerCase().includes(q) || (m.name || '').toLowerCase().includes(q)).slice(0, 36);
       grid.innerHTML = filtered.map(m => `
         <div class="card-3d tilt-glass" style="${m.id === currentModel ? 'border-bottom-color:var(--sunset-peach);' : ''}">
           <div class="card-title"><span>${m.name}</span></div>
@@ -2148,13 +2227,13 @@
       const p = document.getElementById('mediaPrompt').value.trim();
       if (!p) return;
       const out = document.getElementById('mediaOutput');
-      out.innerHTML = 'Generating cinematic specification via ORBIT AI...';
+      out.innerHTML = 'Generating 8K Ultra HD cinematic specification via ORBIT AI...';
       try {
         const res = await apiFetch('/api/chat', {
           method: 'POST',
           body: JSON.stringify({
             model: currentModel,
-            messages: [{ role: 'user', content: `Create a high-precision 9:16 cinematic video & photorealistic visual generation prompt with camera angles and lighting for: ${p}` }]
+            messages: [{ role: 'user', content: `Create a high-precision 8K Ultra HD cinematic video & photorealistic visual generation prompt with camera angles and lighting for: ${p}` }]
           })
         });
         out.innerHTML = `<div class="card-3d">${marked.parse(res.reply)}</div>`;
@@ -2199,31 +2278,95 @@
       }
     }
 
+    // Dynamic Custom API Key Adapter (Loads models into Model Hub dynamically)
+    async function saveCustomApiKeyAdapter() {
+      const name = document.getElementById('cfgCustomName').value.trim();
+      const key = document.getElementById('cfgCustomKey').value.trim();
+      const endpoint = document.getElementById('cfgCustomEndpoint').value.trim();
+      const statusMsg = document.getElementById('customApiStatusMsg');
+
+      if (!key || !endpoint) {
+        statusMsg.innerHTML = '<span style="color:#ff6b6b;">API Key and Endpoint Base URL are required.</span>';
+        return;
+      }
+
+      statusMsg.textContent = 'Connecting and fetching models from custom provider...';
+      try {
+        const resp = await fetch(`${endpoint.replace(/\/$/, '')}/models`, {
+          headers: { 'Authorization': `Bearer ${key}` }
+        });
+        const data = await resp.json().catch(() => ({}));
+        const modelsList = data.data || data.models || [{ id: 'custom-default-model', name: name || 'Custom Model' }];
+        
+        const customCard = document.getElementById('customApiModelsCard');
+        const customGrid = document.getElementById('customApiGrid');
+        customCard.style.display = 'block';
+        customGrid.innerHTML = modelsList.map(m => `
+          <div class="card-3d tilt-glass">
+            <div class="card-title"><span>${esc(m.name || m.id)}</span><span class="kie-tag">${esc(name || 'Custom')}</span></div>
+            <p style="font-size:0.82rem; margin-bottom:12px;">ID: ${esc(m.id)}</p>
+            <button class="btn-3d btn-peach-blue" onclick="onModelSelectChange('${esc(m.id)}')">Use Custom Model</button>
+          </div>
+        `).join('');
+
+        statusMsg.innerHTML = `<span style="color:var(--powder-blue);">✓ Successfully loaded ${modelsList.length} model(s) from custom provider!</span>`;
+      } catch (e) {
+        statusMsg.innerHTML = `<span style="color:#ff6b6b;">Connection error: ${esc(e.message)}. Models added as fallback.</span>`;
+        const customCard = document.getElementById('customApiModelsCard');
+        const customGrid = document.getElementById('customApiGrid');
+        customCard.style.display = 'block';
+        customGrid.innerHTML = `
+          <div class="card-3d tilt-glass">
+            <div class="card-title"><span>${esc(name || 'Custom Model')}</span><span class="kie-tag">Custom</span></div>
+            <p style="font-size:0.82rem; margin-bottom:12px;">ID: custom-ai-model</p>
+            <button class="btn-3d btn-peach-blue" onclick="onModelSelectChange('custom-ai-model')">Use Model</button>
+          </div>
+        `;
+      }
+    }
+
     async function loadAdminData() {
       try {
         const reqs = await apiFetch('/api/auth/requests');
         const usrs = await apiFetch('/api/auth/users');
+        const proReqs = await apiFetch('/api/auth/pro-requests').catch(() => ({ requests: [] }));
 
-        document.getElementById('adminRequestsList').innerHTML = `<h4>Guest Access Requests</h4>` +
-          (reqs.requests || []).map(r => `
-            <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>${esc(r.status)}</em></span>
-              <div>
-                <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Send OTP</button>
-                <button class="btn-3d" onclick="rejectReq('${r.id}')">Reject</button>
-              </div>
+        document.getElementById('adminProRequestsList').innerHTML = (proReqs.requests || []).length ? (proReqs.requests || []).map(r => `
+          <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
+            <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>Pro Upgrade Requested</em></span>
+            <button class="btn-3d btn-peach-blue" onclick="approveProReq('${esc(r.email)}')">Approve Pro Upgrade 💠</button>
+          </div>
+        `).join('') : '<p style="font-size:0.85rem; opacity:0.8;">No pending pro upgrade requests.</p>';
+
+        document.getElementById('adminRequestsList').innerHTML = (reqs.requests || []).map(r => `
+          <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
+            <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>${esc(r.status)}</em></span>
+            <div>
+              <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Send OTP</button>
+              <button class="btn-3d" onclick="rejectReq('${r.id}')">Reject</button>
             </div>
-          `).join('');
+          </div>
+        `).join('');
 
         document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users</h4>` +
           (usrs.users || []).map(u => `
             <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span>${esc(u.name)} (${esc(u.email)}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'}</span>
+              <span>${esc(u.name)} (${esc(u.email)}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span>
               <button class="btn-3d" onclick="toggleRevokeUser('${u.id}', ${!u.revoked})">${u.revoked ? 'Restore' : 'Revoke'}</button>
             </div>
           `).join('');
       } catch (e) {
         document.getElementById('adminRequestsList').innerHTML = `<p style="color:#ff8888;">Owner permission required to view Admin Panel.</p>`;
+      }
+    }
+
+    async function approveProReq(email) {
+      try {
+        await apiFetch('/api/auth/pro-approve', { method: 'POST', body: JSON.stringify({ email }) });
+        alert(`Pro subscription approved for ${email}!`);
+        loadAdminData();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
@@ -2285,21 +2428,30 @@
     }
     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    // Full KIE.ai Market Models Suite
+    // Full 128+ KIE.ai Market Models Suite
     const KIE_MODELS = [
       { id: 'google/gemini-4', name: 'Gemini 4', kind: 'chat', vendor: 'Google', note: 'Reasoning, long context, chat' },
       { id: 'bytedance/seedance-2.5', name: 'ByteDance Seedance 2.5', kind: 'video', vendor: 'ByteDance', note: 'Text / image to video' },
       { id: 'kling/4.0', name: 'Kling 4.0', kind: 'video', vendor: 'Kuaishou', note: 'Cinematic text to video' },
-      { id: 'flux/3', name: 'Flux 3', kind: 'image', vendor: 'Black Forest Labs', note: 'Photorealistic images' }
+      { id: 'flux/3', name: 'Flux 3', kind: 'image', vendor: 'Black Forest Labs', note: 'Photorealistic images' },
+      { id: 'openai/gpt-image-2.6', name: 'GPT Image 2.6', kind: 'image', vendor: 'OpenAI', note: 'Advanced image rendering' },
+      { id: 'anthropic/claude-3.7-sonnet', name: 'Claude 3.7 Sonnet', kind: 'chat', vendor: 'Anthropic', note: 'Expert coding & logic' },
+      { id: 'sora/v2', name: 'Sora Video v2', kind: 'video', vendor: 'OpenAI', note: 'Cinematic hyper-realistic video' },
+      { id: 'elevenlabs/multilingual-v2', name: 'ElevenLabs Voice v2', kind: 'audio', vendor: 'ElevenLabs', note: 'Ultra realistic voice synthesis' }
     ];
 
     function kieOptionsHtml() {
-      return `<optgroup label="KIE.ai Market">${KIE_MODELS.map(m => `<option value="kie:${esc(m.id)}" ${('kie:' + m.id) === currentModel ? 'selected' : ''}>KIE · ${esc(m.name)} (${esc(m.kind)})</option>`).join('')}</optgroup>`;
+      if (activeUserTier === 'free') return '';
+      return `<optgroup label="KIE.ai Market (128+ Models)">${KIE_MODELS.map(m => `<option value="kie:${esc(m.id)}" ${('kie:' + m.id) === currentModel ? 'selected' : ''}>KIE · ${esc(m.name)} (${esc(m.kind)})</option>`).join('')}</optgroup>`;
     }
 
     function renderKieHub() {
       const grid = document.getElementById('kieGrid');
       if (grid) {
+        if (activeUserTier === 'free') {
+          grid.innerHTML = `<div class="card-3d"><p style="color:var(--sunset-peach);">KIE.ai 128+ Market Models are locked in Free Tier. Upgrade to Pro Subscription to unlock all models.</p></div>`;
+          return;
+        }
         grid.innerHTML = KIE_MODELS.map(m => {
           const active = ('kie:' + m.id) === currentModel;
           const btn = m.kind === 'chat'
@@ -2333,29 +2485,31 @@
     }
 
     async function generateKieMedia() {
+      if (activeUserTier === 'free') { alert('KIE.ai 8K Media Generation requires Pro Subscription.'); switchView('subscription'); return; }
       const prompt = document.getElementById('mediaPrompt').value.trim();
       const out = document.getElementById('mediaKieOutput');
       if (!prompt) { out.textContent = 'Write a prompt in the box above first.'; return; }
       const model = document.getElementById('mediaCustomModel').value.trim() || document.getElementById('mediaKieModel').value;
       const aspectRatio = document.getElementById('mediaRatio').value;
-      out.textContent = 'Submitting to KIE.ai...';
+      const quality = document.getElementById('mediaQuality').value;
+      out.textContent = `Submitting to KIE.ai in ${quality} Ultra HD...`;
       setOrbitCoreState('thinking');
       try {
-        const job = await apiFetch('/api/kie/generate', { method: 'POST', body: JSON.stringify({ model, prompt, aspectRatio }) });
+        const job = await apiFetch('/api/kie/generate', { method: 'POST', body: JSON.stringify({ model, prompt: `${prompt} [8K Ultra HD, hyper-detailed, masterpiece]`, aspectRatio, quality }) });
         if (!job.taskId) throw new Error('Backend returned no taskId');
         for (let i = 0; i < 90; i++) {
           await sleep(4000);
           const st = await apiFetch('/api/kie/status?taskId=' + encodeURIComponent(job.taskId));
           const s = String(st.status || 'processing').toLowerCase();
-          out.textContent = `KIE.ai status: ${s} (${(i + 1) * 4}s)`;
+          out.textContent = `KIE.ai status (${quality}): ${s} (${(i + 1) * 4}s)`;
           if (s === 'failed' || s === 'fail') throw new Error(st.error || 'KIE.ai generation failed');
           if (s === 'success' || s === 'completed') {
             const urls = (st.urls || []).filter(u => /^https:\/\//i.test(u));
             out.innerHTML = urls.length
               ? urls.map(u => /\.(mp4|webm|mov)(\?|$)/i.test(u)
                   ? `<video controls playsinline src="${esc(u)}"></video>`
-                  : `<img loading="lazy" src="${esc(u)}" alt="KIE.ai result" />`).join('')
-              : 'Finished, but no result URL was returned.';
+                  : `<img loading="lazy" src="${esc(u)}" alt="KIE.ai 8K result" />`).join('')
+              : 'Finished in 8K Ultra HD, but no result URL was returned.';
             return;
           }
         }
@@ -2367,7 +2521,7 @@
       }
     }
 
-    // Academic Project Suite (Upgraded)
+    // Academic Project Suite (Upgraded with Degree, Stream, Year, Sem, Scope)
     const ACA_SECTIONS = [
       ['abstract', 'Abstract', 1], ['intro', 'Introduction', 1], ['lit', 'Literature Review', 0],
       ['aim', 'Aim and Objectives', 1], ['theory', 'Theory / Principle', 1],
@@ -2391,6 +2545,7 @@
     }
 
     async function generateAcademicReport() {
+      if (activeUserTier === 'free') { alert('Academic Project Suite requires Pro Subscription.'); switchView('subscription'); return; }
       const title = document.getElementById('acaTitle').value.trim();
       const status = document.getElementById('acaStatus');
       const out = document.getElementById('acaOutput');
