@@ -442,7 +442,6 @@
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
-    /* 3D HERO GLASS POD */
     .orbit-core-hero {
       position: relative;
       display: flex;
@@ -472,7 +471,6 @@
       overflow: hidden;
     }
 
-    /* Red Glossy Crystal Sphere Stage */
     #orbitCoreContainer {
       width: 270px;
       height: 270px;
@@ -491,7 +489,6 @@
       cursor: grab;
     }
 
-    /* Bottom Caustic Fire Reflection under the Red Glass Sphere */
     #orbitCoreContainer::after {
       content: "";
       position: absolute;
@@ -660,7 +657,6 @@
       box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
     }
 
-    /* Force Login Modal */
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -728,7 +724,6 @@
       }
     }
 
-    /* ===== LIQUID GLASS REFINEMENT + MOBILE PERFORMANCE (v2) ===== */
     html { -webkit-tap-highlight-color: transparent; }
     body { height: 100vh; height: 100dvh; }
     .app-shell {
@@ -800,7 +795,6 @@
 
   <canvas id="bg3dCanvas"></canvas>
 
-  <!-- 🔐 FORCE AUTH MODAL (Loads on start until user authenticates) -->
   <div class="auth-overlay" id="authModal" style="display: flex;">
     <div class="auth-card">
       <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
@@ -909,7 +903,6 @@
         </div>
       </header>
 
-      <!-- 1. OVERVIEW DASHBOARD -->
       <section class="workspace-view active" id="view-overview">
         <div class="orbit-core-hero tilt-glass">
           <div style="flex: 1; min-width: 260px;">
@@ -924,7 +917,6 @@
               <button class="btn-3d" onclick="switchView('files')" data-i18n="nav_files">Files & Tools</button>
             </div>
           </div>
-          <!-- 3D GLOSSY RED RUBY GLASS ORB -->
           <div id="orbitCoreContainer" title="3D Glossy Crimson Glass Orb"></div>
         </div>
 
@@ -947,7 +939,6 @@
         </div>
       </section>
 
-      <!-- 2. AI CHAT -->
       <section class="workspace-view" id="view-chat">
         <div class="chat-layout">
           <div style="padding: 14px 20px; border-bottom: 1px solid rgba(233,232,248,0.22); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -979,7 +970,6 @@
         </div>
       </section>
 
-      <!-- 3. AI MODEL HUB PRO (DUAL SECTION: OPENROUTER & KIE.AI) -->
       <section class="workspace-view" id="view-models">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <h2 data-i18n="nav_models">AI Model Hub Pro</h2>
@@ -989,21 +979,18 @@
           </div>
         </div>
         
-        <!-- SECTION 1: KIE.AI MARKET MODELS (FULL 128+ SUITE) -->
         <div class="card-3d tilt-glass" style="margin-top:22px;">
           <div class="card-title"><span>KIE.ai Market Models Hub (128+ Models)</span> <span class="kie-tag">Pro Section</span></div>
           <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Complete suite of KIE.ai chat, image, music, and video market models.</p>
           <div class="grid-3d" id="kieGrid"></div>
         </div>
 
-        <!-- SECTION 2: OPENROUTER MODELS -->
         <div class="card-3d tilt-glass" style="margin-top:26px;">
           <div class="card-title"><span>OpenRouter Market Models</span> <span class="kie-tag">Pro Section</span></div>
           <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">All OpenRouter models (Limited to top 3 in Free Tier, All in Pro Tier).</p>
           <div class="grid-3d" id="modelsGrid"></div>
         </div>
 
-        <!-- SECTION 3: DYNAMIC CUSTOM API KEY MODELS -->
         <div class="card-3d tilt-glass" id="customApiModelsCard" style="margin-top:26px; display:none;">
           <div class="card-title"><span>Custom API Models</span> <span class="kie-tag">Dynamic Key</span></div>
           <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Models loaded automatically from your custom API key connection.</p>
@@ -1011,7 +998,6 @@
         </div>
       </section>
 
-      <!-- 4. PROMPT LIBRARY -->
       <section class="workspace-view" id="view-prompts">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create / Save Prompt</div>
@@ -1024,7 +1010,6 @@
         <div class="grid-3d" id="promptsGrid"></div>
       </section>
 
-      <!-- 5. FILES & TOOLS -->
       <section class="workspace-view" id="view-files">
         <div class="card-3d tilt-glass">
           <div class="card-title">Upload & Analyze Files (PDF, DOCX, TXT, CSV, JSON, Images, Videos) — 18MB Limit</div>
@@ -1037,7 +1022,6 @@
         <div class="grid-3d" id="filesGrid"></div>
       </section>
 
-      <!-- 6. CHAT HISTORY -->
       <section class="workspace-view" id="view-history">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 data-i18n="nav_history">Chat History</h2>
@@ -1046,7 +1030,6 @@
         <div class="grid-3d" id="historyGrid"></div>
       </section>
 
-      <!-- 7. AI SEARCH -->
       <section class="workspace-view" id="view-search">
         <div class="card-3d tilt-glass">
           <div class="card-title">AI Live Web Search</div>
@@ -1058,7 +1041,6 @@
         </div>
       </section>
 
-      <!-- 8. AI AGENTS -->
       <section class="workspace-view" id="view-agents">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create Custom AI Agent</div>
@@ -1071,7 +1053,6 @@
         <div class="grid-3d" id="agentsGrid"></div>
       </section>
 
-      <!-- 9. PROJECTS -->
       <section class="workspace-view" id="view-projects">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create Project Workspace</div>
@@ -1084,7 +1065,6 @@
         <div class="grid-3d" id="projectsGrid"></div>
       </section>
 
-      <!-- 10. KNOWLEDGE BASE -->
       <section class="workspace-view" id="view-knowledge">
         <div class="card-3d tilt-glass">
           <div class="card-title">Add Document to Knowledge Base (Used automatically in AI Chat)</div>
@@ -1097,7 +1077,6 @@
         <div class="grid-3d" id="knowledgeGrid"></div>
       </section>
 
-      <!-- 11. IMAGE & VIDEO AI (8K ULTRA HD GENERATION) -->
       <section class="workspace-view" id="view-media">
         <div class="card-3d tilt-glass">
           <div class="card-title">AI Image & Video Generation Studio (8K Ultra HD)</div>
@@ -1120,7 +1099,6 @@
         </div>
       </section>
 
-      <!-- 11b. ACADEMIC PROJECT SUITE (DEGREE, STREAM, YEAR, SEMESTER, LENGTH) -->
       <section class="workspace-view" id="view-academic">
         <div class="card-3d tilt-glass">
           <div class="card-title"><span data-i18n="nav_academic">Academic Project Suite</span> <span>🎓</span></div>
@@ -1180,7 +1158,6 @@
         </div>
       </section>
 
-      <!-- 12. AUTOMATION -->
       <section class="workspace-view" id="view-automation">
         <div class="card-3d tilt-glass">
           <div class="card-title">AI Task & Workflow Automation</div>
@@ -1192,13 +1169,11 @@
         </div>
       </section>
 
-      <!-- 13. PROFILE & ACCOUNT (FREE vs PRO TIER SWITCH) -->
       <section class="workspace-view" id="view-profile">
         <div class="card-3d tilt-glass">
           <div class="card-title" data-i18n="nav_profile">Profile & Account</div>
           <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px; font-size:1.05rem;"></div>
           
-          <!-- Free / Pro Tier Switch for Owner or Approved Guest -->
           <div style="margin: 16px 0; padding: 14px; border-radius: 14px; background: rgba(141,185,240,0.1); border: 1px solid var(--powder-blue);">
             <strong>Subscription Tier View:</strong>
             <div style="display:flex; gap:10px; margin-top:8px;">
@@ -1215,7 +1190,6 @@
         </div>
       </section>
 
-      <!-- 14. API CONNECTIONS (DYNAMIC CUSTOM API KEY ADAPTER) -->
       <section class="workspace-view" id="view-apiconn">
         <div class="card-3d tilt-glass">
           <div class="card-title">Dynamic Custom API Key Integration</div>
@@ -1237,7 +1211,6 @@
         </div>
       </section>
 
-      <!-- 15. PERMISSIONS & SECURITY -->
       <section class="workspace-view" id="view-security">
         <div class="card-3d tilt-glass">
           <div class="card-title">Security, Roles & Session Protection</div>
@@ -1250,7 +1223,6 @@
         </div>
       </section>
 
-      <!-- 16. SETTINGS -->
       <section class="workspace-view" id="view-settings">
         <h2 style="margin-bottom: 14px;" data-i18n="nav_settings">Complete 3D Workspace Settings</h2>
         <div class="grid-3d">
@@ -1263,7 +1235,6 @@
         </div>
       </section>
 
-      <!-- 17. PRO SUBSCRIPTION (GUEST UPGRADE REQUEST) -->
       <section class="workspace-view" id="view-subscription">
         <div class="grid-3d">
           <div class="card-3d tilt-glass">
@@ -1275,13 +1246,12 @@
             <div class="card-title">ORBIT AI PRO (Ultimate Edition) 💠</div>
             <p style="line-height: 1.7; margin-bottom:14px;">128+ KIE.ai models, Unlimited Multi-Model Routing, Real PDF/DOCX Parsing, Academic Project Suite & 8K Ultra HD Media.</p>
             <div id="subProStatus">
-              <button class="btn-3d btn-peach-blue" onclick="requestProUpgrade()">Request Pro Subscription Upgrade 🚀</button>
+              <button class="btn-3d btn-peach-blue" onclick="redirectToRazorpay()">Upgrade to Pro (Pay via Razorpay)</button>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 18. ADMIN PANEL (PRO UPGRADE REQUESTS SECTION) -->
       <section class="workspace-view" id="view-admin">
         <div class="card-3d tilt-glass">
           <div class="card-title">👑 Owner Admin Panel — Guest Requests, Pro Upgrades & Users</div>
@@ -1312,7 +1282,6 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
-    // Clean Subtitles
     const I18N = {
       en: {
         sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
@@ -1361,14 +1330,14 @@
       ta: ["பணியிடம்","தனிப்பட்டவை","மேலோட்டம்","AI அரட்டை","AI மாடல் ஹப் ப்ரோ","ப்ராம்ப்ட் நூலகம்","கோப்புகள் & கருவிகள்","அரட்டை வரலாறு","AI தேடல்","AI முகவர்கள்","திட்டங்கள்","அறிவுத் தளம்","படம் & வீடியோ AI","தானியக்கம்","சுயவிவரம் & கணக்கு","API இணைப்புகள்","அனுமதிகள் & பாதுகாப்பு","அமைப்புகள்","ப்ரோ சந்தா","நிர்வாக பேனல்","கல்வித் திட்டத் தொகுப்பு","AI அரட்டையைத் தொடங்கு"],
       te: ["వర్క్‌స్పేస్","వ్యక్తిగతం","అవలోకనం","AI చాట్","AI మోడల్ హబ్ ప్రో","ప్రాంప్ట్ లైబ్రరీ","ఫైళ్లు & టూల్స్","చాట్ చరిత్ర","AI సెర్చ్","AI ఏజెంట్లు","ప్రాజెక్టులు","నాలెడ్జ్ బేస్","ఇమేజ్ & వీడియో AI","ఆటోమేషన్","ప్రొఫైల్ & ఖాతా","API కనెక్షన్లు","అనుమతులు & భద్రత","సెట్టింగ్స్","ప్రో సబ్‌స్క్రిప్షన్","అడ్మిన్ ప్యానెల్","అకడమిక్ ప్రాజెక్ట్ సూట్","AI చాట్ ప్రారంభించండి"],
       gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ પ્રો","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
-      kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","ಅಕಾಡೆಮಿಕ್ ಪ್ರಾಜೆಕ್ಟ್ ಸೂಟ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
-      ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","അക്കാദമിക് പ്രോജക്ട് സ്യൂട്ട്","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ ਅਤੇ ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈਨਲ","ਅਕਾਦਮਿਕ ਪ੍ਰੋਜੈਕਟ ਸੂਟ","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
-      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","ଏକାଡେମିକ୍ ପ୍ରୋଜେକ୍ଟ ସୁଟ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
-      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","একাডেমিক প্ৰকল্প স্যুট","AI চেট আৰম্ভ কৰক"],
-      ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","اکیڈمک پروجیکٹ سوٹ","AI چیٹ شروع کریں"],
-      sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","शैक्षणिक-परियोजना-संचयः","AI संवादम् आरभस्व"],
-      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","शैक्षिक प्रोजेक्ट सुइट","AI च्याट सुरु गर्नुहोस्"]
+      kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
+      ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","AI ചാറ്റ് തുടങ്ങുക"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ এবং ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈনল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
+      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
+      ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","AI چیٹ شروع کریں"],
+      sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","AI संवादम् आरभस्व"],
+      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","AI च्याट सुरु गर्नुहोस्"]
     };
     Object.keys(I18N_PACK).forEach(l => {
       I18N[l] = {};
@@ -1409,9 +1378,6 @@
       });
     }
 
-    // =========================================================
-    // REAL-TIME 3D GLOSSY RED MAGMA GLASS ORB (CUSTOM GLSL SHADER)
-    // =========================================================
     const ORBIT_LITE = window.matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.hardwareConcurrency || 8) <= 4;
     let coreState = 'idle';
     let coreRenderer, coreScene, coreCamera, redGlassSphere, innerEmberParticles;
@@ -1699,7 +1665,7 @@
       }
     }
 
-    let activeUserTier = 'free'; // 'free' or 'pro'
+    let activeUserTier = 'free';
     function updateAuthUI() {
       const roleBadge = document.getElementById('roleBadge');
       const authBtn = document.getElementById('authBtn');
@@ -1727,14 +1693,19 @@
       }
       
       const subFree = document.getElementById('subFreeStatus');
-      const subPro = document.getElementById('subProStatus');
-      if (subFree && subPro) {
+      if (subFree) {
         if (activeUserTier === 'free') {
-          subFree.innerHTML = '<span style="color:var(--powder-blue);">✓ Currently Active</span>';
+          subFree.innerHTML = '<span style="color:var(--powder-blue);">✓ Currently Active (Free Subscription)</span>';
         } else {
           subFree.innerHTML = '';
         }
       }
+    }
+
+    // Razorpay Integration: Redirect to payment link
+    function redirectToRazorpay() {
+      const razorpayUrl = "https://razorpay.me/@mayurmanoharsonawane";
+      window.location.href = razorpayUrl;
     }
 
     function switchUserTier(tier) {
@@ -1754,16 +1725,6 @@
         alert('Switched to Free Tier View (Restricted to OpenRouter Auto & basic models).');
       }
       loadModels();
-    }
-
-    async function requestProUpgrade() {
-      if (!currentUser) { openAuthModal(); return; }
-      try {
-        const res = await apiFetch('/api/auth/pro-request', { method: 'POST', body: JSON.stringify({ email: currentUser.email, name: currentUser.name }) });
-        alert(res.message || 'Pro upgrade request sent to Admin successfully!');
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
     }
 
     async function claimOwner() {
@@ -1793,7 +1754,7 @@
           method: 'POST',
           body: JSON.stringify({ name, email, reason })
         });
-        document.getElementById('authStatusMsg').textContent = `Request submitted! Status: ${res.status} (ID: ${res.requestId})`;
+        document.getElementById('authStatusMsg').textContent = `Request sent successfully! Once admin approves, an OTP will be sent directly to your Gmail (${email}).`;
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
@@ -1806,7 +1767,7 @@
           method: 'POST',
           body: JSON.stringify({ email })
         });
-        document.getElementById('authStatusMsg').textContent = `OTP Ready: ${res.devOtp || 'Check Admin Panel'}`;
+        document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent successfully to email.';
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
@@ -1827,14 +1788,6 @@
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
-    }
-
-    async function logoutUser() {
-      await apiFetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
-      localStorage.removeItem('orbit_token');
-      currentUser = null;
-      updateAuthUI();
-      openAuthModal();
     }
 
     function getActiveConversation() {
@@ -1999,7 +1952,7 @@
         
         let availableOpenRouter = allModels;
         if (activeUserTier === 'free') {
-          availableOpenRouter = allModels.slice(0, 3); // Free tier gets limited models
+          availableOpenRouter = allModels.slice(0, 3);
         }
 
         sel.innerHTML = autoOpt + availableOpenRouter.map(m => `<option value="${m.id}" ${m.id === currentModel ? 'selected' : ''}>${m.name}</option>`).join('') + (activeUserTier === 'pro' ? kieOptionsHtml() : '');
@@ -2264,24 +2217,6 @@
       }
     }
 
-    async function saveProviderConfig() {
-      try {
-        const openrouterKey = document.getElementById('cfgOpenRouterKey').value;
-        const tavilyKey = document.getElementById('cfgTavilyKey').value;
-        const customUrl = document.getElementById('cfgCustomUrl').value;
-        await apiFetch('/api/providers/config', {
-          method: 'POST',
-          body: JSON.stringify({ openrouterKey, tavilyKey, customUrl })
-        });
-        document.getElementById('providerStatusMsg').textContent = '✓ Provider keys securely updated on server!';
-        checkHealth();
-        loadModels();
-      } catch (e) {
-        document.getElementById('providerStatusMsg').textContent = `⚠️ ${e.message}`;
-      }
-    }
-
-    // Dynamic Custom API Key Adapter (Loads models into Model Hub dynamically)
     async function saveCustomApiKeyAdapter() {
       const name = document.getElementById('cfgCustomName').value.trim();
       const key = document.getElementById('cfgCustomKey').value.trim();
@@ -2375,7 +2310,7 @@
 
     async function approveReq(requestId) {
       const res = await apiFetch('/api/auth/approve', { method: 'POST', body: JSON.stringify({ requestId }) });
-      alert(`Approved! OTP sent to user email.`);
+      alert(`Approved! OTP sent directly to user's Gmail.`);
       loadAdminData();
     }
 
@@ -2431,7 +2366,6 @@
     }
     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    // Full 128+ KIE.ai Market Models Suite
     const KIE_MODELS = [
       { id: 'google/gemini-4', name: 'Gemini 4', kind: 'chat', vendor: 'Google', note: 'Reasoning, long context, chat' },
       { id: 'bytedance/seedance-2.5', name: 'ByteDance Seedance 2.5', kind: 'video', vendor: 'ByteDance', note: 'Text / image to video' },
@@ -2524,7 +2458,6 @@
       }
     }
 
-    // Academic Project Suite (Upgraded with Degree, Stream, Year, Sem, Scope)
     const ACA_SECTIONS = [
       ['abstract', 'Abstract', 1], ['intro', 'Introduction', 1], ['lit', 'Literature Review', 0],
       ['aim', 'Aim and Objectives', 1], ['theory', 'Theory / Principle', 1],
