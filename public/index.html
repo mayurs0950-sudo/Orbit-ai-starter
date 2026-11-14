@@ -52,166 +52,503 @@
       --charcoal-surface: #ffffff;
       --lavender-white: #181B24;
       --lavender-muted: #4A5060;
+      --glass-surface: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.78) 0%,
+        rgba(141, 185, 240, 0.28) 50%,
+        rgba(245, 182, 158, 0.28) 100%
+      );
+      --glass-sidebar: linear-gradient(
+        165deg,
+        rgba(255, 255, 255, 0.85) 0%,
+        rgba(233, 232, 248, 0.72) 100%
+      );
+      --glass-border-top: rgba(255, 255, 255, 0.98);
+      --glass-border-side: rgba(141, 185, 240, 0.45);
+      --glass-3d-shadow:
+        0 20px 45px rgba(20, 22, 29, 0.12),
+        0 4px 0px rgba(255, 255, 255, 0.9),
+        inset 0 2px 5px rgba(255, 255, 255, 1),
+        inset 0 -3px 8px rgba(141, 185, 240, 0.25);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
 
     body {
       background-color: var(--charcoal-deep);
       color: var(--lavender-white);
-      height: 100dvh;
-      max-height: 100vh;
+      height: 100vh;
       overflow: hidden;
       display: flex;
       perspective: 1400px;
     }
 
     .ambient-stage {
-      position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
       background: radial-gradient(circle at 50% 20%, #202534 0%, #12141B 75%);
     }
 
-    .glow-orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.78; }
-    .orb-blue { width: 460px; height: 460px; background: radial-gradient(circle, #8DB9F0 0%, rgba(141, 185, 240, 0) 70%); top: -10%; right: 10%; }
-    .orb-peach { width: 500px; height: 500px; background: radial-gradient(circle, #F5B69E 0%, rgba(245, 182, 158, 0) 70%); bottom: -12%; left: 12%; }
+    [data-theme="light"] .ambient-stage {
+      background: radial-gradient(circle at 50% 20%, #ffffff 0%, #E9E8F8 75%);
+    }
 
-    #bg3dCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.78;
+      animation: floatOrb 14s infinite alternate ease-in-out;
+    }
+
+    .orb-blue {
+      width: 460px;
+      height: 460px;
+      background: radial-gradient(circle, #8DB9F0 0%, rgba(141, 185, 240, 0) 70%);
+      top: -10%;
+      right: 10%;
+    }
+
+    .orb-peach {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #F5B69E 0%, rgba(245, 182, 158, 0) 70%);
+      bottom: -12%;
+      left: 12%;
+      animation-delay: -5s;
+    }
+
+    .orb-lavender {
+      width: 390px;
+      height: 390px;
+      background: radial-gradient(circle, rgba(233, 232, 248, 0.65) 0%, rgba(233, 232, 248, 0) 70%);
+      top: 38%;
+      left: 44%;
+      animation-delay: -9s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(45px, -35px, 40px) scale(1.14); }
+      100% { transform: translate3d(-35px, 30px, -20px) scale(0.92); }
+    }
+
+    #bg3dCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
 
     .app-shell {
-      position: relative; z-index: 5; display: flex; width: 100%; height: 100%; padding: 10px; gap: 12px; overflow: hidden;
+      position: relative;
+      z-index: 5;
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      padding: 14px;
+      gap: 16px;
     }
 
     .sidebar {
-      width: 280px; background: var(--glass-sidebar);
-      backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
-      border-radius: var(--radius-lg); border-top: 1.5px solid var(--glass-border-top);
-      border-left: 1.5px solid var(--glass-border-top); border-right: 1px solid var(--glass-border-side);
-      border-bottom: 2px solid var(--glass-border-bottom); box-shadow: var(--glass-3d-shadow);
-      display: flex; flex-direction: column; z-index: 30; overflow: hidden;
+      width: 280px;
+      background: var(--glass-sidebar);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      border-radius: var(--radius-lg);
+      border-top: 1.5px solid var(--glass-border-top);
+      border-left: 1.5px solid var(--glass-border-top);
+      border-right: 1px solid var(--glass-border-side);
+      border-bottom: 2px solid var(--glass-border-bottom);
+      box-shadow: var(--glass-3d-shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.2, 1);
+      z-index: 30;
+      overflow: hidden;
     }
 
     .brand-header {
-      padding: 20px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid rgba(233, 232, 248, 0.18);
-    }
-    .brand-prism-mini {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: radial-gradient(circle at 32% 25%, #ffffff 0%, #ff9478 18%, #ff1e00 55%, #59000b 90%);
-      box-shadow: 0 0 22px rgba(255, 38, 0, 0.75);
-    }
-    .brand-title {
-      font-size: 1.22rem; font-weight: 900; letter-spacing: 2px;
-      background: linear-gradient(135deg, var(--lavender-white) 0%, var(--powder-blue) 50%, var(--sunset-peach) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid rgba(233, 232, 248, 0.18);
+      background: linear-gradient(90deg, rgba(141, 185, 240, 0.12), rgba(245, 182, 158, 0.08));
     }
 
-    .nav-scroll { flex: 1; overflow-y: auto; padding: 14px; }
-    .nav-section-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.8px; color: var(--sunset-peach); margin: 14px 10px 8px; font-weight: 800; }
+    .brand-prism-mini {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 25%, #ffffff 0%, #ff9478 18%, #ff1e00 55%, #59000b 90%, #ff6a00 100%);
+      box-shadow:
+        0 0 22px rgba(255, 38, 0, 0.75),
+        inset 0 3px 6px rgba(255, 255, 255, 0.95),
+        inset 0 -4px 8px rgba(255, 120, 0, 0.8);
+      border: 1.5px solid rgba(255, 220, 210, 0.85);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1.22rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--lavender-white) 0%, var(--powder-blue) 50%, var(--sunset-peach) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    .nav-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+    }
+
+    .nav-section-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: var(--sunset-peach);
+      margin: 14px 10px 8px;
+      font-weight: 800;
+    }
 
     .nav-btn {
-      width: 100%; text-align: left; padding: 11px 15px; margin-bottom: 6px; border-radius: 14px;
-      border: 1px solid rgba(233, 232, 248, 0.1); background: linear-gradient(135deg, rgba(233, 232, 248, 0.07), rgba(141, 185, 240, 0.02));
-      color: var(--lavender-white); font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px;
-      transition: all 0.25s ease;
-    }
-    .nav-btn:hover, .nav-btn.active {
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.32));
-      border-color: var(--powder-blue); transform: translateX(4px);
+      width: 100%;
+      text-align: left;
+      padding: 11px 15px;
+      margin-bottom: 6px;
+      border-radius: 14px;
+      border: 1px solid rgba(233, 232, 248, 0.1);
+      background: linear-gradient(135deg, rgba(233, 232, 248, 0.07), rgba(141, 185, 240, 0.02));
+      color: var(--lavender-white);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
-    .main-area { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; gap: 14px; }
+    .nav-btn:hover {
+      background: linear-gradient(135deg, rgba(141, 185, 240, 0.24), rgba(245, 182, 158, 0.18));
+      border-color: var(--powder-blue);
+      transform: translateX(6px) translateY(-2px);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.32));
+      border-top: 1.5px solid var(--lavender-white);
+      border-left: 1.5px solid var(--powder-blue);
+      border-right: 1px solid var(--sunset-peach);
+      border-bottom: 2px solid var(--sunset-peach);
+      color: #fff;
+      transform: translateX(4px);
+    }
+
+    .main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      gap: 14px;
+    }
 
     .topbar {
-      min-height: 68px; background: var(--glass-surface);
-      backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%);
-      border-radius: var(--radius-lg); border-top: 1.5px solid var(--glass-border-top);
-      border-left: 1.5px solid var(--glass-border-top); border-right: 1px solid var(--glass-border-side);
-      border-bottom: 2px solid var(--glass-border-bottom); box-shadow: var(--glass-3d-shadow);
-      display: flex; align-items: center; justify-content: space-between; padding: 10px 22px; gap: 12px; flex-shrink: 0; flex-wrap: wrap;
+      height: 68px;
+      background: var(--glass-surface);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: var(--radius-lg);
+      border-top: 1.5px solid var(--glass-border-top);
+      border-left: 1.5px solid var(--glass-border-top);
+      border-right: 1px solid var(--glass-border-side);
+      border-bottom: 2px solid var(--glass-border-bottom);
+      box-shadow: var(--glass-3d-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      gap: 12px;
+      flex-shrink: 0;
     }
 
-    .topbar-left, .topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .mobile-menu-btn { display: none; background: var(--glass-surface); color: var(--lavender-white); border: 1px solid var(--glass-border-top); padding: 8px 14px; border-radius: 12px; cursor: pointer; }
+    .topbar-left, .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--glass-surface);
+      color: var(--lavender-white);
+      border: 1px solid var(--glass-border-top);
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
 
     .pill-select, .btn-3d, .input-3d {
       background: linear-gradient(135deg, rgba(233, 232, 248, 0.16), rgba(20, 22, 29, 0.58));
-      backdrop-filter: blur(18px); color: var(--lavender-white);
-      border-top: 1.5px solid rgba(233, 232, 248, 0.55); border-left: 1.5px solid rgba(141, 185, 240, 0.4);
-      border-right: 1px solid rgba(245, 182, 158, 0.25); border-bottom: 2px solid rgba(0, 0, 0, 0.45);
-      padding: 9px 15px; border-radius: 14px; font-size: 0.88rem; outline: none; transition: all 0.22s ease;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      color: var(--lavender-white);
+      border-top: 1.5px solid rgba(233, 232, 248, 0.55);
+      border-left: 1.5px solid rgba(141, 185, 240, 0.4);
+      border-right: 1px solid rgba(245, 182, 158, 0.25);
+      border-bottom: 2px solid rgba(0, 0, 0, 0.45);
+      padding: 9px 15px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: all 0.22s ease;
     }
-    .pill-select option { background: #181B24; color: #E9E8F8; }
-    .btn-3d { cursor: pointer; font-weight: 700; white-space: nowrap; }
-    .btn-3d:hover { transform: translateY(-3px); border-top-color: #fff; box-shadow: 0 14px 28px rgba(0,0,0,0.5), 0 0 18px var(--powder-blue-glow); }
+
+    .pill-select option {
+      background: #181B24;
+      color: #E9E8F8;
+    }
+
+    .btn-3d {
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-3d:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-top-color: #ffffff;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.5), 0 0 18px var(--powder-blue-glow);
+    }
+
     .btn-peach-blue {
       background: linear-gradient(135deg, var(--powder-blue) 0%, var(--lavender-white) 48%, var(--sunset-peach) 100%);
-      color: #14161D; border-top: 1.5px solid #ffffff; font-weight: 800;
+      color: #14161D;
+      border-top: 1.5px solid #ffffff;
+      border-left: 1.5px solid #ffffff;
+      border-bottom: 2.5px solid rgba(20, 22, 29, 0.55);
+      font-weight: 800;
       box-shadow: 0 10px 25px rgba(141, 185, 240, 0.4), 0 4px 15px rgba(245, 182, 158, 0.35);
     }
 
-    .workspace-view { flex: 1; overflow-y: auto; padding: 6px 6px 24px; display: none; -webkit-overflow-scrolling: touch; }
-    .workspace-view.active { display: block; }
+    .workspace-view {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 6px 24px;
+      display: none;
+    }
 
-    .grid-3d { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 22px; margin-top: 22px; }
+    .workspace-view.active {
+      display: block;
+    }
+
+    .grid-3d {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 22px;
+      margin-top: 22px;
+    }
 
     .card-3d {
-      background: var(--glass-surface); backdrop-filter: blur(28px) saturate(200%);
-      -webkit-backdrop-filter: blur(28px) saturate(200%); border-radius: var(--radius-lg);
-      border-top: 1.5px solid var(--glass-border-top); border-left: 1.5px solid var(--glass-border-top);
-      border-right: 1px solid var(--glass-border-side); border-bottom: 2px solid var(--glass-border-bottom);
-      padding: 24px; box-shadow: var(--glass-3d-shadow);
+      position: relative;
+      background: var(--glass-surface);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: var(--radius-lg);
+      border-top: 1.5px solid var(--glass-border-top);
+      border-left: 1.5px solid var(--glass-border-top);
+      border-right: 1px solid var(--glass-border-side);
+      border-bottom: 2px solid var(--glass-border-bottom);
+      padding: 24px;
+      box-shadow: var(--glass-3d-shadow);
     }
-    .card-title { font-size: 1.08rem; font-weight: 800; color: var(--powder-blue); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+    .card-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--powder-blue);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
     .orbit-core-hero {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px;
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
       background: linear-gradient(135deg, rgba(233, 232, 248, 0.20) 0%, rgba(141, 185, 240, 0.16) 48%, rgba(245, 182, 158, 0.18) 100%);
-      backdrop-filter: blur(34px) saturate(210%); border-top: 2px solid var(--lavender-white);
-      border-left: 2px solid var(--powder-blue); border-right: 1.5px solid var(--sunset-peach); border-bottom: 3px solid var(--sunset-peach);
-      border-radius: 28px; padding: 28px; box-shadow: 0 32px 70px rgba(0,0,0,0.78), 0 0 40px var(--powder-blue-glow);
+      backdrop-filter: blur(34px) saturate(210%);
+      border-top: 2px solid var(--lavender-white);
+      border-left: 2px solid var(--powder-blue);
+      border-right: 1.5px solid var(--sunset-peach);
+      border-bottom: 3px solid var(--sunset-peach);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 32px 70px rgba(0, 0, 0, 0.78), 0 0 40px var(--powder-blue-glow);
     }
+
     #orbitCoreContainer {
-      width: 270px; height: 270px; position: relative; margin: 0 auto; border-radius: 50%;
+      width: 270px;
+      height: 270px;
+      position: relative;
+      margin: 0 auto;
+      border-radius: 50%;
       background: radial-gradient(circle at 50% 58%, rgba(255, 60, 0, 0.42) 0%, rgba(190, 10, 30, 0.22) 45%, rgba(20, 10, 18, 0) 72%);
-      display: flex; align-items: center; justify-content: center; cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .core-status-badge {
-      display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 800;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
       background: linear-gradient(135deg, rgba(255, 60, 20, 0.35), rgba(141, 185, 240, 0.28));
-      border-top: 1px solid var(--lavender-white); color: var(--lavender-white); margin-bottom: 12px;
+      border-top: 1px solid var(--lavender-white);
+      color: var(--lavender-white);
+      margin-bottom: 12px;
     }
 
     .chat-layout {
-      display: flex; flex-direction: column; flex: 1; height: 100%; max-height: calc(100dvh - 90px);
-      background: var(--glass-surface); backdrop-filter: blur(28px); border-radius: var(--radius-lg);
-      border-top: 1.5px solid var(--glass-border-top); border-left: 1.5px solid var(--glass-border-top);
-      box-shadow: var(--glass-3d-shadow); overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 118px);
+      background: var(--glass-surface);
+      backdrop-filter: blur(28px);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--glass-border-top);
+      box-shadow: var(--glass-3d-shadow);
+      overflow: hidden;
     }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 22px; display: flex; flex-direction: column; gap: 16px; }
-    .msg-bubble { max-width: 82%; padding: 15px 20px; border-radius: 20px; line-height: 1.58; font-size: 0.95rem; }
-    .msg-user { align-self: flex-end; background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.35)); border-top: 1.5px solid var(--lavender-white); color: #fff; }
-    .msg-ai { align-self: flex-start; background: linear-gradient(135deg, rgba(233, 232, 248, 0.16), rgba(20, 22, 29, 0.72)); border-top: 1.5px solid rgba(233, 232, 248, 0.5); color: var(--lavender-white); }
 
-    .chat-composer { padding: 16px; border-top: 1px solid rgba(233, 232, 248, 0.24); background: linear-gradient(180deg, rgba(233, 232, 248, 0.08), rgba(20, 22, 29, 0.68)); display: flex; gap: 10px; align-items: center; }
-    .composer-input { flex: 1; background: linear-gradient(135deg, rgba(233, 232, 248, 0.14), rgba(16, 18, 25, 0.68)); border-top: 1.5px solid rgba(233, 232, 248, 0.48); border-radius: 16px; padding: 12px 16px; color: #fff; resize: none; height: 52px; }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
+    .msg-bubble {
+      max-width: 82%;
+      padding: 15px 20px;
+      border-radius: 20px;
+      line-height: 1.58;
+      font-size: 0.95rem;
+    }
+
+    .msg-user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.35));
+      border-top: 1.5px solid var(--lavender-white);
+      color: #fff;
+    }
+
+    .msg-ai {
+      align-self: flex-start;
+      background: linear-gradient(135deg, rgba(233, 232, 248, 0.16), rgba(20, 22, 29, 0.72));
+      border-top: 1.5px solid rgba(233, 232, 248, 0.5);
+      color: var(--lavender-white);
+    }
+
+    .chat-composer {
+      padding: 16px;
+      border-top: 1px solid rgba(233, 232, 248, 0.24);
+      background: rgba(20, 22, 29, 0.68);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .composer-input {
+      flex: 1;
+      background: rgba(16, 18, 25, 0.68);
+      border-top: 1.5px solid rgba(233, 232, 248, 0.48);
+      border-radius: 16px;
+      padding: 12px 16px;
+      color: #fff;
+      resize: none;
+      height: 52px;
+    }
+
+    /* 🌟 लॉगिन मॉडॅल फिक्स (बटन्स आणि टेक्स्ट ओव्हरलॅप इश्यू पूर्णपणे काढून टाकला आहे) */
     .auth-overlay {
-      position: fixed; inset: 0; background: rgba(12, 14, 20, 0.95); backdrop-filter: blur(35px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px;
+      position: fixed;
+      inset: 0;
+      background: rgba(12, 14, 20, 0.85);
+      backdrop-filter: blur(28px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
     }
+
     .auth-card {
-      width: 100%; max-width: 450px; background: var(--glass-surface); backdrop-filter: blur(32px);
-      border-top: 2px solid var(--lavender-white); border-left: 2px solid var(--powder-blue); border-bottom: 2.5px solid var(--sunset-peach);
-      border-radius: 26px; padding: 28px; box-shadow: var(--glass-3d-shadow);
+      width: 100%;
+      max-width: 480px;
+      background: var(--glass-surface);
+      backdrop-filter: blur(35px);
+      border: 2px solid var(--powder-blue);
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.85);
     }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--powder-blue);
+    }
+
     .form-group input, .form-group textarea, .form-group select {
-      width: 100%; padding: 11px 14px; border-radius: 12px; border-top: 1px solid rgba(233, 232, 248, 0.48); background: rgba(16, 18, 25, 0.65); color: #fff;
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(141, 185, 240, 0.4);
+      background: rgba(16, 18, 25, 0.8);
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
     }
 
     @media (max-width: 860px) {
-      .sidebar { position: fixed; left: 6px; top: 6px; bottom: 6px; transform: translateX(-110%); z-index: 1000; transition: transform 0.3s ease; }
+      .app-shell { padding: 8px; }
+      .sidebar {
+        position: fixed; left: 8px; top: 8px; bottom: 8px;
+        transform: translateX(-110%); transition: transform 0.3s ease;
+      }
       .sidebar.open { transform: translateX(0); }
-      .mobile-menu-btn { display: inline-block; z-index: 1001; }
+      .mobile-menu-btn { display: inline-block; }
     }
   </style>
 </head>
@@ -220,43 +557,52 @@
   <div class="ambient-stage">
     <div class="glow-orb orb-blue"></div>
     <div class="glow-orb orb-peach"></div>
+    <div class="glow-orb orb-lavender"></div>
   </div>
 
   <canvas id="bg3dCanvas"></canvas>
 
-  <!-- 🔐 ऑथेंटिकेशन फॉर्म -->
-  <div class="auth-overlay" id="forceAuthModal" style="display: flex;">
+  <!-- 🔐 ऑथेंटिकेशन मॉडॅल (ओव्हरलॅप इश्यू फिक्स) -->
+  <div class="auth-overlay" id="authModal">
     <div class="auth-card">
-      <div class="card-title" style="justify-content: center; font-size: 1.35rem;"><span>🔐 ORBIT AI Access</span></div>
-      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">Please enter owner credentials to claim workspace.</p>
+      <div class="card-title" style="justify-content: center; font-size: 1.4rem; margin-bottom: 8px;">
+        <span>🔐 ORBIT AI Access</span>
+      </div>
+      <p style="text-align: center; font-size: 0.88rem; color: var(--sunset-peach); margin-bottom: 20px;">
+        Please enter owner credentials to claim workspace.
+      </p>
 
-      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <button class="btn-3d" style="flex:1; padding: 10px;" onclick="showAuthTab('owner')">Owner Claim</button>
+        <button class="btn-3d" style="flex:1; padding: 10px;" onclick="showAuthTab('guest')">Guest Request</button>
+        <button class="btn-3d" style="flex:1; padding: 10px;" onclick="showAuthTab('otp')">OTP Login</button>
       </div>
 
       <div id="authTabOwner">
         <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
         <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
         <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter owner claim code" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
+        <button class="btn-3d btn-peach-blue" style="width:100%; padding: 12px; margin-top: 6px;" onclick="claimOwner()">Claim Owner Workspace</button>
       </div>
 
       <div id="authTabGuest" style="display:none;">
         <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
         <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
         <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
+        <button class="btn-3d btn-peach-blue" style="width:100%; padding: 12px; margin-top: 6px;" onclick="submitGuestRequest()">Request Access</button>
       </div>
 
       <div id="authTabOtp" style="display:none;">
         <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
-        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP to Email</button>
+        <button class="btn-3d" style="width:100%; margin-bottom:12px;" onclick="issueOtp()">Get OTP to Email</button>
         <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
+        <button class="btn-3d btn-peach-blue" style="width:100%; padding: 12px; margin-top: 6px;" onclick="verifyOtpLogin()">Verify & Login</button>
       </div>
-      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: #ff6b6b; text-align:center;"></div>
+
+      <div id="authStatusMsg" style="margin-top: 14px; font-size: 0.88rem; color: #ff6b6b; text-align:center;"></div>
+      <div style="margin-top: 16px; text-align: center;">
+        <button class="btn-3d" style="font-size: 0.8rem; padding: 6px 14px;" onclick="closeAuthModal()">Close Modal</button>
+      </div>
     </div>
   </div>
 
@@ -274,7 +620,7 @@
         <div class="nav-section-label" data-i18n="sec_workspace">WORKSPACE</div>
         <button class="nav-btn active" onclick="switchView('overview')">🔴 <span data-i18n="nav_overview">Overview</span></button>
         <button class="nav-btn" onclick="switchView('chat')">💬 <span data-i18n="nav_chat">AI Chat</span></button>
-        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub</span></button>
+        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub (KIE.ai)</span></button>
         <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic & Pharmacy Suite</span></button>
         <button class="nav-btn" onclick="switchView('prompts')">✨ <span data-i18n="nav_prompts">Prompt Library</span></button>
         <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Files & Server Storage</span></button>
@@ -291,6 +637,7 @@
         <button class="nav-btn owner-only" onclick="switchView('apiconn')" style="display:none;">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
         <button class="nav-btn" onclick="switchView('security')">🛡️ <span data-i18n="nav_security">Permissions & Security</span></button>
         <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
+        <button class="nav-btn" onclick="openAuthModal()">🔐 <span>Login Setup</span></button>
         <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
       </div>
     </aside>
@@ -322,7 +669,7 @@
             <option value="sa">संस्कृतम् (Sanskrit)</option>
           </select>
           <button class="btn-3d" onclick="toggleTheme()" id="themeBtn">🌗 Theme</button>
-          <button class="btn-3d" onclick="logoutUser()">Logout</button>
+          <button class="btn-3d btn-peach-blue" onclick="openAuthModal()">Login</button>
         </div>
       </header>
 
@@ -338,6 +685,7 @@
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
               <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
               <button class="btn-3d" onclick="switchView('academic')">🎓 Academic Project Suite</button>
+              <button class="btn-3d" onclick="switchView('models')">🧠 KIE.ai Hub</button>
             </div>
           </div>
           <div id="orbitCoreContainer"></div>
@@ -390,15 +738,9 @@
       </section>
 
       <!-- 5. PROMPT LIBRARY -->
-      <section class="workspace-view" id="view-prompts">
-        <div class="card-3d"><div class="card-title">Prompt Library</div></div>
-      </section>
-
+      <section class="workspace-view" id="view-prompts"><div class="card-3d"><div class="card-title">Prompt Library</div></div></section>
       <!-- 6. FILES -->
-      <section class="workspace-view" id="view-files">
-        <div class="card-3d"><div class="card-title">Server File Storage</div><input type="file" id="workspaceFileInput" class="input-3d" /></div>
-      </section>
-
+      <section class="workspace-view" id="view-files"><div class="card-3d"><div class="card-title">Server Storage</div><input type="file" id="workspaceFileInput" class="input-3d" /></div></section>
       <!-- 7. HISTORY -->
       <section class="workspace-view" id="view-history"><div class="card-3d"><div class="card-title">Chat History</div></div></section>
       <!-- 8. SEARCH -->
