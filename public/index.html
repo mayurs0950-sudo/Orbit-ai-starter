@@ -809,7 +809,7 @@
         <div class="grid-3d" id="historyGrid"></div>
       </section>
 
-      <!-- PRO VIEWS (OPEN TO VIEW WITH UPGRADE BANNER FOR FREE USERS) -->
+      <!-- PRO VIEWS (OPEN WITH PRO UPGRADE BANNER) -->
       <section class="workspace-view" id="view-search">
         <div id="searchProBanner"></div>
         <div class="card-3d"><h2>AI Search</h2><p>Search live web with deep citations and context.</p></div>
@@ -955,7 +955,7 @@
           if (!isPro) {
             bannerContainer.innerHTML = `
               <div class="pro-banner">
-                <div>🔒 <strong>Pro Feature:</strong> Upgrade to ORBIT AI Pro (₹799) to unlock full execution.</div>
+                <div>🔒 <strong>Pro Feature:</strong> Upgrade to ORBIT AI Pro (₹799) to unlock full execution and features.</div>
                 <button class="btn-3d btn-peach-blue" onclick="switchView('subscription')">Upgrade Now</button>
               </div>`;
           } else {
@@ -1109,7 +1109,7 @@
       document.getElementById('btnTierPro').classList.remove('btn-peach-blue');
       if (tier === 'pro') {
         document.getElementById('btnTierPro').classList.add('btn-peach-blue');
-        alert('Switched to Pro Tier View (All features unlocked).');
+        alert('Switched to Pro Tier View.');
       } else {
         document.getElementById('btnTierFree').classList.add('btn-peach-blue');
         alert('Switched to Free Tier View.');
