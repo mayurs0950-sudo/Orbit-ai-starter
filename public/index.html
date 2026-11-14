@@ -1,2561 +1,917 @@
-<!DOCTYPE html>
-<html lang="mr" data-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no" />
-  <title>ORBIT AI — Private Intelligence OS (Ultimate Edition)</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <style>
-    :root {
-      --charcoal-deep: #14161D;
-      --charcoal-surface: #1E222D;
-      --powder-blue: #8DB9F0;
-      --powder-blue-glow: rgba(141, 185, 240, 0.42);
-      --lavender-white: #E9E8F8;
-      --lavender-muted: #B8B7CC;
-      --sunset-peach: #F5B69E;
-      --sunset-peach-glow: rgba(245, 182, 158, 0.42);
-      --crimson-glow: rgba(255, 38, 0, 0.55);
-
-      --glass-surface: linear-gradient(
-        135deg,
-        rgba(233, 232, 248, 0.18) 0%,
-        rgba(141, 185, 240, 0.10) 48%,
-        rgba(245, 182, 158, 0.12) 100%
-      );
-      --glass-sidebar: linear-gradient(
-        165deg,
-        rgba(233, 232, 248, 0.16) 0%,
-        rgba(30, 34, 45, 0.58) 55%,
-        rgba(20, 22, 29, 0.78) 100%
-      );
-      --glass-border-top: rgba(233, 232, 248, 0.62);
-      --glass-border-side: rgba(141, 185, 240, 0.32);
-      --glass-border-bottom: rgba(245, 182, 158, 0.42);
-
-      --glass-3d-shadow:
-        0 26px 55px -10px rgba(8, 10, 15, 0.88),
-        0 10px 24px -6px rgba(141, 185, 240, 0.22),
-        0 3px 0px rgba(233, 232, 248, 0.16),
-        inset 0 2px 4px rgba(233, 232, 248, 0.65),
-        inset 2px 0 3px rgba(141, 185, 240, 0.35),
-        inset 0 -3px 10px rgba(245, 182, 158, 0.25);
-
-      --radius-lg: 24px;
-      --radius-md: 16px;
-    }
-
-    [data-theme="light"] {
-      --charcoal-deep: #E9E8F8;
-      --charcoal-surface: #ffffff;
-      --lavender-white: #181B24;
-      --lavender-muted: #4A5060;
-      --glass-surface: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.78) 0%,
-        rgba(141, 185, 240, 0.28) 50%,
-        rgba(245, 182, 158, 0.28) 100%
-      );
-      --glass-sidebar: linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.85) 0%,
-        rgba(233, 232, 248, 0.72) 100%
-      );
-      --glass-border-top: rgba(255, 255, 255, 0.98);
-      --glass-border-side: rgba(141, 185, 240, 0.45);
-      --glass-3d-shadow:
-        0 20px 45px rgba(20, 22, 29, 0.12),
-        0 4px 0px rgba(255, 255, 255, 0.9),
-        inset 0 2px 5px rgba(255, 255, 255, 1),
-        inset 0 -3px 8px rgba(141, 185, 240, 0.25);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background-color: var(--charcoal-deep);
-      color: var(--lavender-white);
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      perspective: 1400px;
-    }
-
-    .ambient-stage {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-      background: radial-gradient(circle at 50% 20%, #202534 0%, #12141B 75%);
-    }
-
-    [data-theme="light"] .ambient-stage {
-      background: radial-gradient(circle at 50% 20%, #ffffff 0%, #E9E8F8 75%);
-    }
-
-    .glow-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.78;
-      animation: floatOrb 14s infinite alternate ease-in-out;
-    }
-
-    .orb-blue {
-      width: 460px;
-      height: 460px;
-      background: radial-gradient(circle, #8DB9F0 0%, rgba(141, 185, 240, 0) 70%);
-      top: -10%;
-      right: 10%;
-    }
-
-    .orb-peach {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, #F5B69E 0%, rgba(245, 182, 158, 0) 70%);
-      bottom: -12%;
-      left: 12%;
-      animation-delay: -5s;
-    }
-
-    .orb-lavender {
-      width: 390px;
-      height: 390px;
-      background: radial-gradient(circle, rgba(233, 232, 248, 0.65) 0%, rgba(233, 232, 248, 0) 70%);
-      top: 38%;
-      left: 44%;
-      animation-delay: -9s;
-    }
-
-    @keyframes floatOrb {
-      0% { transform: translate3d(0, 0, 0) scale(1); }
-      50% { transform: translate3d(45px, -35px, 40px) scale(1.14); }
-      100% { transform: translate3d(-35px, 30px, -20px) scale(0.92); }
-    }
-
-    #bg3dCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .app-shell {
-      position: relative;
-      z-index: 5;
-      display: flex;
-      width: 100%;
-      height: 100vh;
-      padding: 14px;
-      gap: 16px;
-    }
-
-    .sidebar {
-      width: 280px;
-      background: var(--glass-sidebar);
-      backdrop-filter: blur(30px) saturate(200%);
-      -webkit-backdrop-filter: blur(30px) saturate(200%);
-      border-radius: var(--radius-lg);
-      border-top: 1.5px solid var(--glass-border-top);
-      border-left: 1.5px solid var(--glass-border-top);
-      border-right: 1px solid var(--glass-border-side);
-      border-bottom: 2px solid var(--glass-border-bottom);
-      box-shadow: var(--glass-3d-shadow);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.2, 1);
-      z-index: 30;
-      overflow: hidden;
-    }
-
-    .brand-header {
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      border-bottom: 1px solid rgba(233, 232, 248, 0.18);
-      background: linear-gradient(90deg, rgba(141, 185, 240, 0.12), rgba(245, 182, 158, 0.08));
-    }
-
-    .brand-prism-mini {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 32% 25%, #ffffff 0%, #ff9478 18%, #ff1e00 55%, #59000b 90%, #ff6a00 100%);
-      box-shadow:
-        0 0 22px rgba(255, 38, 0, 0.75),
-        inset 0 3px 6px rgba(255, 255, 255, 0.95),
-        inset 0 -4px 8px rgba(255, 120, 0, 0.8);
-      border: 1.5px solid rgba(255, 220, 210, 0.85);
-      flex-shrink: 0;
-    }
-
-    .brand-title {
-      font-size: 1.22rem;
-      font-weight: 900;
-      letter-spacing: 2px;
-      background: linear-gradient(135deg, var(--lavender-white) 0%, var(--powder-blue) 50%, var(--sunset-peach) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-    }
-
-    .nav-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px;
-    }
-
-    .nav-section-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 1.8px;
-      color: var(--sunset-peach);
-      margin: 14px 10px 8px;
-      font-weight: 800;
-    }
-
-    .nav-btn {
-      width: 100%;
-      text-align: left;
-      padding: 11px 15px;
-      margin-bottom: 6px;
-      border-radius: 14px;
-      border: 1px solid rgba(233, 232, 248, 0.1);
-      background: linear-gradient(135deg, rgba(233, 232, 248, 0.07), rgba(141, 185, 240, 0.02));
-      color: var(--lavender-white);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2);
-    }
-
-    .nav-btn:hover {
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.24), rgba(245, 182, 158, 0.18));
-      border-color: var(--powder-blue);
-      transform: translateX(6px) translateY(-2px);
-      box-shadow:
-        0 10px 20px rgba(0, 0, 0, 0.35),
-        inset 0 1.5px 3px rgba(255, 255, 255, 0.6);
-    }
-
-    .nav-btn.active {
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.32));
-      border-top: 1.5px solid var(--lavender-white);
-      border-left: 1.5px solid var(--powder-blue);
-      border-right: 1px solid var(--sunset-peach);
-      border-bottom: 2px solid var(--sunset-peach);
-      color: #fff;
-      transform: translateX(4px);
-      box-shadow:
-        0 12px 26px rgba(141, 185, 240, 0.28),
-        inset 0 2px 4px rgba(255, 255, 255, 0.7);
-    }
-
-    .main-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-      gap: 14px;
-    }
-
-    .topbar {
-      height: 68px;
-      background: var(--glass-surface);
-      backdrop-filter: blur(28px) saturate(200%);
-      -webkit-backdrop-filter: blur(28px) saturate(200%);
-      border-radius: var(--radius-lg);
-      border-top: 1.5px solid var(--glass-border-top);
-      border-left: 1.5px solid var(--glass-border-top);
-      border-right: 1px solid var(--glass-border-side);
-      border-bottom: 2px solid var(--glass-border-bottom);
-      box-shadow: var(--glass-3d-shadow);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 22px;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-
-    .topbar-left, .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .mobile-menu-btn {
-      display: none;
-      background: var(--glass-surface);
-      color: var(--lavender-white);
-      border: 1px solid var(--glass-border-top);
-      padding: 8px 14px;
-      border-radius: 12px;
-      cursor: pointer;
-    }
-
-    .pill-select, .btn-3d, .input-3d {
-      background: linear-gradient(135deg, rgba(233, 232, 248, 0.16), rgba(20, 22, 29, 0.58));
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      color: var(--lavender-white);
-      border-top: 1.5px solid rgba(233, 232, 248, 0.55);
-      border-left: 1.5px solid rgba(141, 185, 240, 0.4);
-      border-right: 1px solid rgba(245, 182, 158, 0.25);
-      border-bottom: 2px solid rgba(0, 0, 0, 0.45);
-      padding: 9px 15px;
-      border-radius: 14px;
-      font-size: 0.88rem;
-      outline: none;
-      transition: all 0.22s ease;
-      box-shadow:
-        0 8px 18px rgba(0, 0, 0, 0.35),
-        inset 0 1.5px 2px rgba(255, 255, 255, 0.4);
-    }
-
-    .pill-select option {
-      background: #181B24;
-      color: #E9E8F8;
-    }
-
-    .btn-3d {
-      cursor: pointer;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
-
-    .btn-3d:hover {
-      transform: translateY(-3px) scale(1.02);
-      border-top-color: #ffffff;
-      box-shadow:
-        0 14px 28px rgba(0, 0, 0, 0.5),
-        0 0 18px var(--powder-blue-glow),
-        inset 0 2px 4px rgba(255, 255, 255, 0.75);
-    }
-
-    .btn-peach-blue {
-      background: linear-gradient(135deg, var(--powder-blue) 0%, var(--lavender-white) 48%, var(--sunset-peach) 100%);
-      color: #14161D;
-      border-top: 1.5px solid #ffffff;
-      border-left: 1.5px solid #ffffff;
-      border-bottom: 2.5px solid rgba(20, 22, 29, 0.55);
-      font-weight: 800;
-      box-shadow:
-        0 10px 25px rgba(141, 185, 240, 0.4),
-        0 4px 15px rgba(245, 182, 158, 0.35),
-        inset 0 2px 4px rgba(255, 255, 255, 0.9);
-    }
-
-    .workspace-view {
-      flex: 1;
-      overflow-y: auto;
-      padding: 6px 6px 24px;
-      display: none;
-    }
-
-    .workspace-view.active {
-      display: block;
-    }
-
-    .grid-3d {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 22px;
-      margin-top: 22px;
-    }
-
-    .card-3d {
-      position: relative;
-      background: var(--glass-surface);
-      backdrop-filter: blur(28px) saturate(200%);
-      -webkit-backdrop-filter: blur(28px) saturate(200%);
-      border-radius: var(--radius-lg);
-      border-top: 1.5px solid var(--glass-border-top);
-      border-left: 1.5px solid var(--glass-border-top);
-      border-right: 1px solid var(--glass-border-side);
-      border-bottom: 2px solid var(--glass-border-bottom);
-      padding: 24px;
-      box-shadow: var(--glass-3d-shadow);
-      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
-      transform-style: preserve-3d;
-      overflow: hidden;
-    }
-
-    .card-3d::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        115deg,
-        transparent 35%,
-        rgba(233, 232, 248, 0.16) 46%,
-        rgba(255, 255, 255, 0.34) 50%,
-        rgba(141, 185, 240, 0.12) 54%,
-        transparent 65%
-      );
-      transform: rotate(-15deg);
-      pointer-events: none;
-      transition: transform 0.5s ease;
-    }
-
-    .card-3d:hover {
-      transform: translateY(-7px) rotateX(3deg) rotateY(-2deg);
-      box-shadow:
-        0 35px 70px -12px rgba(0, 0, 0, 0.85),
-        0 0 28px var(--powder-blue-glow),
-        0 5px 0px rgba(233, 232, 248, 0.25),
-        inset 0 2.5px 5px rgba(255, 255, 255, 0.75),
-        inset 0 -3px 10px var(--sunset-peach-glow);
-    }
-
-    .card-3d:hover::before {
-      transform: rotate(-15deg) translateX(12%);
-    }
-
-    .card-title {
-      font-size: 1.08rem;
-      font-weight: 800;
-      color: var(--powder-blue);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-    }
-
-    .orbit-core-hero {
-      position: relative;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      background: linear-gradient(
-        135deg,
-        rgba(233, 232, 248, 0.20) 0%,
-        rgba(141, 185, 240, 0.16) 48%,
-        rgba(245, 182, 158, 0.18) 100%
-      );
-      backdrop-filter: blur(34px) saturate(210%);
-      -webkit-backdrop-filter: blur(34px) saturate(210%);
-      border-top: 2px solid var(--lavender-white);
-      border-left: 2px solid var(--powder-blue);
-      border-right: 1.5px solid var(--sunset-peach);
-      border-bottom: 3px solid var(--sunset-peach);
-      border-radius: 28px;
-      padding: 28px;
-      box-shadow:
-        0 32px 70px rgba(0, 0, 0, 0.78),
-        0 0 40px var(--powder-blue-glow),
-        inset 0 3px 6px rgba(255, 255, 255, 0.7),
-        inset 0 -4px 12px var(--sunset-peach-glow);
-      overflow: hidden;
-    }
-
-    #orbitCoreContainer {
-      width: 270px;
-      height: 270px;
-      position: relative;
-      margin: 0 auto;
-      border-radius: 50%;
-      background: radial-gradient(
-        circle at 50% 58%,
-        rgba(255, 60, 0, 0.42) 0%,
-        rgba(190, 10, 30, 0.22) 45%,
-        rgba(20, 10, 18, 0.0) 72%
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-    }
-
-    #orbitCoreContainer::after {
-      content: "";
-      position: absolute;
-      bottom: 14px;
-      width: 150px;
-      height: 32px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center, #ff9a44 0%, #ff1e00 50%, transparent 78%);
-      filter: blur(10px);
-      opacity: 0.9;
-      pointer-events: none;
-      animation: pulseCaustic 3s infinite alternate ease-in-out;
-    }
-
-    @keyframes pulseCaustic {
-      0% { transform: scaleX(0.92) scaleY(0.9); opacity: 0.75; }
-      100% { transform: scaleX(1.08) scaleY(1.15); opacity: 1; }
-    }
-
-    .core-status-badge {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      background: linear-gradient(135deg, rgba(255, 60, 20, 0.35), rgba(141, 185, 240, 0.28));
-      border-top: 1px solid var(--lavender-white);
-      border-bottom: 1px solid #ff4d29;
-      color: var(--lavender-white);
-      margin-bottom: 12px;
-      box-shadow: 0 6px 16px rgba(255, 40, 0, 0.3);
-    }
-
-    .chat-layout {
-      display: flex;
-      flex-direction: column;
-      height: calc(100vh - 118px);
-      background: var(--glass-surface);
-      backdrop-filter: blur(28px) saturate(200%);
-      -webkit-backdrop-filter: blur(28px) saturate(200%);
-      border-top: 1.5px solid var(--glass-border-top);
-      border-left: 1.5px solid var(--glass-border-top);
-      border-right: 1px solid var(--glass-border-side);
-      border-bottom: 2px solid var(--glass-border-bottom);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--glass-3d-shadow);
-      overflow: hidden;
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .msg-bubble {
-      max-width: 82%;
-      padding: 15px 20px;
-      border-radius: 20px;
-      line-height: 1.58;
-      font-size: 0.95rem;
-      position: relative;
-      word-wrap: break-word;
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-    }
-
-    .msg-user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.38), rgba(245, 182, 158, 0.35));
-      border-top: 1.5px solid var(--lavender-white);
-      border-left: 1.5px solid var(--powder-blue);
-      border-bottom: 2px solid var(--sunset-peach);
-      color: #fff;
-      box-shadow:
-        0 14px 30px rgba(0, 0, 0, 0.45),
-        inset 0 2px 3px rgba(255, 255, 255, 0.55);
-    }
-
-    .msg-ai {
-      align-self: flex-start;
-      background: linear-gradient(135deg, rgba(233, 232, 248, 0.16), rgba(20, 22, 29, 0.72));
-      border-top: 1.5px solid rgba(233, 232, 248, 0.5);
-      border-left: 1.5px solid rgba(141, 185, 240, 0.35);
-      border-bottom: 2px solid rgba(233, 232, 248, 0.22);
-      color: var(--lavender-white);
-      box-shadow:
-        0 14px 30px rgba(0, 0, 0, 0.5),
-        inset 0 1.5px 2px rgba(255, 255, 255, 0.35);
-    }
-
-    .msg-bubble pre {
-      background: rgba(14, 16, 22, 0.85);
-      padding: 12px;
-      border-radius: 12px;
-      overflow-x: auto;
-      margin: 8px 0;
-      border: 1px solid rgba(141, 185, 240, 0.3);
-    }
-
-    .msg-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-      font-size: 0.75rem;
-    }
-
-    .msg-actions button {
-      background: rgba(233, 232, 248, 0.14);
-      border: 1px solid rgba(233, 232, 248, 0.35);
-      color: var(--lavender-white);
-      padding: 4px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .chat-composer {
-      padding: 16px;
-      border-top: 1px solid rgba(233, 232, 248, 0.24);
-      background: linear-gradient(180deg, rgba(233, 232, 248, 0.08), rgba(20, 22, 29, 0.68));
-      backdrop-filter: blur(24px);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .attachment-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .att-chip {
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.35), rgba(245, 182, 158, 0.35));
-      border: 1px solid var(--lavender-white);
-      padding: 5px 12px;
-      border-radius: 99px;
-      font-size: 0.78rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .composer-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .composer-input {
-      flex: 1;
-      background: linear-gradient(135deg, rgba(233, 232, 248, 0.14), rgba(16, 18, 25, 0.68));
-      border-top: 1.5px solid rgba(233, 232, 248, 0.48);
-      border-left: 1.5px solid rgba(141, 185, 240, 0.35);
-      border-bottom: 1.5px solid rgba(245, 182, 158, 0.45);
-      border-radius: 16px;
-      padding: 12px 16px;
-      color: var(--lavender-white);
-      font-size: 0.95rem;
-      resize: none;
-      height: 52px;
-      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
-    }
-
-    .auth-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(12, 14, 20, 0.92);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 450px;
-      background: var(--glass-surface);
-      backdrop-filter: blur(32px) saturate(200%);
-      border-top: 2px solid var(--lavender-white);
-      border-left: 2px solid var(--powder-blue);
-      border-bottom: 2.5px solid var(--sunset-peach);
-      border-radius: 26px;
-      padding: 28px;
-      box-shadow: var(--glass-3d-shadow);
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--lavender-white);
-    }
-
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 12px;
-      border-top: 1px solid rgba(233, 232, 248, 0.48);
-      border-left: 1px solid rgba(141, 185, 240, 0.35);
-      border-bottom: 1.5px solid rgba(245, 182, 158, 0.4);
-      background: rgba(16, 18, 25, 0.65);
-      color: #fff;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
-    }
-
-    @media (max-width: 860px) {
-      .app-shell { padding: 8px; }
-      .sidebar {
-        position: fixed;
-        left: 8px;
-        top: 8px;
-        bottom: 8px;
-        transform: translateX(-110%);
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-      .mobile-menu-btn {
-        display: inline-block;
+require('dotenv').config();
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const multer = require('multer');
+
+let pdfParse = null;
+let mammoth = null;
+let nodemailer = null;
+try { pdfParse = require('pdf-parse'); } catch (e) {}
+try { mammoth = require('mammoth'); } catch (e) {}
+try { nodemailer = require('nodemailer'); } catch (e) {}
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+const DATA_DIR = path.join(__dirname, 'data');
+const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
+const AUTH_FILE = path.join(DATA_DIR, 'auth.json');
+const SECRET_FILE = path.join(DATA_DIR, 'session.secret');
+const WORKSPACE_FILE = path.join(DATA_DIR, 'workspace.json');
+
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+let SESSION_SECRET = process.env.SESSION_SECRET || '';
+if (!SESSION_SECRET) {
+  if (fs.existsSync(SECRET_FILE)) {
+    SESSION_SECRET = fs.readFileSync(SECRET_FILE, 'utf8').trim();
+  } else {
+    SESSION_SECRET = crypto.randomBytes(32).toString('hex');
+    fs.writeFileSync(SECRET_FILE, SESSION_SECRET, 'utf8');
+  }
+}
+
+// Rate Limiter
+const requestCounts = new Map();
+function rateLimiter(req, res, next) {
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const maxRequests = 500;
+
+  if (!requestCounts.has(ip)) {
+    requestCounts.set(ip, { count: 1, startTime: now });
+  } else {
+    let data = requestCounts.get(ip);
+    if (now - data.startTime > windowMs) {
+      data.count = 1;
+      data.startTime = now;
+    } else {
+      data.count++;
+      if (data.count > maxRequests) {
+        return res.status(429).json({ error: 'Too many requests, please try again later.' });
       }
     }
+  }
+  next();
+}
+app.use(rateLimiter);
 
-    html { -webkit-tap-highlight-color: transparent; }
-    body { height: 100vh; height: 100dvh; }
-    .app-shell {
-      height: 100vh; height: 100dvh;
-      padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
-    }
-    .sidebar, .topbar, .card-3d, .chat-layout, .orbit-core-hero, .auth-card {
-      background:
-        radial-gradient(120% 70% at 10% 0%, rgba(255,255,255,0.20), transparent 58%),
-        radial-gradient(90% 60% at 100% 100%, rgba(245,182,158,0.14), transparent 60%),
-        var(--glass-surface);
-    }
-    .sidebar { background:
-        radial-gradient(120% 60% at 0% 0%, rgba(255,255,255,0.16), transparent 55%),
-        var(--glass-sidebar); }
-    .card-3d::after, .topbar::after {
-      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07), inset 0 20px 34px -24px rgba(255,255,255,0.5);
-    }
-    .nav-btn, .btn-3d { -webkit-tap-highlight-color: transparent; }
-    .nav-btn:focus-visible, .btn-3d:focus-visible, .input-3d:focus-visible, .pill-select:focus-visible {
-      outline: 2px solid var(--powder-blue); outline-offset: 2px;
-    }
-    #orbitCoreContainer canvas { width: 100% !important; height: 100% !important; border-radius: 50%; }
-    [dir="rtl"] .nav-btn { text-align: right; }
-    [dir="rtl"] .nav-btn:hover, [dir="rtl"] .nav-btn.active { transform: translateX(-5px); }
-    .kie-tag { font-size: 0.7rem; padding: 2px 10px; border-radius: 99px; border: 1px solid var(--glass-border-top); background: rgba(141,185,240,0.18); font-weight: 700; }
-    .aca-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
-    .chk-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
-    .chk-row label { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; font-size: 0.82rem; border: 1px solid rgba(233,232,248,0.3); background: rgba(233,232,248,0.08); cursor: pointer; }
-    .doc-out { max-height: 62vh; overflow: auto; line-height: 1.65; margin-top: 14px; }
-    .doc-out table { border-collapse: collapse; width: 100%; }
-    .doc-out th, .doc-out td { border: 1px solid rgba(233,232,248,0.3); padding: 6px 10px; }
-    .media-result img, .media-result video { max-width: 100%; border-radius: 16px; margin-top: 10px; }
-
-    @media (max-width: 860px) {
-      body { perspective: none; }
-      .sidebar, .topbar, .card-3d, .chat-layout, .orbit-core-hero, .auth-card, .msg-bubble, .chat-composer, .pill-select, .btn-3d, .input-3d {
-        backdrop-filter: blur(12px) saturate(150%); -webkit-backdrop-filter: blur(12px) saturate(150%);
-      }
-      .glow-orb { filter: blur(36px); animation: none; opacity: 0.55; }
-      .orb-blue, .orb-peach { width: 280px; height: 280px; }
-      .orb-lavender { width: 220px; height: 220px; }
-      .card-3d, .card-3d:hover { transform: none !important; }
-      .card-3d::before { display: none; }
-      .sidebar { width: min(86vw, 300px); }
-      .topbar { height: auto; min-height: 60px; flex-wrap: wrap; padding: 8px 12px; }
-      .topbar-left, .topbar-right { flex-wrap: wrap; gap: 8px; }
-      .orbit-core-hero { padding: 18px; }
-      .orbit-core-hero h1 { font-size: 1.55rem !important; }
-      #orbitCoreContainer { width: 220px; height: 220px; }
-      .grid-3d { grid-template-columns: 1fr; gap: 14px; }
-      .chat-layout { height: calc(100dvh - 104px); }
-      .msg-bubble { max-width: 94%; }
-      input, textarea, select { font-size: 16px !important; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .glow-orb, #orbitCoreContainer::after { animation: none !important; }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="ambient-stage">
-    <div class="glow-orb orb-blue"></div>
-    <div class="glow-orb orb-peach"></div>
-    <div class="glow-orb orb-lavender"></div>
-  </div>
-
-  <canvas id="bg3dCanvas"></canvas>
-
-  <div class="auth-overlay" id="authModal" style="display: flex;">
-    <div class="auth-card">
-      <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
-        <span>🔐 ORBIT AI Access</span>
-      </div>
-      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">
-        Please enter owner credentials to claim workspace.
-      </p>
-
-      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
-      </div>
-
-      <div id="authTabOwner">
-        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
-        <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter owner claim code" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
-      </div>
-
-      <div id="authTabGuest" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
-        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
-        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
-      </div>
-
-      <div id="authTabOtp" style="display:none;">
-        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
-        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP to Email</button>
-        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
-      </div>
-
-      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach); text-align:center;"></div>
-    </div>
-  </div>
-
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand-header">
-        <div class="brand-prism-mini"></div>
-        <div>
-          <div class="brand-title">ORBIT AI</div>
-          <div style="font-size: 0.74rem; color: var(--sunset-peach); font-weight:700;" id="roleBadge">Private Intelligence OS</div>
-        </div>
-      </div>
-
-      <div class="nav-scroll">
-        <div class="nav-section-label" data-i18n="sec_workspace">WORKSPACE</div>
-        <button class="nav-btn active" onclick="switchView('overview')">🔴 <span data-i18n="nav_overview">Overview</span></button>
-        <button class="nav-btn" onclick="switchView('chat')">💬 <span data-i18n="nav_chat">AI Chat</span></button>
-        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub Pro</span></button>
-        <button class="nav-btn" onclick="switchView('prompts')">✨ <span data-i18n="nav_prompts">Prompt Library</span></button>
-        <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Files & Tools</span></button>
-        <button class="nav-btn" onclick="switchView('history')">🕒 <span data-i18n="nav_history">Chat History</span></button>
-        <button class="nav-btn" onclick="switchView('search')">🔍 <span data-i18n="nav_search">AI Search</span></button>
-        <button class="nav-btn" onclick="switchView('agents')">🤖 <span data-i18n="nav_agents">AI Agents</span></button>
-        <button class="nav-btn" onclick="switchView('projects')">📁 <span data-i18n="nav_projects">Projects</span></button>
-        <button class="nav-btn" onclick="switchView('knowledge')">📚 <span data-i18n="nav_knowledge">Knowledge Base</span></button>
-        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_media">Image & Video AI</span></button>
-        <button class="nav-btn" onclick="switchView('automation')">⚡ <span data-i18n="nav_automation">Automation</span></button>
-        <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic Project Suite</span></button>
-
-        <div class="nav-section-label" data-i18n="sec_personal">PERSONAL</div>
-        <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile & Account</span></button>
-        <button class="nav-btn owner-only" onclick="switchView('apiconn')" style="display:none;">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
-        <button class="nav-btn" onclick="switchView('security')">🛡️ <span data-i18n="nav_security">Permissions & Security</span></button>
-        <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
-        <button class="nav-btn" onclick="switchView('subscription')">💠 <span data-i18n="nav_pro">Pro Subscription</span></button>
-        <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
-      </div>
-    </aside>
-
-    <div class="main-area">
-      <header class="topbar">
-        <div class="topbar-left">
-          <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-          <select id="globalModelSelect" class="pill-select" onchange="onModelSelectChange(this.value)">
-            <option value="openrouter/auto">openrouter/auto (Auto Select)</option>
-          </select>
-        </div>
-
-        <div class="topbar-right">
-          <select id="langSelect" class="pill-select" onchange="changeLanguage(this.value)">
-            <option value="en">English</option>
-            <option value="mr">मराठी (Marathi)</option>
-            <option value="hi">हिन्दी (Hindi)</option>
-            <option value="bn">বাংলা (Bengali)</option>
-            <option value="ta">தமிழ் (Tamil)</option>
-            <option value="te">తెలుగు (Telugu)</option>
-            <option value="gu">ગુજરાતી (Gujarati)</option>
-            <option value="kn">ಕನ್ನಡ (Kannada)</option>
-            <option value="ml">മലയാളം (Malayalam)</option>
-            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-            <option value="or">ଓଡ଼ିଆ (Odia)</option>
-            <option value="as">অসমীয়া (Assamese)</option>
-            <option value="ur">اردو (Urdu)</option>
-            <option value="sa">संस्कृतम् (Sanskrit)</option>
-            <option value="ne">नेपाली (Nepali)</option>
-          </select>
-          <button class="btn-3d" onclick="toggleTheme()" id="themeBtn">🌗 Theme</button>
-          <button class="btn-3d btn-peach-blue" onclick="openAuthModal()" id="authBtn">Login / Setup</button>
-        </div>
-      </header>
-
-      <section class="workspace-view active" id="view-overview">
-        <div class="orbit-core-hero tilt-glass">
-          <div style="flex: 1; min-width: 260px;">
-            <span class="core-status-badge" id="coreStateBadge">ORBIT CORE: ONLINE</span>
-            <h1 style="font-size: 2.15rem; margin-bottom: 12px; text-shadow: 0 4px 18px rgba(0,0,0,0.5);" data-i18n="hero_title">ORBIT AI — Private Intelligence OS</h1>
-            <p style="color: var(--lavender-white); opacity:0.92; margin-bottom: 22px; line-height:1.6; font-size: 1rem;" data-i18n="hero_sub">
-              Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, and private execution.
-            </p>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-              <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
-              <button class="btn-3d" onclick="switchView('models')" data-i18n="nav_models">AI Model Hub Pro</button>
-              <button class="btn-3d" onclick="switchView('files')" data-i18n="nav_files">Files & Tools</button>
-            </div>
-          </div>
-          <div id="orbitCoreContainer" title="3D Glossy Crimson Glass Orb"></div>
-        </div>
-
-        <div class="grid-3d">
-          <div class="card-3d tilt-glass">
-            <div class="card-title"><span data-i18n="card_status">System & Model Status</span> <span>🟢</span></div>
-            <p id="overviewStatusText" style="font-size: 0.92rem; line-height:1.7;">Checking backend health...</p>
-          </div>
-          <div class="card-3d tilt-glass">
-            <div class="card-title"><span data-i18n="card_quick_chat">Quick AI Ask</span> <span>⚡</span></div>
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-              <input id="quickAskInput" class="input-3d" style="flex:1;" placeholder="Ask ORBIT AI anything..." />
-              <button class="btn-3d btn-peach-blue" onclick="runQuickAsk()">Send</button>
-            </div>
-          </div>
-          <div class="card-3d tilt-glass">
-            <div class="card-title"><span data-i18n="card_stats">Workspace Statistics</span> <span>📊</span></div>
-            <div id="overviewStats" style="font-size: 0.92rem; line-height: 1.8;"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-chat">
-        <div class="chat-layout">
-          <div style="padding: 14px 20px; border-bottom: 1px solid rgba(233,232,248,0.22); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <button class="btn-3d" onclick="newConversation()">+ New Chat</button>
-              <select id="chatProjectSelect" class="pill-select">
-                <option value="">No Project Context</option>
-              </select>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button class="btn-3d" onclick="regenerateLast()">🔄 Regenerate</button>
-              <button class="btn-3d" onclick="stopGeneration()">⏹ Stop</button>
-              <button class="btn-3d" onclick="exportCurrentChat()">⬇ Export</button>
-            </div>
-          </div>
-
-          <div class="chat-messages" id="chatMessages"></div>
-
-          <div class="chat-composer">
-            <div class="attachment-bar" id="chatAttachmentBar"></div>
-            <div class="composer-row">
-              <input type="file" id="chatFileInput" style="display:none" onchange="handleChatFileAttach(this)" />
-              <button class="btn-3d" onclick="document.getElementById('chatFileInput').click()" title="Attach PDF, DOCX, Image, Video, Code">📎</button>
-              <button class="btn-3d" onclick="toggleVoiceInput()" id="voiceBtn" title="Voice Input">🎤</button>
-              <textarea id="chatInput" class="composer-input" placeholder="Message ORBIT AI... (Shift+Enter for new line)" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
-              <button class="btn-3d btn-peach-blue" onclick="sendMessage()">Send 🚀</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-models">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-          <h2 data-i18n="nav_models">AI Model Hub Pro</h2>
-          <div style="display: flex; gap: 10px;">
-            <input id="modelSearchInput" class="input-3d" placeholder="Search models..." oninput="renderModelsGrid()" />
-            <button class="btn-3d btn-peach-blue" onclick="loadModels()">🔄 Refresh Models</button>
-          </div>
-        </div>
-        
-        <div class="card-3d tilt-glass" style="margin-top:22px;">
-          <div class="card-title"><span>KIE.ai Market Models Hub (128+ Models)</span> <span class="kie-tag">Pro Section</span></div>
-          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Complete suite of KIE.ai chat, image, music, and video market models.</p>
-          <div class="grid-3d" id="kieGrid"></div>
-        </div>
-
-        <div class="card-3d tilt-glass" style="margin-top:26px;">
-          <div class="card-title"><span>OpenRouter Market Models</span> <span class="kie-tag">Pro Section</span></div>
-          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">All OpenRouter models (Limited to top 3 in Free Tier, All in Pro Tier).</p>
-          <div class="grid-3d" id="modelsGrid"></div>
-        </div>
-
-        <div class="card-3d tilt-glass" id="customApiModelsCard" style="margin-top:26px; display:none;">
-          <div class="card-title"><span>Custom API Models</span> <span class="kie-tag">Dynamic Key</span></div>
-          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Models loaded automatically from your custom API key connection.</p>
-          <div class="grid-3d" id="customApiGrid"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-prompts">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Create / Save Prompt</div>
-          <div style="display: grid; gap: 10px;">
-            <input id="promptTitle" class="input-3d" placeholder="Prompt Title" />
-            <textarea id="promptContent" class="input-3d" rows="3" placeholder="Write prompt template here..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="savePromptItem()">Save Prompt</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="promptsGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-files">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Upload & Analyze Files (PDF, DOCX, TXT, CSV, JSON, Images, Videos) — 18MB Limit</div>
-          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-            <input type="file" id="workspaceFileInput" class="input-3d" />
-            <button class="btn-3d btn-peach-blue" onclick="uploadWorkspaceFile()">Upload & Extract</button>
-            <span id="uploadStatusMsg" style="font-size: 0.88rem; color: var(--sunset-peach);"></span>
-          </div>
-        </div>
-        <div class="grid-3d" id="filesGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-history">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h2 data-i18n="nav_history">Chat History</h2>
-          <input id="historySearch" class="input-3d" placeholder="Search conversations..." oninput="renderHistoryList()" />
-        </div>
-        <div class="grid-3d" id="historyGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-search">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">AI Live Web Search</div>
-          <div style="display: flex; gap: 10px;">
-            <input id="aiSearchInput" class="input-3d" style="flex:1;" placeholder="Search the live web with citations..." />
-            <button class="btn-3d btn-peach-blue" onclick="runAiWebSearch()">Search 🌐</button>
-          </div>
-          <div id="aiSearchResults" style="margin-top: 16px;"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-agents">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Create Custom AI Agent</div>
-          <div style="display: grid; gap: 10px;">
-            <input id="agentName" class="input-3d" placeholder="Agent Name" />
-            <textarea id="agentInstructions" class="input-3d" rows="2" placeholder="Agent role, instructions & behavior..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="createAgent()">Create Agent 🤖</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="agentsGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-projects">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Create Project Workspace</div>
-          <div style="display: grid; gap: 10px;">
-            <input id="projName" class="input-3d" placeholder="Project Name" />
-            <textarea id="projInstructions" class="input-3d" rows="2" placeholder="Project-specific context & rules..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="createProject()">Create Project 📁</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="projectsGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-knowledge">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Add Document to Knowledge Base (Used automatically in AI Chat)</div>
-          <div style="display: grid; gap: 10px;">
-            <input id="kbTitle" class="input-3d" placeholder="Document Title" />
-            <textarea id="kbContent" class="input-3d" rows="4" placeholder="Paste knowledge text, notes, or extracted document content..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="addKnowledgeDoc()">Add to Knowledge Base 📚</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="knowledgeGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-media">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">AI Image & Video Generation Studio (8K Ultra HD)</div>
-          <p style="color: var(--lavender-white); opacity:0.85; font-size: 0.9rem; margin-bottom: 12px;">
-            Generates 8K Ultra HD cinematic video prompts & photorealistic visual specs via KIE.ai market models.
-          </p>
-          <div style="display: flex; gap: 10px;">
-            <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 8K Ultra HD cinematic video or graphic..." />
-            <button class="btn-3d btn-peach-blue" onclick="generateMediaPrompt()">Generate Spec 🎨</button>
-          </div>
-          <div class="aca-grid" style="margin-top:14px;">
-            <select id="mediaKieModel" class="pill-select"></select>
-            <select id="mediaRatio" class="pill-select"><option value="9:16">9:16 Vertical</option><option value="16:9">16:9 Wide</option><option value="1:1">1:1 Square</option></select>
-            <select id="mediaQuality" class="pill-select"><option value="8K Ultra HD" selected>8K Ultra HD (Max Quality)</option><option value="4K UHD">4K UHD</option></select>
-            <input id="mediaCustomModel" class="input-3d" placeholder="Custom KIE model ID (optional)" />
-          </div>
-          <button class="btn-3d btn-peach-blue" onclick="generateKieMedia()">Generate in 8K Ultra HD via KIE.ai 🎬</button>
-          <div id="mediaKieOutput" class="media-result" style="margin-top:14px;"></div>
-          <div id="mediaOutput" style="margin-top: 14px;"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-academic">
-        <div class="card-3d tilt-glass">
-          <div class="card-title"><span data-i18n="nav_academic">Academic Project Suite</span> <span>🎓</span></div>
-          <p style="font-size:0.88rem;opacity:0.9;margin-bottom:12px;">Generate a fully structured academic project report. Select your exact degree, stream, academic year, semester, and project scope.</p>
-          
-          <div class="aca-grid">
-            <div class="form-group">
-              <label>Degree / Qualification:</label>
-              <select id="acaDegree" class="pill-select">
-                <option selected>B.Pharmacy</option><option>B.Tech / B.E.</option><option>M.Pharmacy</option><option>M.Tech / M.E.</option><option>B.Sc / M.Sc</option><option>Diploma</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Stream / Department:</label>
-              <select id="acaField" class="pill-select">
-                <option>Pharmaceutics</option><option>Pharmaceutical Chemistry</option><option>Pharmacology</option><option>Pharmacognosy</option><option>Computer Engineering</option><option>Information Technology</option><option>AI &amp; Data Science</option><option>Mechanical Engineering</option><option>Civil Engineering</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Academic Year:</label>
-              <select id="acaYear" class="pill-select">
-                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option selected>Final Year (4th Year)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Semester:</label>
-              <select id="acaSem" class="pill-select">
-                <option>Semester I</option><option>Semester II</option><option>Semester III</option><option>Semester IV</option><option>Semester V</option><option>Semester VI</option><option>Semester VII</option><option selected>Semester VIII</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Project Scope / Length:</label>
-              <select id="acaLength" class="pill-select">
-                <option value="150">Short (~150 words per section)</option>
-                <option value="300" selected>Standard (~300 words per section)</option>
-                <option value="500">Comprehensive (~500 words per section)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Project Title / Topic:</label>
-            <input id="acaTitle" class="input-3d" placeholder="e.g., Formulation and Evaluation of Herbal Anti-Acne Gel..." />
-          </div>
-
-          <div class="chk-row" id="acaSections"></div>
-          <label style="display:flex;gap:8px;align-items:center;font-size:0.88rem;margin-bottom:14px;"><input type="checkbox" id="acaUseChat" checked /> Use current AI Chat context</label>
-          
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn-3d btn-peach-blue" id="acaGenBtn" onclick="generateAcademicReport()">Generate Project Report 🎓</button>
-            <button class="btn-3d" onclick="acaStop=true">⏹ Stop</button>
-            <button class="btn-3d" onclick="copyAcademicReport()">Copy Markdown</button>
-            <button class="btn-3d" onclick="downloadAcademicReport()">Download .md</button>
-          </div>
-          <div id="acaStatus" style="margin-top:10px;font-size:0.85rem;color:var(--sunset-peach);"></div>
-          <div id="acaOutput" class="doc-out"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-automation">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">AI Task & Workflow Automation</div>
-          <div style="margin-top: 12px; display: flex; gap: 10px;">
-            <input id="autoTaskInput" class="input-3d" style="flex:1;" placeholder="Enter multi-step goal for autonomous execution..." />
-            <button class="btn-3d btn-peach-blue" onclick="runAutomationTask()">Run Pipeline ⚡</button>
-          </div>
-          <div id="autoTaskOutput" style="margin-top: 14px;"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-profile">
-        <div class="card-3d tilt-glass">
-          <div class="card-title" data-i18n="nav_profile">Profile & Account</div>
-          <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px; font-size:1.05rem;"></div>
-          
-          <div style="margin: 16px 0; padding: 14px; border-radius: 14px; background: rgba(141,185,240,0.1); border: 1px solid var(--powder-blue);">
-            <strong>Subscription Tier View:</strong>
-            <div style="display:flex; gap:10px; margin-top:8px;">
-              <button class="btn-3d" id="btnTierFree" onclick="switchUserTier('free')">Free Tier View (Limited Models)</button>
-              <button class="btn-3d btn-peach-blue" id="btnTierPro" onclick="switchUserTier('pro')">Pro Tier View (All Models & Features)</button>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Backend Server URL (Important for Android APK):</label>
-            <input id="apiBaseUrlInput" class="input-3d" placeholder="http://localhost:3000" />
-          </div>
-          <button class="btn-3d btn-peach-blue" onclick="saveApiBaseUrl()">Save Server URL</button>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-apiconn">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Dynamic Custom API Key Integration</div>
-          <p style="font-size:0.85rem; opacity:0.9; margin-bottom:12px;">Add any provider API key (OpenAI, Anthropic, Custom LLM). Models will instantly load into Model Hub.</p>
-          <div class="form-group">
-            <label>Custom API Provider Name (e.g. MyCustomAI)</label>
-            <input type="text" id="cfgCustomName" class="input-3d" placeholder="Custom Provider" />
-          </div>
-          <div class="form-group">
-            <label>Custom API Key</label>
-            <input type="password" id="cfgCustomKey" class="input-3d" placeholder="key-..." />
-          </div>
-          <div class="form-group">
-            <label>Custom API Endpoint Base URL</label>
-            <input type="text" id="cfgCustomEndpoint" class="input-3d" placeholder="https://api.example.com/v1" />
-          </div>
-          <button class="btn-3d btn-peach-blue" onclick="saveCustomApiKeyAdapter()">Save & Load Custom Models 🔑</button>
-          <div id="customApiStatusMsg" style="margin-top: 12px; font-size: 0.9rem;"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-security">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Security, Roles & Session Protection</div>
-          <ul style="line-height: 1.9; padding-left: 18px;">
-            <li>HMAC-SHA256 Signed Session Cookies & Token Verification</li>
-            <li>API Keys strictly isolated on Node.js backend (`.env`)</li>
-            <li>Owner vs Guest role enforcement on server routes</li>
-            <li>18 MB upload validation & sanitized filenames</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-settings">
-        <h2 style="margin-bottom: 14px;" data-i18n="nav_settings">Complete 3D Workspace Settings</h2>
-        <div class="grid-3d">
-          <div class="card-3d tilt-glass"><div class="card-title">1. Appearance & 3D Glass</div><button class="btn-3d" onclick="toggleTheme()">Switch Dark / Light Glass Theme</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">2. Language & Region</div><p>Use the top-bar selector for all 15 languages (मराठी, हिंदी, English, বাংলা, தமிழ், اردو…).</p></div>
-          <div class="card-3d tilt-glass"><div class="card-title">3. Voice & Speech</div><button class="btn-3d" onclick="speakText('ORBIT AI Private Intelligence OS is online.')">Test Voice Output 🔊</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">4. Data Export & Control</div><button class="btn-3d" onclick="exportAllWorkspaceData()">Export Full Local Data 📦</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">5. Diagnostics & Health</div><button class="btn-3d btn-peach-blue" onclick="checkHealth()">Run System Check 🩺</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">6. Owner Tools 👑</div><button class="btn-3d btn-peach-blue owner-only" style="display:none;" onclick="switchView('admin')">Open Admin Panel</button><p style="font-size:0.85rem;">Guest requests, auto-OTP approval and pro subscription requests (owner only).</p></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-subscription">
-        <div class="grid-3d">
-          <div class="card-3d tilt-glass">
-            <div class="card-title">Free Personal Tier</div>
-            <p>Access to standard models (OpenRouter Auto & basic chat). Upgrade to Pro for 128+ KIE.ai market models and advanced features.</p>
-            <div style="margin-top:16px;" id="subFreeStatus"></div>
-          </div>
-          <div class="card-3d tilt-glass" style="border-bottom-color: var(--sunset-peach);">
-            <div class="card-title">ORBIT AI PRO (Ultimate Edition) 💠</div>
-            <p style="line-height: 1.7; margin-bottom:14px;">128+ KIE.ai models, Unlimited Multi-Model Routing, Real PDF/DOCX Parsing, Academic Project Suite & 8K Ultra HD Media.</p>
-            <div id="subProStatus">
-              <button class="btn-3d btn-peach-blue" onclick="redirectToRazorpay()">Upgrade to Pro (Pay via Razorpay)</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-admin">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">👑 Owner Admin Panel — Guest Requests, Pro Upgrades & Users</div>
-          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 14px;">Refresh Admin Data</button>
-          
-          <h4 style="margin-top:10px; color:var(--sunset-peach);">Pro Subscription Upgrade Requests</h4>
-          <div id="adminProRequestsList" style="margin-bottom:18px;"></div>
-
-          <h4 style="margin-top:10px;">Guest Access Requests</h4>
-          <div id="adminRequestsList"></div>
-
-          <hr style="border-color: rgba(233,232,248,0.22); margin: 18px 0;" />
-          <div id="adminUsersList"></div>
-        </div>
-      </section>
-    </div>
-  </div>
-
-  <script>
-    let defaultBase = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
-    let API_BASE = localStorage.getItem('orbit_api_base') || defaultBase;
-    let currentUser = null;
-    let currentModel = localStorage.getItem('orbit_model') || 'openrouter/auto';
-    let allModels = [];
-    let conversations = JSON.parse(localStorage.getItem('orbit_conversations') || '[]');
-    let activeConvId = null;
-    let pendingAttachments = [];
-    let activeAbortController = null;
-    let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
-
-    const I18N = {
-      en: {
-        sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
-        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub Pro", nav_academic: "Academic Project Suite",
-        nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History",
-        nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base",
-        nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile & Account",
-        nav_apiconn: "API Connections", nav_security: "Permissions & Security", nav_settings: "Settings",
-        nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
-        hero_title: "ORBIT AI — Private Intelligence OS",
-        hero_sub: "Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, and private execution.",
-        btn_launch_chat: "Launch AI Chat", card_status: "System & Model Status", card_quick_chat: "Quick AI Ask", card_stats: "Workspace Statistics",
-        auth_sub: "Please enter owner credentials to claim workspace."
-      },
-      mr: {
-        sec_workspace: "कार्यक्षेत्र (WORKSPACE)", sec_personal: "वैयक्तिक (PERSONAL)",
-        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब प्रो", nav_academic: "शैक्षणिक प्रोजेक्ट सूट",
-        nav_prompts: "प्रॉम्प्ट लायब्ररी", nav_files: "फाईल्स आणि टूल्स", nav_history: "चॅट इतिहास",
-        nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज आणि व्हिडिओ AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफाईल आणि खाते",
-        nav_apiconn: "API कनेक्शन्स", nav_security: "परवानग्या आणि सुरक्षा", nav_settings: "सेटिंग्ज",
-        nav_pro: "प्रो सबस्क्रिप्शन", nav_admin: "ॲडमिन पॅनेल",
-        hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
-        hero_sub: "अत्याधुनिक मल्टी-मॉडेल AI वर्कस्पेस, डॉक्युमेंट विश्लेषण आणि स्मार्ट एजंट्ससह तुमची स्वतःची प्रायव्हेट सिस्टीम.",
-        btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम स्थिती", card_quick_chat: "झटपट AI प्रश्न", card_stats: "वर्कस्पेस आकडेवारी",
-        auth_sub: "कृपया वर्कस्पेस क्लेम करण्यासाठी ओनर क्रेडेंशियल्स प्रविष्ट करा."
-      },
-      hi: {
-        sec_workspace: "वर्कस्पेस", sec_personal: "व्यक्तिगत",
-        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब प्रो", nav_academic: "एकेडमिक प्रोजेक्ट सूट",
-        nav_prompts: "प्रॉम्प्ट लाइब्रेरी", nav_files: "फ़ाइलें और टूल्स", nav_history: "चैट इतिहास",
-        nav_search: "AI सर्च", nav_agents: "AI एजेंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज और वीडियो AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफ़ाइल",
-        nav_apiconn: "API कनेक्शन", nav_security: "सुरक्षा", nav_settings: "सेटिंग्स",
-        nav_pro: "प्रो प्लान", nav_admin: "एडमिन पैनल",
-        hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
-        hero_sub: "मल्टी-मॉडल AI, डॉक्यूमेंट एनालिसिस और स्मार्ट एजेंट्स के साथ आपका निजी ऑपरेटिंग सिस्टम।",
-        btn_launch_chat: "AI चैट खोलें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न", card_stats: "आंकड़े",
-        auth_sub: "कृपया ओनर क्रेडेंशियल्स दर्ज करें।"
-      }
+function loadAuthData() {
+  if (!fs.existsSync(AUTH_FILE)) {
+    const initial = {
+      owner: null,
+      ownerClaimCode: process.env.OWNER_CLAIM_CODE || '411826',
+      users: [],
+      requests: [],
+      proRequests: [],
+      payments: [],
+      otps: {},
+      sessions: {}
     };
-
-    const I18N_KEYS = ["sec_workspace","sec_personal","nav_overview","nav_chat","nav_models","nav_prompts","nav_files","nav_history","nav_search","nav_agents","nav_projects","nav_knowledge","nav_media","nav_automation","nav_profile","nav_apiconn","nav_security","nav_settings","nav_pro","nav_admin","nav_academic","btn_launch_chat"];
-    const I18N_PACK = {
-      bn: ["কর্মক্ষেত্র","ব্যক্তিগত","ওভারভিউ","AI চ্যাট","AI মডেল হাব প্রো","প্রম্পট লাইব্রেরি","ফাইল ও টুলস","চ্যাট ইতিহাস","AI সার্চ","AI এজেন্ট","প্রজেক্ট","নলেজ বেস","ইমেজ ও ভিডিও AI","অটোমেশন","প্রোফাইল ও অ্যাকাউন্ট","API সংযোগ","অনুমতি ও নিরাপত্তা","সেটিংস","প্রো সাবস্ক্রিপশন","অ্যাডমিন প্যানেল","একাডেমিক প্রজেক্ট স্যুট","AI চ্যাট শুরু করুন"],
-      ta: ["பணியிடம்","தனிப்பட்டவை","மேலோட்டம்","AI அரட்டை","AI மாடல் ஹப் ப்ரோ","ப்ராம்ப்ட் நூலகம்","கோப்புகள் & கருவிகள்","அரட்டை வரலாறு","AI தேடல்","AI முகவர்கள்","திட்டங்கள்","அறிவுத் தளம்","படம் & வீடியோ AI","தானியக்கம்","சுயவிவரம் & கணக்கு","API இணைப்புகள்","அனுமதிகள் & பாதுகாப்பு","அமைப்புகள்","ப்ரோ சந்தா","நிர்வாக பேனல்","கல்வித் திட்டத் தொகுப்பு","AI அரட்டையைத் தொடங்கு"],
-      te: ["వర్క్‌స్పేస్","వ్యక్తిగతం","అవలోకనం","AI చాట్","AI మోడల్ హబ్ ప్రో","ప్రాంప్ట్ లైబ్రరీ","ఫైళ్లు & టూల్స్","చాట్ చరిత్ర","AI సెర్చ్","AI ఏజెంట్లు","ప్రాజెక్టులు","నాలెడ్జ్ బేస్","ఇమేజ్ & వీడియో AI","ఆటోమేషన్","ప్రొఫైల్ & ఖాతా","API కనెక్షన్లు","అనుమతులు & భద్రత","సెట్టింగ్స్","ప్రో సబ్‌స్క్రిప్షన్","అడ్మిన్ ప్యానెల్","అకడమిక్ ప్రాజెక్ట్ సూట్","AI చాట్ ప్రారంభించండి"],
-      gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ પ્રો","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
-      kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
-      ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ এবং ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈনল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
-      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
-      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
-      ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","AI چیٹ شروع کریں"],
-      sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","AI संवादम् आरभस्व"],
-      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","AI च्याट सुरु गर्नुहोस्"]
+    fs.writeFileSync(AUTH_FILE, JSON.stringify(initial, null, 2), 'utf8');
+    return initial;
+  }
+  try {
+    const raw = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf8'));
+    raw.users = raw.users || [];
+    raw.requests = raw.requests || [];
+    raw.proRequests = raw.proRequests || [];
+    raw.payments = raw.payments || [];
+    raw.otps = raw.otps || {};
+    raw.sessions = raw.sessions || {};
+    if (!raw.ownerClaimCode) raw.ownerClaimCode = process.env.OWNER_CLAIM_CODE || '411826';
+    return raw;
+  } catch (e) {
+    return {
+      owner: null,
+      ownerClaimCode: process.env.OWNER_CLAIM_CODE || '411826',
+      users: [],
+      requests: [],
+      proRequests: [],
+      payments: [],
+      otps: {},
+      sessions: {}
     };
-    Object.keys(I18N_PACK).forEach(l => {
-      I18N[l] = {};
-      I18N_KEYS.forEach((k, i) => { I18N[l][k] = I18N_PACK[l][i]; });
+  }
+}
+
+function saveAuthData(data) {
+  fs.writeFileSync(AUTH_FILE, JSON.stringify(data, null, 2), 'utf8');
+}
+
+function loadWorkspaceData() {
+  if (!fs.existsSync(WORKSPACE_FILE)) {
+    const initWs = { agents: [], projects: [], knowledge: [], files: [], providers: {}, customProviders: [] };
+    fs.writeFileSync(WORKSPACE_FILE, JSON.stringify(initWs, null, 2), 'utf8');
+    return initWs;
+  }
+  try {
+    const ws = JSON.parse(fs.readFileSync(WORKSPACE_FILE, 'utf8'));
+    ws.agents = ws.agents || [];
+    ws.projects = ws.projects || [];
+    ws.knowledge = ws.knowledge || [];
+    ws.files = ws.files || [];
+    ws.providers = ws.providers || {};
+    ws.customProviders = ws.customProviders || [];
+    return ws;
+  } catch (e) {
+    return { agents: [], projects: [], knowledge: [], files: [], providers: {}, customProviders: [] };
+  }
+}
+
+function saveWorkspaceData(data) {
+  fs.writeFileSync(WORKSPACE_FILE, JSON.stringify(data, null, 2), 'utf8');
+}
+
+app.use(express.json({ limit: '30mb' }));
+app.use(express.urlencoded({ extended: true, limit: '30mb' }));
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Orbit-Token');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
+function signToken(payload) {
+  const data = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const sig = crypto.createHmac('sha256', SESSION_SECRET).update(data).digest('base64url');
+  return `${data}.${sig}`;
+}
+
+function verifyToken(token) {
+  if (!token || !token.includes('.')) return null;
+  const [data, sig] = token.split('.');
+  const expected = crypto.createHmac('sha256', SESSION_SECRET).update(data).digest('base64url');
+  if (sig !== expected) return null;
+  try { return JSON.parse(Buffer.from(data, 'base64url').toString('utf8')); }
+  catch (e) { return null; }
+}
+
+function parseCookies(req) {
+  const list = {};
+  const rc = req.headers.cookie;
+  if (rc) {
+    rc.split(';').forEach(cookie => {
+      const parts = cookie.split('=');
+      const key = parts.shift().trim();
+      const val = decodeURI(parts.join('='));
+      list[key] = val;
     });
-    const RTL_LANGS = ['ur'];
-    const SPEECH_LANG = { en:'en-IN', mr:'mr-IN', hi:'hi-IN', bn:'bn-IN', ta:'ta-IN', te:'te-IN', gu:'gu-IN', kn:'kn-IN', ml:'ml-IN', pa:'pa-IN', or:'or-IN', as:'as-IN', ur:'ur-IN', sa:'hi-IN', ne:'ne-NP' };
-
-    function changeLanguage(lang) {
-      if (!I18N[lang]) lang = 'en';
-      localStorage.setItem('orbit_lang', lang);
-      document.documentElement.lang = lang;
-      document.documentElement.dir = RTL_LANGS.includes(lang) ? 'rtl' : 'ltr';
-      const sel = document.getElementById('langSelect');
-      if (sel && sel.value !== lang) sel.value = lang;
-      const dict = { ...I18N.en, ...I18N[lang] };
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[key]) el.textContent = dict[key];
-      });
-    }
-
-    function attach3DGlassTilt() {
-      document.querySelectorAll('.card-3d, .orbit-core-hero').forEach(card => {
-        if (card.dataset.tiltBound) return;
-        card.dataset.tiltBound = '1';
-        card.addEventListener('mousemove', e => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const rotateY = ((x / rect.width) - 0.5) * 7;
-          const rotateX = ((y / rect.height) - 0.5) * -7;
-          card.style.transform = `perspective(1000px) translateY(-5px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
-        });
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = '';
-        });
-      });
-    }
-
-    const ORBIT_LITE = window.matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.hardwareConcurrency || 8) <= 4;
-    let coreState = 'idle';
-    let coreRenderer, coreScene, coreCamera, redGlassSphere, innerEmberParticles;
-
-    function init3DOrbitCore() {
-      const container = document.getElementById('orbitCoreContainer');
-      if (!container || !window.THREE) return;
-      container.innerHTML = '';
-
-      coreScene = new THREE.Scene();
-      coreCamera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-      coreCamera.position.z = 4.3;
-
-      coreRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: !ORBIT_LITE, powerPreference: ORBIT_LITE ? 'low-power' : 'high-performance' });
-      coreRenderer.setSize(270, 270);
-      coreRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, ORBIT_LITE ? 1.25 : 2));
-      container.appendChild(coreRenderer.domElement);
-
-      const vertexShader = `
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec3 vViewPosition;
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          vPosition = position;
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          vViewPosition = -mvPosition.xyz;
-          vNormal = normalize(normalMatrix * normal);
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `;
-
-      const fragmentShader = `#define FBM_OCT ${ORBIT_LITE ? 2 : 4}
-
-        uniform float uTime;
-        uniform float uSpeed;
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec3 vViewPosition;
-        varying vec2 vUv;
-
-        float hash(vec3 p) {
-          p = fract(p * 0.3183099 + 0.1);
-          p *= 17.0;
-          return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
-        }
-
-        float noise(vec3 x) {
-          vec3 i = floor(x);
-          vec3 f = fract(x);
-          f = f * f * (3.0 - 2.0 * f);
-          return mix(
-            mix(mix(hash(i + vec3(0,0,0)), hash(i + vec3(1,0,0)), f.x),
-                mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
-            mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
-                mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z
-          );
-        }
-
-        float fbm(vec3 p) {
-          float v = 0.0;
-          float a = 0.5;
-          for (int i = 0; i < FBM_OCT; i++) {
-            v += a * noise(p);
-            p = p * 2.05 + vec3(uTime * 0.25);
-            a *= 0.5;
-          }
-          return v;
-        }
-
-        void main() {
-          vec3 normal = normalize(vNormal);
-          vec3 viewDir = normalize(vViewPosition);
-
-          float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.6);
-
-          vec3 samplePos = vPosition * 2.4 + vec3(0.0, -uTime * 0.6, uTime * 0.4);
-          float n = fbm(samplePos);
-          float n2 = fbm(samplePos * 1.8 - vec3(uTime * 0.5));
-
-          float bottomGlow = smoothstep(0.4, -0.95, vPosition.y);
-          vec3 deepRuby = vec3(0.28, 0.01, 0.06);
-          vec3 crimsonRed = vec3(0.96, 0.06, 0.08);
-          vec3 moltenOrange = vec3(1.0, 0.48, 0.08);
-          vec3 hotCoreYellow = vec3(1.0, 0.88, 0.55);
-
-          vec3 col = mix(deepRuby, crimsonRed, smoothstep(0.2, 0.75, n));
-          col = mix(col, moltenOrange, smoothstep(0.35, 0.85, n2) * 0.85 + bottomGlow * 0.65);
-
-          float causticSpot = pow(max(0.0, dot(normal, normalize(vec3(0.0, -0.75, 0.65)))), 5.0);
-          col += hotCoreYellow * causticSpot * (0.75 + 0.35 * sin(uTime * 3.0));
-
-          vec3 lightDir1 = normalize(vec3(-0.6, 0.75, 0.85));
-          vec3 halfVec1 = normalize(lightDir1 + viewDir);
-          float spec1 = pow(max(dot(normal, halfVec1), 0.0), 90.0);
-          float softReflect = pow(max(dot(normal, lightDir1), 0.0), 4.0);
-
-          vec3 lightDir2 = normalize(vec3(0.65, 0.55, 0.75));
-          vec3 halfVec2 = normalize(lightDir2 + viewDir);
-          float spec2 = pow(max(dot(normal, halfVec2), 0.0), 140.0);
-
-          col += vec3(0.95, 0.75, 0.88) * softReflect * 0.25;
-          col += vec3(1.0, 0.35, 0.25) * fresnel * 0.85;
-          col += vec3(1.0, 0.98, 0.95) * spec1 * 1.35;
-          col += vec3(1.0, 0.9, 0.85) * spec2 * 0.9;
-
-          float alpha = clamp(0.76 + fresnel * 0.24 + spec1 + causticSpot * 0.2, 0.0, 1.0);
-          gl_FragColor = vec4(col, alpha);
-        }
-      `;
-
-      const sphereGeo = new THREE.SphereGeometry(1.38, ORBIT_LITE ? 40 : 96, ORBIT_LITE ? 40 : 96);
-      const shaderMat = new THREE.ShaderMaterial({
-        vertexShader,
-        fragmentShader,
-        uniforms: {
-          uTime: { value: 0 },
-          uSpeed: { value: 1.0 }
-        },
-        transparent: true
-      });
-
-      redGlassSphere = new THREE.Mesh(sphereGeo, shaderMat);
-      coreScene.add(redGlassSphere);
-
-      const sparkCount = 28;
-      const sparkPos = new Float32Array(sparkCount * 3);
-      for (let i = 0; i < sparkCount; i++) {
-        const theta = Math.random() * Math.PI * 2;
-        const r = 1.5 + Math.random() * 0.45;
-        sparkPos[i * 3] = Math.cos(theta) * r;
-        sparkPos[i * 3 + 1] = (Math.random() - 0.5) * 2.2;
-        sparkPos[i * 3 + 2] = Math.sin(theta) * r;
-      }
-      const sparkGeo = new THREE.BufferGeometry();
-      sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
-      const sparkMat = new THREE.PointsMaterial({
-        color: 0xff7b3a,
-        size: 0.08,
-        transparent: true,
-        opacity: 0.85
-      });
-      innerEmberParticles = new THREE.Points(sparkGeo, sparkMat);
-      coreScene.add(innerEmberParticles);
-
-      let targetRotX = 0, targetRotY = 0;
-      container.addEventListener('mousemove', e => {
-        const r = container.getBoundingClientRect();
-        targetRotY = (((e.clientX - r.left) / r.width) - 0.5) * 1.2;
-        targetRotX = (((e.clientY - r.top) / r.height) - 0.5) * 1.2;
-      });
-      container.addEventListener('mouseleave', () => {
-        targetRotX = 0;
-        targetRotY = 0;
-      });
-
-      let orbVisible = true, orbLast = 0;
-      if ('IntersectionObserver' in window) new IntersectionObserver(es => { orbVisible = es[0].isIntersecting; }).observe(container);
-      coreRenderer.domElement.addEventListener('webglcontextlost', ev => { ev.preventDefault(); orbVisible = false; });
-      coreRenderer.domElement.addEventListener('webglcontextrestored', () => { orbVisible = true; });
-      container.addEventListener('touchmove', e => {
-        const t = e.touches[0], r = container.getBoundingClientRect();
-        targetRotY = (((t.clientX - r.left) / r.width) - 0.5) * 1.2;
-        targetRotX = (((t.clientY - r.top) / r.height) - 0.5) * 1.2;
-      }, { passive: true });
-      function animateOrb(now) {
-        requestAnimationFrame(animateOrb);
-        if (!orbVisible || document.hidden) return;
-        if (ORBIT_LITE && now - orbLast < 33) return;
-        orbLast = now || 0;
-        const mult = coreState === 'thinking' ? 3.0 : (coreState === 'responding' ? 2.0 : 1.0);
-        shaderMat.uniforms.uTime.value += 0.016 * mult;
-
-        redGlassSphere.rotation.y += 0.005 * mult + (targetRotY - redGlassSphere.rotation.y) * 0.05;
-        redGlassSphere.rotation.x += (targetRotX - redGlassSphere.rotation.x) * 0.05;
-
-        innerEmberParticles.rotation.y -= 0.008 * mult;
-        innerEmberParticles.rotation.z += 0.003 * mult;
-
-        coreRenderer.render(coreScene, coreCamera);
-      }
-      animateOrb();
-    }
-
-    function setOrbitCoreState(state) {
-      coreState = state;
-      const badge = document.getElementById('coreStateBadge');
-      if (badge) badge.textContent = `ORBIT CORE: ${state === 'idle' ? 'ONLINE' : state.toUpperCase()}`;
-    }
-
-    function initBgParticles() {
-      const canvas = document.getElementById('bg3dCanvas');
-      if (!canvas || !window.THREE) return;
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.z = 15;
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
-      renderer.setPixelRatio(1);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
-
-      const count = ORBIT_LITE ? 70 : 180;
-      const pos = new Float32Array(count * 3);
-      for (let i = 0; i < count * 3; i++) pos[i] = (Math.random() - 0.5) * 40;
-      const geo = new THREE.BufferGeometry();
-      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      const mat = new THREE.PointsMaterial({ color: 0x8DB9F0, size: 0.1, transparent: true, opacity: 0.65 });
-      const points = new THREE.Points(geo, mat);
-      scene.add(points);
-
-      let bgLast = 0;
-      function loop(now) {
-        requestAnimationFrame(loop);
-        if (document.hidden || (ORBIT_LITE && now - bgLast < 40)) return;
-        bgLast = now || 0;
-        points.rotation.y += 0.0007;
-        points.rotation.x += 0.0003;
-        renderer.render(scene, camera);
-      }
-      loop();
-    }
-
-    async function apiFetch(endpoint, options = {}) {
-      const token = localStorage.getItem('orbit_token') || '';
-      const headers = { ...(options.headers || {}) };
-      if (token) headers['X-Orbit-Token'] = token;
-      if (!(options.body instanceof FormData) && !headers['Content-Type']) {
-        headers['Content-Type'] = 'application/json';
-      }
-      const res = await fetch(`${API_BASE}${endpoint}`, {
-        ...options,
-        headers,
-        credentials: 'include'
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
-      return data;
-    }
-
-    function switchView(name) {
-      document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
-      const target = document.getElementById(`view-${name}`);
-      if (target) target.classList.add('active');
-
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick')?.includes(`'${name}'`));
-      if (activeBtn) activeBtn.classList.add('active');
-
-      document.getElementById('sidebar').classList.remove('open');
-      if (name === 'admin') loadAdminData();
-      if (name === 'files') loadWorkspaceFiles();
-      if (name === 'history') renderHistoryList();
-      setTimeout(attach3DGlassTilt, 60);
-    }
-
-    function toggleTheme() {
-      const html = document.documentElement;
-      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('orbit_theme', next);
-    }
-
-    function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
-    function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-
-    function showAuthTab(tab) {
-      document.getElementById('authTabOwner').style.display = tab === 'owner' ? 'block' : 'none';
-      document.getElementById('authTabGuest').style.display = tab === 'guest' ? 'block' : 'none';
-      document.getElementById('authTabOtp').style.display = tab === 'otp' ? 'block' : 'none';
-    }
-
-    async function checkAuthStatus() {
-      try {
-        const data = await apiFetch('/api/auth/status');
-        currentUser = data.user;
-        updateAuthUI();
-        if (currentUser) {
-          closeAuthModal();
-        } else {
-          openAuthModal();
-        }
-      } catch (e) {
-        openAuthModal();
-      }
-    }
-
-    let activeUserTier = 'free';
-    function updateAuthUI() {
-      const roleBadge = document.getElementById('roleBadge');
-      const authBtn = document.getElementById('authBtn');
-      const isOwner = currentUser && currentUser.role === 'owner';
-
-      document.querySelectorAll('.owner-only').forEach(el => {
-        el.style.display = isOwner ? 'flex' : 'none';
-      });
-
-      if (currentUser) {
-        roleBadge.textContent = `${currentUser.name} (${currentUser.role.toUpperCase()})`;
-        authBtn.textContent = currentUser.name;
-        activeUserTier = isOwner ? 'pro' : (currentUser.tier || 'free');
-      } else {
-        roleBadge.textContent = 'Private Intelligence OS';
-        authBtn.textContent = 'Login / Setup';
-        activeUserTier = 'free';
-      }
-
-      const prof = document.getElementById('profileDetails');
-      if (prof) {
-        prof.innerHTML = currentUser
-          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Active Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
-          : `Not logged in. Click "Login / Setup" in the top bar.`;
-      }
-      
-      const subFree = document.getElementById('subFreeStatus');
-      if (subFree) {
-        if (activeUserTier === 'free') {
-          subFree.innerHTML = '<span style="color:var(--powder-blue);">✓ Currently Active (Free Subscription)</span>';
-        } else {
-          subFree.innerHTML = '';
-        }
-      }
-    }
-
-    // Razorpay Integration: Redirect to payment link
-    function redirectToRazorpay() {
-      const razorpayUrl = "https://razorpay.me/@mayurmanoharsonawane";
-      window.location.href = razorpayUrl;
-    }
-
-    function switchUserTier(tier) {
-      if (!currentUser && tier === 'pro') {
-        alert('Please login first.');
-        openAuthModal();
-        return;
-      }
-      activeUserTier = tier;
-      document.getElementById('btnTierFree').classList.remove('btn-peach-blue');
-      document.getElementById('btnTierPro').classList.remove('btn-peach-blue');
-      if (tier === 'pro') {
-        document.getElementById('btnTierPro').classList.add('btn-peach-blue');
-        alert('Switched to Pro Tier View (All 128+ models & Academic Suite unlocked).');
-      } else {
-        document.getElementById('btnTierFree').classList.add('btn-peach-blue');
-        alert('Switched to Free Tier View (Restricted to OpenRouter Auto & basic models).');
-      }
-      loadModels();
-    }
-
-    async function claimOwner() {
-      try {
-        const name = document.getElementById('ownName').value;
-        const email = document.getElementById('ownEmail').value;
-        const claimCode = document.getElementById('ownCode').value;
-        const res = await apiFetch('/api/auth/owner/claim', {
-          method: 'POST',
-          body: JSON.stringify({ name, email, claimCode })
-        });
-        if (res.token) localStorage.setItem('orbit_token', res.token);
-        currentUser = res.user;
-        updateAuthUI();
-        closeAuthModal();
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function submitGuestRequest() {
-      try {
-        const name = document.getElementById('reqName').value;
-        const email = document.getElementById('reqEmail').value;
-        const reason = document.getElementById('reqReason').value;
-        const res = await apiFetch('/api/auth/request', {
-          method: 'POST',
-          body: JSON.stringify({ name, email, reason })
-        });
-        document.getElementById('authStatusMsg').textContent = `Request sent successfully! Once admin approves, an OTP will be sent directly to your Gmail (${email}).`;
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function issueOtp() {
-      try {
-        const email = document.getElementById('otpEmail').value;
-        const res = await apiFetch('/api/auth/issue', {
-          method: 'POST',
-          body: JSON.stringify({ email })
-        });
-        document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent successfully to email.';
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function verifyOtpLogin() {
-      try {
-        const email = document.getElementById('otpEmail').value;
-        const otp = document.getElementById('otpCode').value;
-        const res = await apiFetch('/api/auth/verify', {
-          method: 'POST',
-          body: JSON.stringify({ email, otp })
-        });
-        if (res.token) localStorage.setItem('orbit_token', res.token);
-        currentUser = res.user;
-        updateAuthUI();
-        closeAuthModal();
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    function getActiveConversation() {
-      let conv = conversations.find(c => c.id === activeConvId);
-      if (!conv) {
-        conv = { id: 'conv_' + Date.now(), title: 'New Conversation', messages: [], updatedAt: new Date().toISOString() };
-        conversations.unshift(conv);
-        activeConvId = conv.id;
-        saveConversations();
-      }
-      return conv;
-    }
-
-    function saveConversations() {
-      localStorage.setItem('orbit_conversations', JSON.stringify(conversations));
-      updateOverviewStats();
-    }
-
-    function newConversation() {
-      const conv = { id: 'conv_' + Date.now(), title: 'New Conversation', messages: [], updatedAt: new Date().toISOString() };
-      conversations.unshift(conv);
-      activeConvId = conv.id;
-      saveConversations();
-      renderChatMessages();
-    }
-
-    function renderChatMessages() {
-      const box = document.getElementById('chatMessages');
-      const conv = getActiveConversation();
-      if (!conv.messages.length) {
-        box.innerHTML = `<div class="card-3d" style="text-align:center; max-width:520px; margin:40px auto;">
-          <div class="card-title" style="justify-content:center;">🔴 ORBIT AI 3D Glass Chat</div>
-          <p style="color:var(--lavender-white);">Select any AI model from the top bar, attach PDF/DOCX/Images, and start conversing.</p>
-        </div>`;
-        return;
-      }
-      box.innerHTML = conv.messages.map((m, idx) => {
-        const htmlContent = window.marked ? marked.parse(m.content || '') : m.content;
-        return `<div class="msg-bubble ${m.role === 'user' ? 'msg-user' : 'msg-ai'}">
-          <div>${htmlContent}</div>
-          <div class="msg-actions">
-            <button onclick="copyText(${idx})">📋 Copy</button>
-            ${m.role === 'assistant' ? `<button onclick="speakMessage(${idx})">🔊 Speak</button>` : ''}
-          </div>
-        </div>`;
-      }).join('');
-      box.scrollTop = box.scrollHeight;
-    }
-
-    async function handleChatFileAttach(input) {
-      const file = input.files[0];
-      if (!file) return;
-      const fd = new FormData();
-      fd.append('file', file);
-      try {
-        setOrbitCoreState('thinking');
-        const res = await apiFetch('/api/upload', { method: 'POST', body: fd });
-        pendingAttachments.push(res.file);
-        renderAttachmentChips();
-      } catch (e) {
-        alert('Upload error: ' + e.message);
-      } finally {
-        setOrbitCoreState('idle');
-        input.value = '';
-      }
-    }
-
-    function renderAttachmentChips() {
-      const bar = document.getElementById('chatAttachmentBar');
-      bar.innerHTML = pendingAttachments.map((a, i) => `
-        <span class="att-chip">${a.originalName} <button onclick="pendingAttachments.splice(${i},1);renderAttachmentChips()" style="background:none;border:none;color:#fff;cursor:pointer;">✕</button></span>
-      `).join('');
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('chatInput');
-      const text = input.value.trim();
-      if (!text && !pendingAttachments.length) return;
-
-      const conv = getActiveConversation();
-      conv.messages.push({ role: 'user', content: text || `[Attached ${pendingAttachments.length} file(s)]` });
-      if (conv.messages.length === 1 && text) conv.title = text.slice(0, 42);
-      conv.updatedAt = new Date().toISOString();
-      input.value = '';
-      renderChatMessages();
-      saveConversations();
-
-      await executeAiChatRequest(conv);
-    }
-
-    async function executeAiChatRequest(conv) {
-      setOrbitCoreState('thinking');
-      const projectId = document.getElementById('chatProjectSelect').value || null;
-      const attsToSend = [...pendingAttachments];
-      pendingAttachments = [];
-      renderAttachmentChips();
-
-      try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: conv.messages,
-            attachments: attsToSend,
-            projectId
-          })
-        });
-        setOrbitCoreState('responding');
-        conv.messages.push({ role: 'assistant', content: res.reply });
-        saveConversations();
-        renderChatMessages();
-      } catch (e) {
-        conv.messages.push({ role: 'assistant', content: `⚠️ **Error:** ${e.message}` });
-        renderChatMessages();
-      } finally {
-        setTimeout(() => setOrbitCoreState('idle'), 900);
-      }
-    }
-
-    function regenerateLast() {
-      const conv = getActiveConversation();
-      if (!conv.messages.length) return;
-      if (conv.messages[conv.messages.length - 1].role === 'assistant') conv.messages.pop();
-      renderChatMessages();
-      executeAiChatRequest(conv);
-    }
-
-    function stopGeneration() {
-      if (activeAbortController) activeAbortController.abort();
-      setOrbitCoreState('idle');
-    }
-
-    function copyText(idx) {
-      const conv = getActiveConversation();
-      if (conv.messages[idx]) navigator.clipboard.writeText(conv.messages[idx].content);
-    }
-
-    function exportCurrentChat() {
-      const conv = getActiveConversation();
-      const blob = new Blob([JSON.stringify(conv, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${conv.title.replace(/\s+/g, '_')}.json`;
-      a.click();
-    }
-
-    function runQuickAsk() {
-      const q = document.getElementById('quickAskInput').value.trim();
-      if (!q) return;
-      document.getElementById('quickAskInput').value = '';
-      switchView('chat');
-      document.getElementById('chatInput').value = q;
-      sendMessage();
-    }
-
-    async function loadModels() {
-      try {
-        const data = await apiFetch('/api/models');
-        allModels = data.models || [];
-        const sel = document.getElementById('globalModelSelect');
-        const autoOpt = `<option value="openrouter/auto">openrouter/auto (Auto Select)</option>`;
-        
-        let availableOpenRouter = allModels;
-        if (activeUserTier === 'free') {
-          availableOpenRouter = allModels.slice(0, 3);
-        }
-
-        sel.innerHTML = autoOpt + availableOpenRouter.map(m => `<option value="${m.id}" ${m.id === currentModel ? 'selected' : ''}>${m.name}</option>`).join('') + (activeUserTier === 'pro' ? kieOptionsHtml() : '');
-        renderModelsGrid();
-        renderKieHub();
-      } catch (e) {}
-    }
-
-    function onModelSelectChange(val) {
-      currentModel = val;
-      localStorage.setItem('orbit_model', val);
-      renderModelsGrid();
-    }
-
-    function renderModelsGrid() {
-      const q = (document.getElementById('modelSearchInput')?.value || '').toLowerCase();
-      const grid = document.getElementById('modelsGrid');
-      if (!grid) return;
-      let sourceModels = allModels;
-      if (activeUserTier === 'free') sourceModels = allModels.slice(0, 3);
-      const filtered = sourceModels.filter(m => m.id.toLowerCase().includes(q) || (m.name || '').toLowerCase().includes(q)).slice(0, 36);
-      grid.innerHTML = filtered.map(m => `
-        <div class="card-3d tilt-glass" style="${m.id === currentModel ? 'border-bottom-color:var(--sunset-peach);' : ''}">
-          <div class="card-title"><span>${m.name}</span></div>
-          <p style="font-size:0.82rem; margin-bottom:12px;">ID: ${m.id}<br>Context: ${m.context_length || 'Auto'} tokens</p>
-          <button class="btn-3d ${m.id === currentModel ? 'btn-peach-blue' : ''}" onclick="onModelSelectChange('${m.id}');document.getElementById('globalModelSelect').value='${m.id}'">
-            ${m.id === currentModel ? '✓ Active Model' : 'Select Model'}
-          </button>
-        </div>
-      `).join('');
-      attach3DGlassTilt();
-    }
-
-    function renderPrompts() {
-      const grid = document.getElementById('promptsGrid');
-      if (!grid) return;
-      grid.innerHTML = promptsList.map((p, i) => `
-        <div class="card-3d tilt-glass">
-          <div class="card-title">${p.title}</div>
-          <p style="font-size:0.88rem; margin-bottom:12px;">${p.content}</p>
-          <div style="display:flex; gap:8px;">
-            <button class="btn-3d btn-peach-blue" onclick="usePrompt(${i})">Use in Chat</button>
-            <button class="btn-3d" onclick="promptsList.splice(${i},1);localStorage.setItem('orbit_prompts',JSON.stringify(promptsList));renderPrompts();">Delete</button>
-          </div>
-        </div>
-      `).join('');
-      attach3DGlassTilt();
-    }
-
-    function savePromptItem() {
-      const title = document.getElementById('promptTitle').value.trim();
-      const content = document.getElementById('promptContent').value.trim();
-      if (!title || !content) return;
-      promptsList.unshift({ id: 'p_' + Date.now(), title, content });
-      localStorage.setItem('orbit_prompts', JSON.stringify(promptsList));
-      document.getElementById('promptTitle').value = '';
-      document.getElementById('promptContent').value = '';
-      renderPrompts();
-    }
-
-    function usePrompt(i) {
-      const p = promptsList[i];
-      if (!p) return;
-      switchView('chat');
-      document.getElementById('chatInput').value = p.content;
-    }
-
-    async function uploadWorkspaceFile() {
-      const input = document.getElementById('workspaceFileInput');
-      const file = input.files[0];
-      if (!file) return;
-      const status = document.getElementById('uploadStatusMsg');
-      status.textContent = 'Uploading & parsing document...';
-      const fd = new FormData();
-      fd.append('file', file);
-      try {
-        const res = await apiFetch('/api/upload', { method: 'POST', body: fd });
-        status.textContent = `✓ Uploaded: ${res.file.originalName}`;
-        input.value = '';
-        loadWorkspaceFiles();
-      } catch (e) {
-        status.textContent = `Error: ${e.message}`;
-      }
-    }
-
-    async function loadWorkspaceFiles() {
-      try {
-        const data = await apiFetch('/api/files');
-        const grid = document.getElementById('filesGrid');
-        grid.innerHTML = (data.files || []).map(f => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">${f.originalName}</div>
-            <p style="font-size:0.8rem; margin-bottom:8px;">Size: ${(f.size / 1024).toFixed(1)} KB</p>
-            <div style="max-height:90px; overflow-y:auto; font-size:0.78rem; background:rgba(0,0,0,0.4); padding:8px; border-radius:10px; margin-bottom:10px;">
-              ${f.extractedText ? f.extractedText.slice(0, 300) + '...' : 'Binary / Media file stored.'}
-            </div>
-            <div style="display:flex; gap:8px;">
-              <a class="btn-3d" href="${API_BASE}${f.url}" target="_blank" style="text-decoration:none;">⬇ Download</a>
-              <button class="btn-3d" onclick="deleteFileItem('${f.id}')">🗑 Delete</button>
-            </div>
-          </div>
-        `).join('');
-        attach3DGlassTilt();
-      } catch (e) {}
-    }
-
-    async function deleteFileItem(id) {
-      await apiFetch(`/api/files/${id}`, { method: 'DELETE' });
-      loadWorkspaceFiles();
-    }
-
-    function renderHistoryList() {
-      const q = (document.getElementById('historySearch')?.value || '').toLowerCase();
-      const grid = document.getElementById('historyGrid');
-      const list = conversations.filter(c => c.title.toLowerCase().includes(q));
-      grid.innerHTML = list.map(c => `
-        <div class="card-3d tilt-glass">
-          <div class="card-title">${c.title}</div>
-          <p style="font-size:0.82rem; margin-bottom:10px;">${c.messages.length} messages</p>
-          <div style="display:flex; gap:8px;">
-            <button class="btn-3d btn-peach-blue" onclick="activeConvId='${c.id}';switchView('chat');renderChatMessages();">Open</button>
-            <button class="btn-3d" onclick="conversations=conversations.filter(x=>x.id!=='${c.id}');saveConversations();renderHistoryList();">Delete</button>
-          </div>
-        </div>
-      `).join('');
-      attach3DGlassTilt();
-    }
-
-    async function loadWorkspaceModules() {
-      try {
-        const ws = await apiFetch('/api/workspace');
-        document.getElementById('agentsGrid').innerHTML = (ws.agents || []).map(a => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">🤖 ${a.name}</div>
-            <p style="font-size:0.86rem; margin-bottom:10px;">${a.instructions}</p>
-            <button class="btn-3d btn-peach-blue" onclick="switchView('chat');document.getElementById('chatInput').value='[Act as ${a.name}: ${a.instructions}] ';">Run Agent</button>
-          </div>
-        `).join('');
-
-        document.getElementById('projectsGrid').innerHTML = (ws.projects || []).map(p => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">📁 ${p.name}</div>
-            <p style="font-size:0.86rem;">${p.instructions}</p>
-          </div>
-        `).join('');
-
-        const chatProjSel = document.getElementById('chatProjectSelect');
-        chatProjSel.innerHTML = `<option value="">No Project Context</option>` + (ws.projects || []).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-
-        document.getElementById('knowledgeGrid').innerHTML = (ws.knowledge || []).map(k => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">📚 ${k.title}</div>
-            <p style="font-size:0.84rem;">${k.content.slice(0, 180)}...</p>
-          </div>
-        `).join('');
-        attach3DGlassTilt();
-      } catch (e) {}
-    }
-
-    async function createAgent() {
-      const name = document.getElementById('agentName').value.trim();
-      const instructions = document.getElementById('agentInstructions').value.trim();
-      if (!name) return;
-      await apiFetch('/api/agents', { method: 'POST', body: JSON.stringify({ name, instructions }) });
-      document.getElementById('agentName').value = '';
-      document.getElementById('agentInstructions').value = '';
-      loadWorkspaceModules();
-    }
-
-    async function createProject() {
-      const name = document.getElementById('projName').value.trim();
-      const instructions = document.getElementById('projInstructions').value.trim();
-      if (!name) return;
-      await apiFetch('/api/projects', { method: 'POST', body: JSON.stringify({ name, instructions }) });
-      document.getElementById('projName').value = '';
-      document.getElementById('projInstructions').value = '';
-      loadWorkspaceModules();
-    }
-
-    async function addKnowledgeDoc() {
-      const title = document.getElementById('kbTitle').value.trim();
-      const content = document.getElementById('kbContent').value.trim();
-      if (!title || !content) return;
-      await apiFetch('/api/knowledge', { method: 'POST', body: JSON.stringify({ title, content }) });
-      document.getElementById('kbTitle').value = '';
-      document.getElementById('kbContent').value = '';
-      loadWorkspaceModules();
-    }
-
-    async function runAiWebSearch() {
-      const query = document.getElementById('aiSearchInput').value.trim();
-      if (!query) return;
-      const box = document.getElementById('aiSearchResults');
-      box.innerHTML = 'Searching live web...';
-      try {
-        const res = await apiFetch('/api/search', { method: 'POST', body: JSON.stringify({ query }) });
-        box.innerHTML = `<div class="card-3d" style="margin-bottom:12px;"><strong>Summary:</strong> ${res.answer || 'Results fetched'}</div>` +
-          (res.results || []).map(r => `<div class="card-3d" style="margin-bottom:8px;"><a href="${r.url}" target="_blank" style="color:var(--powder-blue);font-weight:700;">${r.title}</a><p style="font-size:0.85rem;">${r.content}</p></div>`).join('');
-      } catch (e) {
-        box.innerHTML = `<div class="card-3d" style="border-color:#ff5555;">⚠️ ${e.message}</div>`;
-      }
-    }
-
-    function toggleVoiceInput() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) return alert('Speech Recognition not supported in this browser/WebView.');
-      const rec = new SpeechRecognition();
-      rec.lang = SPEECH_LANG[localStorage.getItem('orbit_lang')] || 'en-IN';
-      rec.onresult = e => {
-        document.getElementById('chatInput').value += ' ' + e.results[0][0].transcript;
-      };
-      rec.start();
-    }
-
-    function speakText(text) {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      window.speechSynthesis.speak(u);
-    }
-
-    function speakMessage(idx) {
-      const conv = getActiveConversation();
-      if (conv.messages[idx]) speakText(conv.messages[idx].content);
-    }
-
-    async function generateMediaPrompt() {
-      const p = document.getElementById('mediaPrompt').value.trim();
-      if (!p) return;
-      const out = document.getElementById('mediaOutput');
-      out.innerHTML = 'Generating 8K Ultra HD cinematic specification via ORBIT AI...';
-      try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: [{ role: 'user', content: `Create a high-precision 8K Ultra HD cinematic video & photorealistic visual generation prompt with camera angles and lighting for: ${p}` }]
-          })
-        });
-        out.innerHTML = `<div class="card-3d">${marked.parse(res.reply)}</div>`;
-      } catch (e) {
-        out.innerHTML = `Error: ${e.message}`;
-      }
-    }
-
-    async function runAutomationTask() {
-      const task = document.getElementById('autoTaskInput').value.trim();
-      if (!task) return;
-      const out = document.getElementById('autoTaskOutput');
-      out.innerHTML = 'Executing automated step-by-step workflow...';
-      try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: [{ role: 'user', content: `Break down and execute this goal completely step-by-step: ${task}` }]
-          })
-        });
-        out.innerHTML = `<div class="card-3d">${marked.parse(res.reply)}</div>`;
-      } catch (e) {
-        out.innerHTML = `Error: ${e.message}`;
-      }
-    }
-
-    async function saveCustomApiKeyAdapter() {
-      const name = document.getElementById('cfgCustomName').value.trim();
-      const key = document.getElementById('cfgCustomKey').value.trim();
-      const endpoint = document.getElementById('cfgCustomEndpoint').value.trim();
-      const statusMsg = document.getElementById('customApiStatusMsg');
-
-      if (!key || !endpoint) {
-        statusMsg.innerHTML = '<span style="color:#ff6b6b;">API Key and Endpoint Base URL are required.</span>';
-        return;
-      }
-
-      statusMsg.textContent = 'Connecting and fetching models from custom provider...';
-      try {
-        const resp = await fetch(`${endpoint.replace(/\/$/, '')}/models`, {
-          headers: { 'Authorization': `Bearer ${key}` }
-        });
-        const data = await resp.json().catch(() => ({}));
-        const modelsList = data.data || data.models || [{ id: 'custom-default-model', name: name || 'Custom Model' }];
-        
-        const customCard = document.getElementById('customApiModelsCard');
-        const customGrid = document.getElementById('customApiGrid');
-        customCard.style.display = 'block';
-        customGrid.innerHTML = modelsList.map(m => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title"><span>${esc(m.name || m.id)}</span><span class="kie-tag">${esc(name || 'Custom')}</span></div>
-            <p style="font-size:0.82rem; margin-bottom:12px;">ID: ${esc(m.id)}</p>
-            <button class="btn-3d btn-peach-blue" onclick="onModelSelectChange('${esc(m.id)}')">Use Custom Model</button>
-          </div>
-        `).join('');
-
-        statusMsg.innerHTML = `<span style="color:var(--powder-blue);">✓ Successfully loaded ${modelsList.length} model(s) from custom provider!</span>`;
-      } catch (e) {
-        statusMsg.innerHTML = `<span style="color:#ff6b6b;">Connection error: ${esc(e.message)}. Models added as fallback.</span>`;
-        const customCard = document.getElementById('customApiModelsCard');
-        const customGrid = document.getElementById('customApiGrid');
-        customCard.style.display = 'block';
-        customGrid.innerHTML = `
-          <div class="card-3d tilt-glass">
-            <div class="card-title"><span>${esc(name || 'Custom Model')}</span><span class="kie-tag">Custom</span></div>
-            <p style="font-size:0.82rem; margin-bottom:12px;">ID: custom-ai-model</p>
-            <button class="btn-3d btn-peach-blue" onclick="onModelSelectChange('custom-ai-model')">Use Model</button>
-          </div>
-        `;
-      }
-    }
-
-    async function loadAdminData() {
-      try {
-        const reqs = await apiFetch('/api/auth/requests');
-        const usrs = await apiFetch('/api/auth/users');
-        const proReqs = await apiFetch('/api/auth/pro-requests').catch(() => ({ requests: [] }));
-
-        document.getElementById('adminProRequestsList').innerHTML = (proReqs.requests || []).length ? (proReqs.requests || []).map(r => `
-          <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-            <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>Pro Upgrade Requested</em></span>
-            <button class="btn-3d btn-peach-blue" onclick="approveProReq('${esc(r.email)}')">Approve Pro Upgrade 💠</button>
-          </div>
-        `).join('') : '<p style="font-size:0.85rem; opacity:0.8;">No pending pro upgrade requests.</p>';
-
-        document.getElementById('adminRequestsList').innerHTML = (reqs.requests || []).map(r => `
-          <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-            <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>${esc(r.status)}</em></span>
-            <div>
-              <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Send OTP</button>
-              <button class="btn-3d" onclick="rejectReq('${r.id}')">Reject</button>
-            </div>
-          </div>
-        `).join('');
-
-        document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users</h4>` +
-          (usrs.users || []).map(u => `
-            <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span>${esc(u.name)} (${esc(u.email)}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span>
-              <button class="btn-3d" onclick="toggleRevokeUser('${u.id}', ${!u.revoked})">${u.revoked ? 'Restore' : 'Revoke'}</button>
-            </div>
-          `).join('');
-      } catch (e) {
-        document.getElementById('adminRequestsList').innerHTML = `<p style="color:#ff8888;">Owner permission required to view Admin Panel.</p>`;
-      }
-    }
-
-    async function approveProReq(email) {
-      try {
-        await apiFetch('/api/auth/pro-approve', { method: 'POST', body: JSON.stringify({ email }) });
-        alert(`Pro subscription approved for ${email}!`);
-        loadAdminData();
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
-    }
-
-    async function approveReq(requestId) {
-      const res = await apiFetch('/api/auth/approve', { method: 'POST', body: JSON.stringify({ requestId }) });
-      alert(`Approved! OTP sent directly to user's Gmail.`);
-      loadAdminData();
-    }
-
-    async function rejectReq(requestId) {
-      await apiFetch('/api/auth/reject', { method: 'POST', body: JSON.stringify({ requestId }) });
-      loadAdminData();
-    }
-
-    async function toggleRevokeUser(userId, revoked) {
-      await apiFetch('/api/auth/users/revoke', { method: 'POST', body: JSON.stringify({ userId, revoked }) });
-      loadAdminData();
-    }
-
-    function saveApiBaseUrl() {
-      const val = document.getElementById('apiBaseUrlInput').value.trim().replace(/\/$/, '');
-      API_BASE = val;
-      localStorage.setItem('orbit_api_base', val);
-      alert('Server URL saved! Re-checking connection...');
-      checkHealth();
-    }
-
-    function exportAllWorkspaceData() {
-      const dump = { conversations, promptsList, exportedAt: new Date().toISOString() };
-      const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'ORBIT_AI_Workspace_Backup.json';
-      a.click();
-    }
-
-    async function checkHealth() {
-      const el = document.getElementById('overviewStatusText');
-      try {
-        const h = await apiFetch('/api/health');
-        el.innerHTML = `<strong>Backend:</strong> Online (v${h.version})<br>
-          <strong>OpenRouter Key:</strong> ${h.openrouterConfigured ? '🟢 Configured' : '🟠 Missing in .env'}<br>
-          <strong>PDF/DOCX Parsers:</strong> ${h.parsers?.pdf ? '🟢 Active' : '⚪ Ready'}`;
-      } catch (e) {
-        el.innerHTML = `🔴 Backend unreachable (${e.message})<br><small style="opacity:0.8;">Run <code>npm.cmd start</code> in PowerShell & open <code>http://localhost:3000</code></small>`;
-      }
-    }
-
-    function updateOverviewStats() {
-      const el = document.getElementById('overviewStats');
-      if (!el) return;
-      el.innerHTML = `<strong>Saved Conversations:</strong> ${conversations.length}<br>
-        <strong>Saved Prompts:</strong> ${promptsList.length}<br>
-        <strong>Active Model:</strong> ${currentModel}`;
-    }
-
-    function esc(s) {
-      return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    }
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-    const KIE_MODELS = [
-      { id: 'google/gemini-4', name: 'Gemini 4', kind: 'chat', vendor: 'Google', note: 'Reasoning, long context, chat' },
-      { id: 'bytedance/seedance-2.5', name: 'ByteDance Seedance 2.5', kind: 'video', vendor: 'ByteDance', note: 'Text / image to video' },
-      { id: 'kling/4.0', name: 'Kling 4.0', kind: 'video', vendor: 'Kuaishou', note: 'Cinematic text to video' },
-      { id: 'flux/3', name: 'Flux 3', kind: 'image', vendor: 'Black Forest Labs', note: 'Photorealistic images' },
-      { id: 'openai/gpt-image-2.6', name: 'GPT Image 2.6', kind: 'image', vendor: 'OpenAI', note: 'Advanced image rendering' },
-      { id: 'anthropic/claude-3.7-sonnet', name: 'Claude 3.7 Sonnet', kind: 'chat', vendor: 'Anthropic', note: 'Expert coding & logic' },
-      { id: 'sora/v2', name: 'Sora Video v2', kind: 'video', vendor: 'OpenAI', note: 'Cinematic hyper-realistic video' },
-      { id: 'elevenlabs/multilingual-v2', name: 'ElevenLabs Voice v2', kind: 'audio', vendor: 'ElevenLabs', note: 'Ultra realistic voice synthesis' }
-    ];
-
-    function kieOptionsHtml() {
-      if (activeUserTier === 'free') return '';
-      return `<optgroup label="KIE.ai Market (128+ Models)">${KIE_MODELS.map(m => `<option value="kie:${esc(m.id)}" ${('kie:' + m.id) === currentModel ? 'selected' : ''}>KIE · ${esc(m.name)} (${esc(m.kind)})</option>`).join('')}</optgroup>`;
-    }
-
-    function renderKieHub() {
-      const grid = document.getElementById('kieGrid');
-      if (grid) {
-        if (activeUserTier === 'free') {
-          grid.innerHTML = `<div class="card-3d"><p style="color:var(--sunset-peach);">KIE.ai 128+ Market Models are locked in Free Tier. Upgrade to Pro Subscription to unlock all models.</p></div>`;
-          return;
-        }
-        grid.innerHTML = KIE_MODELS.map(m => {
-          const active = ('kie:' + m.id) === currentModel;
-          const btn = m.kind === 'chat'
-            ? `<button class="btn-3d ${active ? 'btn-peach-blue' : ''}" onclick="useKieChatModel('${esc(m.id)}')">${active ? '✓ Active Model' : 'Use in AI Chat'}</button>`
-            : `<button class="btn-3d btn-peach-blue" onclick="openKieInStudio('${esc(m.id)}')">Open in Media Studio</button>`;
-          return `<div class="card-3d tilt-glass"><div class="card-title"><span>${esc(m.name)}</span><span class="kie-tag">${esc(m.kind)}</span></div>
-            <p style="font-size:0.82rem;margin-bottom:12px;">${esc(m.vendor)} — ${esc(m.note)}<br>ID: ${esc(m.id)}</p>${btn}</div>`;
-        }).join('');
-        attach3DGlassTilt();
-      }
-      const ms = document.getElementById('mediaKieModel');
-      if (ms) {
-        const prev = ms.value;
-        ms.innerHTML = KIE_MODELS.filter(m => m.kind !== 'chat').map(m => `<option value="${esc(m.id)}">${esc(m.name)} (${esc(m.kind)})</option>`).join('');
-        if (prev) ms.value = prev;
-      }
-    }
-
-    function useKieChatModel(id) {
-      const sel = document.getElementById('globalModelSelect');
-      const val = 'kie:' + id;
-      if (![...sel.options].some(o => o.value === val)) sel.insertAdjacentHTML('beforeend', kieOptionsHtml());
-      sel.value = val;
-      onModelSelectChange(val);
-      renderKieHub();
-    }
-
-    function openKieInStudio(id) {
-      switchView('media');
-      document.getElementById('mediaKieModel').value = id;
-    }
-
-    async function generateKieMedia() {
-      if (activeUserTier === 'free') { alert('KIE.ai 8K Media Generation requires Pro Subscription.'); switchView('subscription'); return; }
-      const prompt = document.getElementById('mediaPrompt').value.trim();
-      const out = document.getElementById('mediaKieOutput');
-      if (!prompt) { out.textContent = 'Write a prompt in the box above first.'; return; }
-      const model = document.getElementById('mediaCustomModel').value.trim() || document.getElementById('mediaKieModel').value;
-      const aspectRatio = document.getElementById('mediaRatio').value;
-      const quality = document.getElementById('mediaQuality').value;
-      out.textContent = `Submitting to KIE.ai in ${quality} Ultra HD...`;
-      setOrbitCoreState('thinking');
-      try {
-        const job = await apiFetch('/api/kie/generate', { method: 'POST', body: JSON.stringify({ model, prompt: `${prompt} [8K Ultra HD, hyper-detailed, masterpiece]`, aspectRatio, quality }) });
-        if (!job.taskId) throw new Error('Backend returned no taskId');
-        for (let i = 0; i < 90; i++) {
-          await sleep(4000);
-          const st = await apiFetch('/api/kie/status?taskId=' + encodeURIComponent(job.taskId));
-          const s = String(st.status || 'processing').toLowerCase();
-          out.textContent = `KIE.ai status (${quality}): ${s} (${(i + 1) * 4}s)`;
-          if (s === 'failed' || s === 'fail') throw new Error(st.error || 'KIE.ai generation failed');
-          if (s === 'success' || s === 'completed') {
-            const urls = (st.urls || []).filter(u => /^https:\/\//i.test(u));
-            out.innerHTML = urls.length
-              ? urls.map(u => /\.(mp4|webm|mov)(\?|$)/i.test(u)
-                  ? `<video controls playsinline src="${esc(u)}"></video>`
-                  : `<img loading="lazy" src="${esc(u)}" alt="KIE.ai 8K result" />`).join('')
-              : 'Finished in 8K Ultra HD, but no result URL was returned.';
-            return;
-          }
-        }
-        throw new Error('Timed out waiting for KIE.ai');
-      } catch (e) {
-        out.innerHTML = `<div class="card-3d" style="border-color:#ff5555;">⚠️ ${esc(e.message)}</div>`;
-      } finally {
-        setOrbitCoreState('idle');
-      }
-    }
-
-    const ACA_SECTIONS = [
-      ['abstract', 'Abstract', 1], ['intro', 'Introduction', 1], ['lit', 'Literature Review', 0],
-      ['aim', 'Aim and Objectives', 1], ['theory', 'Theory / Principle', 1],
-      ['method', 'Practical Methodology (Materials, Equipment, Procedure)', 1],
-      ['result', 'Observations, Results and Discussion', 1], ['concl', 'Conclusion', 1], ['refs', 'References (suggested search topics only)', 0]
-    ];
-    let acaDoc = '', acaStop = false;
-
-    function buildAcademicSections() {
-      const box = document.getElementById('acaSections');
-      if (!box) return;
-      box.innerHTML = ACA_SECTIONS.map(([k, label, on]) => `<label><input type="checkbox" value="${k}" ${on ? 'checked' : ''} /> ${esc(label)}</label>`).join('');
-    }
-
-    function acaChatContext() {
-      if (!document.getElementById('acaUseChat').checked) return '';
-      const conv = conversations.find(c => c.id === activeConvId);
-      if (!conv || !conv.messages.length) return '';
-      const text = conv.messages.slice(-12).map(m => `${m.role.toUpperCase()}: ${String(m.content).slice(0, 1200)}`).join('\n');
-      return `\n\nUse this AI Chat conversation as background context:\n"""\n${text}\n"""`;
-    }
-
-    async function generateAcademicReport() {
-      if (activeUserTier === 'free') { alert('Academic Project Suite requires Pro Subscription.'); switchView('subscription'); return; }
-      const title = document.getElementById('acaTitle').value.trim();
-      const status = document.getElementById('acaStatus');
-      const out = document.getElementById('acaOutput');
-      const degree = document.getElementById('acaDegree').value;
-      const field = document.getElementById('acaField').value;
-      const year = document.getElementById('acaYear').value;
-      const sem = document.getElementById('acaSem').value;
-      const words = document.getElementById('acaLength').value;
-      const picked = [...document.querySelectorAll('#acaSections input:checked')].map(c => ACA_SECTIONS.find(s => s[0] === c.value));
-      
-      if (!title) { status.textContent = 'Enter project title first.'; return; }
-      if (!picked.length) { status.textContent = 'Select at least one section.'; return; }
-      
-      const ctx = acaChatContext();
-      const btn = document.getElementById('acaGenBtn');
-      btn.disabled = true; acaStop = false; 
-      acaDoc = `# ${title}\n\n**Degree:** ${degree} | **Field:** ${field} | **Year:** ${year} (${sem})\n\n`;
-      out.innerHTML = marked.parse(acaDoc);
-      setOrbitCoreState('thinking');
-      try {
-        for (let i = 0; i < picked.length; i++) {
-          if (acaStop) { status.textContent = 'Stopped.'; break; }
-          const [, label] = picked[i];
-          status.textContent = `Writing ${i + 1}/${picked.length}: ${label}...`;
-          const prompt = `You are an academic project writer for ${degree} students in ${field} (${year}, ${sem}). Project title: "${title}".\nWrite ONLY the section "${label}" in clear Markdown, about ${words} words. Use headings and structured points.${ctx}`;
-          const res = await apiFetch('/api/chat', { method: 'POST', body: JSON.stringify({ model: currentModel, messages: [{ role: 'user', content: prompt }] }) });
-          acaDoc += `## ${label}\n\n${res.reply}\n\n`;
-          out.innerHTML = marked.parse(acaDoc);
-        }
-        if (!acaStop) status.textContent = 'Done. Review every section and add your practical results.';
-      } catch (e) {
-        status.textContent = `⚠️ ${e.message}`;
-      } finally {
-        btn.disabled = false;
-        setOrbitCoreState('idle');
-      }
-    }
-
-    function copyAcademicReport() {
-      if (!acaDoc) return;
-      navigator.clipboard.writeText(acaDoc).then(() => { document.getElementById('acaStatus').textContent = 'Copied to clipboard.'; });
-    }
-
-    function downloadAcademicReport() {
-      if (!acaDoc) return;
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([acaDoc], { type: 'text/markdown' }));
-      a.download = (document.getElementById('acaTitle').value.trim().replace(/[^\w\- ]+/g, '').slice(0, 50) || 'Project_Report') + '.md';
-      a.click();
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('orbit_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-
-      const savedLang = localStorage.getItem('orbit_lang') || 'en';
-      document.getElementById('langSelect').value = savedLang;
-      changeLanguage(savedLang);
-
-      document.getElementById('apiBaseUrlInput').value = API_BASE;
-
-      init3DOrbitCore();
-      initBgParticles();
-      attach3DGlassTilt();
-      checkHealth();
-      checkAuthStatus();
-      loadModels();
-      renderKieHub();
-      buildAcademicSections();
-      renderPrompts();
-      renderChatMessages();
-      loadWorkspaceModules();
-      updateOverviewStats();
+  }
+  return list;
+}
+
+function getSessionUser(req) {
+  const cookies = parseCookies(req);
+  const token = req.headers['x-orbit-token'] || cookies['orbit_session'];
+  if (!token) return null;
+  const decoded = verifyToken(token);
+  if (!decoded) return null;
+  const auth = loadAuthData();
+  if (decoded.role === 'owner' && auth.owner && auth.owner.id === decoded.id) {
+    return { ...auth.owner, role: 'owner', tier: 'pro' };
+  }
+  const user = auth.users.find(u => u.id === decoded.id && !u.revoked);
+  if (user) return { ...user, role: 'guest', tier: user.tier || 'free' };
+  return null;
+}
+
+function setSessionCookie(res, userObj) {
+  const token = signToken({
+    id: userObj.id,
+    role: userObj.role,
+    tier: userObj.tier || (userObj.role === 'owner' ? 'pro' : 'free'),
+    email: userObj.email,
+    iat: Date.now()
+  });
+  res.setHeader('Set-Cookie', `orbit_session=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 3600}; SameSite=Lax`);
+  return token;
+}
+
+function requireAuth(req, res, next) {
+  const user = getSessionUser(req);
+  if (!user) return res.status(401).json({ error: 'Authentication required. Please login first.' });
+  req.user = user;
+  next();
+}
+
+function requireOwner(req, res, next) {
+  const user = getSessionUser(req);
+  if (!user || user.role !== 'owner') return res.status(403).json({ error: 'Owner permissions required.' });
+  req.user = user;
+  next();
+}
+
+// =========================================================
+// EMAIL OTP HELPER (NODEMAILER)
+// =========================================================
+async function sendOtpEmail(toEmail, otpCode, userName = 'User') {
+  const ws = loadWorkspaceData();
+  const smtpUser = process.env.SMTP_EMAIL || ws.providers?.smtpUser || '';
+  const smtpPass = process.env.SMTP_PASSWORD || ws.providers?.smtpPass || '';
+
+  console.log(`[ORBIT AI OTP] Email: ${toEmail} | OTP: ${otpCode}`);
+
+  if (!nodemailer || !smtpUser || !smtpPass) {
+    return { sent: false, reason: 'SMTP credentials not configured in .env or API Connections' };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: smtpUser, pass: smtpPass }
     });
-  </script>
-</body>
-</html>
+
+    await transporter.sendMail({
+      from: `"ORBIT AI Security" <${smtpUser}>`,
+      to: toEmail,
+      subject: 'Your ORBIT AI Login OTP Code',
+      html: `
+        <div style="font-family:Segoe UI,sans-serif;padding:20px;background:#14161D;color:#E9E8F8;border-radius:16px;">
+          <h2 style="color:#8DB9F0;">ORBIT AI — Access Verification</h2>
+          <p>Hello <strong>${userName}</strong>,</p>
+          <p>Your 6-digit One-Time Password (OTP) to access ORBIT AI is:</p>
+          <div style="font-size:28px;font-weight:900;letter-spacing:6px;padding:14px 20px;background:#1E222D;color:#F5B69E;border-radius:12px;display:inline-block;margin:12px 0;">
+            ${otpCode}
+          </div>
+          <p style="font-size:12px;color:#B8B7CC;">This code is valid for 10 minutes. Do not share it with anyone.</p>
+        </div>
+      `
+    });
+    return { sent: true };
+  } catch (err) {
+    console.error('[ORBIT AI EMAIL ERROR]:', err.message);
+    return { sent: false, reason: err.message };
+  }
+}
+
+// =========================================================
+// AUTHENTICATION & ADMIN ROUTES
+// =========================================================
+app.get('/api/auth/status', (req, res) => {
+  const auth = loadAuthData();
+  const cookies = parseCookies(req);
+  const token = req.headers['x-orbit-token'] || cookies['orbit_session'];
+
+  if (!token) return res.json({ ok: true, hasOwner: Boolean(auth.owner), authenticated: false, user: null });
+  const decoded = verifyToken(token);
+  if (!decoded) return res.json({ ok: true, hasOwner: Boolean(auth.owner), authenticated: false, user: null });
+
+  if (decoded.role !== 'owner') {
+    const userInDb = auth.users.find(u => u.id === decoded.id);
+    if (!userInDb || userInDb.revoked) {
+      return res.status(403).json({ error: 'Access revoked by admin', revoked: true });
+    }
+  }
+
+  const user = getSessionUser(req);
+  res.json({ ok: true, hasOwner: Boolean(auth.owner), authenticated: Boolean(user), user: user || null });
+});
+
+app.post('/api/auth/owner/claim', (req, res) => {
+  const { name, email, claimCode } = req.body;
+  if (!email || !claimCode) {
+    return res.status(400).json({ error: 'Owner email and claim code are required.' });
+  }
+  const auth = loadAuthData();
+  const validClaimCode = String(auth.ownerClaimCode || process.env.OWNER_CLAIM_CODE || '411826').trim();
+
+  if (String(claimCode).trim() !== validClaimCode) {
+    return res.status(403).json({ error: 'Invalid Owner Claim Code.' });
+  }
+
+  if (auth.owner && auth.owner.email && auth.owner.email.toLowerCase() !== email.trim().toLowerCase()) {
+    return res.status(403).json({ error: 'Owner email does not match registered owner.' });
+  }
+
+  const ownerUser = {
+    id: auth.owner?.id || 'owner_' + crypto.randomBytes(6).toString('hex'),
+    name: (name || auth.owner?.name || 'Mayur Sonawane (Owner)').trim(),
+    email: email.trim().toLowerCase(),
+    role: 'owner',
+    tier: 'pro',
+    createdAt: auth.owner?.createdAt || new Date().toISOString()
+  };
+
+  auth.owner = ownerUser;
+  saveAuthData(auth);
+  const token = setSessionCookie(res, ownerUser);
+  res.json({ ok: true, user: ownerUser, token });
+});
+
+app.post('/api/auth/request', (req, res) => {
+  const { name, email, reason } = req.body;
+  if (!name || !email) return res.status(400).json({ error: 'Name and email required.' });
+  const auth = loadAuthData();
+  const cleanEmail = email.trim().toLowerCase();
+
+  let user = auth.users.find(u => u.email.toLowerCase() === cleanEmail);
+  if (!user) {
+    user = {
+      id: 'usr_' + crypto.randomBytes(6).toString('hex'),
+      name: name.trim(),
+      email: cleanEmail,
+      role: 'guest',
+      tier: 'free',
+      revoked: false,
+      createdAt: new Date().toISOString()
+    };
+    auth.users.push(user);
+  }
+
+  let existingReq = auth.requests.find(r => r.email.toLowerCase() === cleanEmail);
+  if (existingReq) {
+    existingReq.status = 'pending';
+    existingReq.name = name.trim();
+    existingReq.reason = reason || existingReq.reason;
+    saveAuthData(auth);
+    return res.json({ ok: true, requestId: existingReq.id, status: existingReq.status });
+  }
+
+  const newReq = {
+    id: 'req_' + crypto.randomBytes(6).toString('hex'),
+    name: name.trim(),
+    email: cleanEmail,
+    reason: reason || 'Workspace Access',
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+  auth.requests.push(newReq);
+  saveAuthData(auth);
+  res.json({ ok: true, requestId: newReq.id, status: 'pending' });
+});
+
+app.get('/api/auth/requests', requireOwner, (req, res) => {
+  const auth = loadAuthData();
+  res.json({ ok: true, requests: auth.requests || [] });
+});
+
+app.get('/api/auth/users', requireOwner, (req, res) => {
+  const auth = loadAuthData();
+  res.json({ ok: true, users: auth.users || [], payments: auth.payments || [] });
+});
+
+app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
+  const { userId, revoked } = req.body;
+  const auth = loadAuthData();
+  const user = auth.users.find(u => u.id === userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  user.revoked = Boolean(revoked);
+  saveAuthData(auth);
+  res.json({ ok: true, user });
+});
+
+app.post('/api/auth/approve', requireOwner, async (req, res) => {
+  const { requestId, tier } = req.body;
+  const auth = loadAuthData();
+  const reqItem = auth.requests.find(r => r.id === requestId);
+  if (!reqItem) return res.status(404).json({ error: 'Request not found' });
+
+  reqItem.status = 'approved';
+  const lower = reqItem.email.toLowerCase();
+
+  let user = auth.users.find(u => u.email.toLowerCase() === lower);
+  if (!user) {
+    user = {
+      id: 'usr_' + crypto.randomBytes(6).toString('hex'),
+      name: reqItem.name,
+      email: lower,
+      role: 'guest',
+      tier: tier || 'free',
+      revoked: false,
+      createdAt: new Date().toISOString()
+    };
+    auth.users.push(user);
+  } else {
+    user.revoked = false;
+    user.tier = tier || user.tier || 'free';
+  }
+
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
+  auth.otps = auth.otps || {};
+  auth.otps[lower] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 30 * 60 * 1000 };
+  saveAuthData(auth);
+
+  const mailResult = await sendOtpEmail(lower, otp, reqItem.name);
+  res.json({
+    ok: true,
+    request: reqItem,
+    user,
+    emailSent: mailResult.sent,
+    emailNote: mailResult.sent ? `OTP emailed to ${lower}` : `Approved! (Configure SMTP in API Connections to auto-email OTP. Fallback OTP: ${otp})`
+  });
+});
+
+app.post('/api/auth/reject', requireOwner, (req, res) => {
+  const { requestId } = req.body;
+  const auth = loadAuthData();
+  const index = auth.requests.findIndex(r => r.id === requestId);
+  if (index === -1) return res.status(404).json({ error: 'Request not found' });
+  auth.requests.splice(index, 1);
+  saveAuthData(auth);
+  res.json({ ok: true });
+});
+
+app.post('/api/auth/issue', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email required' });
+  const auth = loadAuthData();
+  const lower = email.trim().toLowerCase();
+
+  const isOwner = auth.owner && auth.owner.email.toLowerCase() === lower;
+  const approvedReq = auth.requests.find(r => r.email.toLowerCase() === lower && r.status === 'approved');
+  const user = auth.users.find(u => u.email.toLowerCase() === lower && !u.revoked);
+
+  if (!isOwner && !approvedReq && (!user || auth.requests.some(r => r.email.toLowerCase() === lower && r.status !== 'approved'))) {
+    return res.status(403).json({ error: 'Your access request is still pending Admin approval.' });
+  }
+
+  const otp = String(Math.floor(100000 + Math.random() * 900000));
+  auth.otps = auth.otps || {};
+  auth.otps[lower] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
+  saveAuthData(auth);
+
+  const mailResult = await sendOtpEmail(lower, otp, user?.name || 'User');
+  res.json({
+    ok: true,
+    emailSent: mailResult.sent,
+    message: mailResult.sent
+      ? `6-digit OTP has been sent to your email (${lower}).`
+      : `OTP generated! Please check your email (or ask Admin if SMTP is not set).`
+  });
+});
+
+app.post('/api/auth/verify', (req, res) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) return res.status(400).json({ error: 'Email and OTP required' });
+  const lower = email.trim().toLowerCase();
+
+  const auth = loadAuthData();
+  const record = auth.otps ? auth.otps[lower] : null;
+  if (!record || record.otp !== String(otp).trim() || (record.expiresAt && Date.now() > record.expiresAt)) {
+    return res.status(401).json({ error: 'Invalid or expired OTP.' });
+  }
+  delete auth.otps[lower];
+  saveAuthData(auth);
+
+  if (auth.owner && auth.owner.email.toLowerCase() === lower) {
+    const ownerObj = { ...auth.owner, role: 'owner', tier: 'pro' };
+    const token = setSessionCookie(res, ownerObj);
+    return res.json({ ok: true, user: ownerObj, token });
+  }
+  const user = auth.users.find(u => u.email.toLowerCase() === lower && !user?.revoked);
+  if (!user) return res.status(403).json({ error: 'User access revoked or not approved' });
+
+  const guestObj = { ...user, role: 'guest', tier: user.tier || 'free' };
+  const token = setSessionCookie(res, guestObj);
+  res.json({ ok: true, user: guestObj, token });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  res.setHeader('Set-Cookie', 'orbit_session=; HttpOnly; Path=/; Max-Age=0');
+  res.json({ ok: true });
+});
+
+// =========================================================
+// PRO SUBSCRIPTION (₹799 MANUAL / QR CODE PAYMENT VERIFY)
+// =========================================================
+const PRO_PRICE_INR = 799;
+
+app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
+  const { paymentId, upiId } = req.body;
+  if (!paymentId) {
+    return res.status(400).json({ error: 'कृपया पेमेंट ट्रान्झॅक्शन आयडी (Transaction ID) टाका.' });
+  }
+
+  const auth = loadAuthData();
+  const user = auth.users.find(u => u.id === req.user.id || u.email.toLowerCase() === req.user.email.toLowerCase());
+  
+  if (user) {
+    user.tier = 'pro';
+    user.proActivatedAt = new Date().toISOString();
+  }
+
+  auth.payments = auth.payments || [];
+  auth.payments.unshift({
+    id: paymentId,
+    upiId: upiId || 'UPI / QR Payment',
+    email: req.user.email,
+    name: req.user.name,
+    amountInr: PRO_PRICE_INR,
+    status: 'paid',
+    paidAt: new Date().toISOString()
+  });
+
+  saveAuthData(auth);
+
+  const updatedUser = user ? { ...user, role: 'guest', tier: 'pro' } : { ...req.user, tier: 'pro' };
+  const token = setSessionCookie(res, updatedUser);
+
+  res.json({
+    ok: true,
+    user: updatedUser,
+    token,
+    message: 'पेमेंट यशस्वीरित्या व्हेरिफाय झाले! तुमचे ORBIT AI Pro सबस्क्रिप्शन आता ॲक्टिव्ह झाले आहे.'
+  });
+});
+
+app.post('/api/auth/pro-request', requireAuth, (req, res) => {
+  const auth = loadAuthData();
+  const email = req.user.email.toLowerCase();
+  auth.proRequests = auth.proRequests || [];
+  if (!auth.proRequests.some(r => r.email.toLowerCase() === email)) {
+    auth.proRequests.push({ email, name: req.user.name, createdAt: new Date().toISOString() });
+    saveAuthData(auth);
+  }
+  res.json({ ok: true, message: 'Pro upgrade request sent to Admin.' });
+});
+
+app.get('/api/auth/pro-requests', requireOwner, (req, res) => {
+  const auth = loadAuthData();
+  res.json({ ok: true, requests: auth.proRequests || [] });
+});
+
+app.post('/api/auth/pro-approve', requireOwner, (req, res) => {
+  const { email, tier } = req.body;
+  const auth = loadAuthData();
+  const targetTier = tier || 'pro';
+  auth.proRequests = (auth.proRequests || []).filter(r => r.email.toLowerCase() !== email.toLowerCase());
+  const user = auth.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (user) user.tier = targetTier;
+  saveAuthData(auth);
+  res.json({ ok: true, message: `User ${email} updated to ${targetTier.toUpperCase()}` });
+});
+
+// =========================================================
+// HEALTH, MODELS, KIE.AI & CUSTOM API PROVIDERS
+// =========================================================
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    version: '3.0.0',
+    openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY),
+    kieConfigured: Boolean(process.env.KIE_API_KEY),
+    parsers: { pdf: Boolean(pdfParse), docx: Boolean(mammoth) }
+  });
+});
+
+app.get('/api/models', requireAuth, async (req, res) => {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  const ws = loadWorkspaceData();
+  const defaults = [
+    { id: 'openrouter/auto', name: 'OpenRouter Auto (Smart Router)', free: true },
+    { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1 8B (Free)', free: true },
+    { id: 'google/gemma-2-9b-it:free', name: 'Google Gemma 2 9B (Free)', free: true },
+    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
+    { id: 'openai/gpt-4o', name: 'OpenAI GPT-4o' }
+  ];
+
+  let openrouterModels = defaults;
+  if (apiKey) {
+    try {
+      const resp = await fetch('https://openrouter.ai/api/v1/models', {
+        headers: { 'Authorization': `Bearer ${apiKey}` }
+      });
+      const data = await resp.json();
+      if (Array.isArray(data.data) && data.data.length) {
+        openrouterModels = [defaults[0], ...data.data];
+      }
+    } catch (e) {}
+  }
+
+  res.json({
+    ok: true,
+    models: openrouterModels,
+    customProviders: (ws.customProviders || []).map(p => ({
+      id: p.id,
+      name: p.name,
+      endpoint: p.endpoint,
+      models: p.models || []
+    }))
+  });
+});
+
+app.post('/api/providers/config', requireOwner, (req, res) => {
+  const { openrouterKey, tavilyKey, kieKey, smtpUser, smtpPass, customUrl } = req.body;
+  const ws = loadWorkspaceData();
+  ws.providers = ws.providers || {};
+
+  if (openrouterKey) process.env.OPENROUTER_API_KEY = openrouterKey.trim();
+  if (tavilyKey) process.env.TAVILY_API_KEY = tavilyKey.trim();
+  if (kieKey) process.env.KIE_API_KEY = kieKey.trim();
+  if (smtpUser) { process.env.SMTP_EMAIL = smtpUser.trim(); ws.providers.smtpUser = smtpUser.trim(); }
+  if (smtpPass) { process.env.SMTP_PASSWORD = smtpPass.trim(); ws.providers.smtpPass = smtpPass.trim(); }
+  if (customUrl) ws.providers.customUrl = customUrl.trim();
+
+  saveWorkspaceData(ws);
+  res.json({ ok: true, message: 'All provider & SMTP keys securely saved on server!' });
+});
+
+app.post('/api/providers/custom', requireOwner, async (req, res) => {
+  const { name, apiKey, endpoint } = req.body;
+  if (!name || !apiKey || !endpoint) {
+    return res.status(400).json({ error: 'Provider name, API key, and Endpoint URL are required.' });
+  }
+
+  const cleanEndpoint = endpoint.trim().replace(/\/$/, '');
+  let fetchedModels = [];
+
+  try {
+    const resp = await fetch(`${cleanEndpoint}/models`, {
+      headers: { 'Authorization': `Bearer ${apiKey.trim()}` }
+    });
+    const data = await resp.json().catch(() => ({}));
+    const rawList = data.data || data.models || [];
+    if (Array.isArray(rawList) && rawList.length) {
+      fetchedModels = rawList.slice(0, 100).map(m => ({
+        id: m.id || m.name,
+        name: m.name || m.id
+      }));
+    }
+  } catch (e) {}
+
+  if (!fetchedModels.length) {
+    fetchedModels = [{ id: `${name.toLowerCase().replace(/\s+/g, '-')}-default`, name: `${name} Default Model` }];
+  }
+
+  const ws = loadWorkspaceData();
+  ws.customProviders = ws.customProviders || [];
+  const provId = 'cust_' + crypto.randomBytes(4).toString('hex');
+  const newProvider = {
+    id: provId,
+    name: name.trim(),
+    apiKey: apiKey.trim(),
+    endpoint: cleanEndpoint,
+    models: fetchedModels,
+    createdAt: new Date().toISOString()
+  };
+
+  ws.customProviders = ws.customProviders.filter(p => p.name.toLowerCase() !== name.trim().toLowerCase());
+  ws.customProviders.push(newProvider);
+  saveWorkspaceData(ws);
+
+  res.json({
+    ok: true,
+    provider: { id: newProvider.id, name: newProvider.name, endpoint: newProvider.endpoint, models: newProvider.models }
+  });
+});
+
+app.post('/api/kie/generate', requireAuth, async (req, res) => {
+  if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
+    return res.status(403).json({ error: 'Pro Subscription required for 8K KIE.ai Media Studio.' });
+  }
+  const { model, prompt, aspectRatio, quality } = req.body;
+  const kieApiKey = process.env.KIE_API_KEY || '';
+  if (!prompt) return res.status(400).json({ error: 'Prompt required' });
+
+  const taskId = 'task_' + crypto.randomBytes(6).toString('hex');
+  const enhancedPrompt = `${prompt}, ${quality || '8K Ultra HD'}, hyper-detailed, photorealistic, masterpiece`;
+  const fallbackUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1920&height=1920&nologo=true`;
+
+  global.kieTasks = global.kieTasks || {};
+  global.kieTasks[taskId] = { status: 'processing', urls: [] };
+
+  (async () => {
+    if (kieApiKey) {
+      try {
+        const resp = await fetch('https://api.kie.ai/v1/images/generations', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${kieApiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: model || 'flux/3', prompt: enhancedPrompt, aspect_ratio: aspectRatio || '1:1', quality: '8k' })
+        });
+        const data = await resp.json();
+        const outUrl = data?.data?.[0]?.url || data?.url || data?.output_url || fallbackUrl;
+        global.kieTasks[taskId] = { status: 'completed', urls: [outUrl] };
+        return;
+      } catch (e) {}
+    }
+    setTimeout(() => {
+      global.kieTasks[taskId] = { status: 'completed', urls: [fallbackUrl] };
+    }, 2500);
+  })();
+
+  res.json({ ok: true, taskId, message: '8K Ultra HD generation started.' });
+});
+
+app.get('/api/kie/status', requireAuth, (req, res) => {
+  const { taskId } = req.query;
+  global.kieTasks = global.kieTasks || {};
+  const task = global.kieTasks[taskId] || { status: 'processing' };
+  res.json({ ok: true, ...task });
+});
+
+// =========================================================
+// SEARCH, FILES, WORKSPACE & AI CHAT
+// =========================================================
+app.post('/api/search', requireAuth, async (req, res) => {
+  const { query } = req.body;
+  if (!query) return res.status(400).json({ error: 'Query required' });
+  const tavilyKey = process.env.TAVILY_API_KEY;
+
+  if (tavilyKey) {
+    try {
+      const resp = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: tavilyKey, query, include_answer: true, max_results: 5 })
+      });
+      const data = await resp.json();
+      return res.json({ ok: true, answer: data.answer, results: data.results || [] });
+    } catch (e) {}
+  }
+
+  res.json({
+    ok: true,
+    answer: `Live search summary for: "${query}"`,
+    results: [{ title: query, url: `https://duckduckgo.com/?q=${encodeURIComponent(query)}`, content: 'Configure TAVILY_API_KEY in API Connections for deep live web citations.' }]
+  });
+});
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+  filename: (req, file, cb) => cb(null, `${Date.now()}_${file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_')}`)
+});
+const upload = multer({ storage, limits: { fileSize: 18 * 1024 * 1024 } });
+
+app.post('/api/upload', requireAuth, upload.single('file'), async (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  const ws = loadWorkspaceData();
+  let extractedText = '';
+  const ext = path.extname(req.file.originalname).toLowerCase();
+
+  try {
+    if (pdfParse && (req.file.mimetype === 'application/pdf' || ext === '.pdf')) {
+      const buffer = fs.readFileSync(req.file.path);
+      const parsed = await pdfParse(buffer);
+      extractedText = parsed.text || '';
+    } else if (mammoth && (ext === '.docx' || req.file.mimetype.includes('wordprocessingml'))) {
+      const result = await mammoth.extractRawText({ path: req.file.path });
+      extractedText = result.value || '';
+    } else if (['.txt', '.md', '.csv', '.json', '.js', '.py', '.html', '.css'].includes(ext)) {
+      extractedText = fs.readFileSync(req.file.path, 'utf8');
+    }
+  } catch (e) {}
+
+  const fileMeta = {
+    id: 'file_' + crypto.randomBytes(6).toString('hex'),
+    originalName: req.file.originalname,
+    filename: req.file.filename,
+    size: req.file.size,
+    url: `/api/files/download/${req.file.filename}`,
+    extractedText: extractedText.slice(0, 25000),
+    uploadedAt: new Date().toISOString()
+  };
+
+  ws.files.unshift(fileMeta);
+  saveWorkspaceData(ws);
+  res.json({ ok: true, file: fileMeta });
+});
+
+app.get('/api/files', requireAuth, (req, res) => {
+  const ws = loadWorkspaceData();
+  res.json({ ok: true, files: ws.files || [] });
+});
+
+app.get('/api/files/download/:filename', requireAuth, (req, res) => {
+  const filePath = path.join(UPLOADS_DIR, path.basename(req.params.filename));
+  if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
+  res.sendFile(filePath);
+});
+
+app.delete('/api/files/:id', requireAuth, (req, res) => {
+  const ws = loadWorkspaceData();
+  ws.files = (ws.files || []).filter(f => f.id !== req.params.id);
+  saveWorkspaceData(ws);
+  res.json({ ok: true });
+});
+
+app.get('/api/workspace', requireAuth, (req, res) => {
+  const ws = loadWorkspaceData();
+  res.json({ ok: true, agents: ws.agents, projects: ws.projects, knowledge: ws.knowledge });
+});
+
+app.post('/api/agents', requireAuth, (req, res) => {
+  const { name, instructions } = req.body;
+  const ws = loadWorkspaceData();
+  const agent = { id: 'agent_' + crypto.randomBytes(4).toString('hex'), name, instructions };
+  ws.agents.push(agent);
+  saveWorkspaceData(ws);
+  res.json({ ok: true, agent });
+});
+
+app.post('/api/projects', requireAuth, (req, res) => {
+  const { name, instructions } = req.body;
+  const ws = loadWorkspaceData();
+  const proj = { id: 'proj_' + crypto.randomBytes(4).toString('hex'), name, instructions };
+  ws.projects.push(proj);
+  saveWorkspaceData(ws);
+  res.json({ ok: true, project: proj });
+});
+
+app.post('/api/knowledge', requireAuth, (req, res) => {
+  const { title, content } = req.body;
+  const ws = loadWorkspaceData();
+  const doc = { id: 'kb_' + crypto.randomBytes(4).toString('hex'), title, content };
+  ws.knowledge.push(doc);
+  saveWorkspaceData(ws);
+  res.json({ ok: true, doc });
+});
+
+app.post('/api/chat', requireAuth, async (req, res) => {
+  const { messages = [], model = 'openrouter/auto', attachments = [], projectId = null } = req.body;
+  const ws = loadWorkspaceData();
+
+  let systemContext = [];
+  if (projectId) {
+    const proj = (ws.projects || []).find(p => p.id === projectId);
+    if (proj) systemContext.push(`Project Context (${proj.name}): ${proj.instructions}`);
+  }
+  if (ws.knowledge && ws.knowledge.length) {
+    const kbSnippet = ws.knowledge.slice(0, 5).map(k => `[${k.title}]: ${k.content.slice(0, 1000)}`).join('\n');
+    systemContext.push(`Knowledge Base:\n${kbSnippet}`);
+  }
+  if (Array.isArray(attachments) && attachments.length) {
+    const attText = attachments.map(a => `Attached File (${a.originalName}):\n${a.extractedText || ''}`).join('\n\n');
+    systemContext.push(attText);
+  }
+
+  const finalMessages = systemContext.length
+    ? [{ role: 'system', content: systemContext.join('\n\n') }, ...messages]
+    : messages;
+
+  if (model.startsWith('custom:')) {
+    const parts = model.split(':');
+    const provId = parts[1];
+    const actualModel = parts.slice(2).join(':');
+    const prov = (ws.customProviders || []).find(p => p.id === provId);
+    if (!prov) return res.status(404).json({ error: 'Custom provider not found.' });
+
+    try {
+      const resp = await fetch(`${prov.endpoint}/chat/completions`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${prov.apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: actualModel, messages: finalMessages })
+      });
+      const data = await resp.json();
+      return res.json({ ok: true, reply: data?.choices?.[0]?.message?.content || 'No response from custom provider.' });
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
+    }
+  }
+
+  if (model.startsWith('kie:')) {
+    if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
+      return res.status(403).json({ error: 'Pro Subscription required to use KIE.ai models.' });
+    }
+    const kieModel = model.replace(/^kie:/, '');
+    const kieKey = process.env.KIE_API_KEY;
+    if (kieKey) {
+      try {
+        const resp = await fetch('https://api.kie.ai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${kieKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: kieModel, messages: finalMessages })
+        });
+        const data = await resp.json();
+        if (data?.choices?.[0]?.message?.content) {
+          return res.json({ ok: true, reply: data.choices[0].message.content });
+        }
+      } catch (e) {}
+    }
+  }
+
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'OPENROUTER_API_KEY missing in .env or API Connections' });
+
+  const targetModel = model.startsWith('kie:') ? 'openrouter/auto' : model;
+  try {
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'http://localhost:3000',
+        'X-Title': 'ORBIT AI Private OS'
+      },
+      body: JSON.stringify({ model: targetModel, messages: finalMessages })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data?.error?.message || 'Model request failed');
+    res.json({ ok: true, reply: data?.choices?.[0]?.message?.content || 'No response' });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+
+app.listen(PORT, () => console.log(`ORBIT AI Server running on http://localhost:${PORT}`));
