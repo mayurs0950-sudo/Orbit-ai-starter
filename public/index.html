@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="mr" data-theme="dark">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ORBIT AI — Private Intelligence OS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <title>ORBIT AI — Private Intelligence OS (Ultimate Edition)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -187,7 +187,6 @@
       background: linear-gradient(90deg, rgba(141, 185, 240, 0.12), rgba(245, 182, 158, 0.08));
     }
 
-    /* Mini Red Glossy Sphere Icon in Sidebar */
     .brand-prism-mini {
       width: 42px;
       height: 42px;
@@ -443,7 +442,6 @@
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
-    /* 3D HERO GLASS POD */
     .orbit-core-hero {
       position: relative;
       display: flex;
@@ -473,7 +471,6 @@
       overflow: hidden;
     }
 
-    /* Red Glossy Crystal Sphere Stage */
     #orbitCoreContainer {
       width: 270px;
       height: 270px;
@@ -492,7 +489,6 @@
       cursor: grab;
     }
 
-    /* Bottom Caustic Fire Reflection under the Red Glass Sphere */
     #orbitCoreContainer::after {
       content: "";
       position: absolute;
@@ -664,11 +660,11 @@
     .auth-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(12, 14, 20, 0.68);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      z-index: 100;
-      display: none;
+      background: rgba(12, 14, 20, 0.92);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      z-index: 10000;
+      display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
@@ -727,6 +723,66 @@
         display: inline-block;
       }
     }
+
+    html { -webkit-tap-highlight-color: transparent; }
+    body { height: 100vh; height: 100dvh; }
+    .app-shell {
+      height: 100vh; height: 100dvh;
+      padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+    }
+    .sidebar, .topbar, .card-3d, .chat-layout, .orbit-core-hero, .auth-card {
+      background:
+        radial-gradient(120% 70% at 10% 0%, rgba(255,255,255,0.20), transparent 58%),
+        radial-gradient(90% 60% at 100% 100%, rgba(245,182,158,0.14), transparent 60%),
+        var(--glass-surface);
+    }
+    .sidebar { background:
+        radial-gradient(120% 60% at 0% 0%, rgba(255,255,255,0.16), transparent 55%),
+        var(--glass-sidebar); }
+    .card-3d::after, .topbar::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07), inset 0 20px 34px -24px rgba(255,255,255,0.5);
+    }
+    .nav-btn, .btn-3d { -webkit-tap-highlight-color: transparent; }
+    .nav-btn:focus-visible, .btn-3d:focus-visible, .input-3d:focus-visible, .pill-select:focus-visible {
+      outline: 2px solid var(--powder-blue); outline-offset: 2px;
+    }
+    #orbitCoreContainer canvas { width: 100% !important; height: 100% !important; border-radius: 50%; }
+    [dir="rtl"] .nav-btn { text-align: right; }
+    [dir="rtl"] .nav-btn:hover, [dir="rtl"] .nav-btn.active { transform: translateX(-5px); }
+    .kie-tag { font-size: 0.7rem; padding: 2px 10px; border-radius: 99px; border: 1px solid var(--glass-border-top); background: rgba(141,185,240,0.18); font-weight: 700; }
+    .aca-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .chk-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
+    .chk-row label { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 99px; font-size: 0.82rem; border: 1px solid rgba(233,232,248,0.3); background: rgba(233,232,248,0.08); cursor: pointer; }
+    .doc-out { max-height: 62vh; overflow: auto; line-height: 1.65; margin-top: 14px; }
+    .doc-out table { border-collapse: collapse; width: 100%; }
+    .doc-out th, .doc-out td { border: 1px solid rgba(233,232,248,0.3); padding: 6px 10px; }
+    .media-result img, .media-result video { max-width: 100%; border-radius: 16px; margin-top: 10px; }
+
+    @media (max-width: 860px) {
+      body { perspective: none; }
+      .sidebar, .topbar, .card-3d, .chat-layout, .orbit-core-hero, .auth-card, .msg-bubble, .chat-composer, .pill-select, .btn-3d, .input-3d {
+        backdrop-filter: blur(12px) saturate(150%); -webkit-backdrop-filter: blur(12px) saturate(150%);
+      }
+      .glow-orb { filter: blur(36px); animation: none; opacity: 0.55; }
+      .orb-blue, .orb-peach { width: 280px; height: 280px; }
+      .orb-lavender { width: 220px; height: 220px; }
+      .card-3d, .card-3d:hover { transform: none !important; }
+      .card-3d::before { display: none; }
+      .sidebar { width: min(86vw, 300px); }
+      .topbar { height: auto; min-height: 60px; flex-wrap: wrap; padding: 8px 12px; }
+      .topbar-left, .topbar-right { flex-wrap: wrap; gap: 8px; }
+      .orbit-core-hero { padding: 18px; }
+      .orbit-core-hero h1 { font-size: 1.55rem !important; }
+      #orbitCoreContainer { width: 220px; height: 220px; }
+      .grid-3d { grid-template-columns: 1fr; gap: 14px; }
+      .chat-layout { height: calc(100dvh - 104px); }
+      .msg-bubble { max-width: 94%; }
+      input, textarea, select { font-size: 16px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .glow-orb, #orbitCoreContainer::after { animation: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -738,6 +794,39 @@
   </div>
 
   <canvas id="bg3dCanvas"></canvas>
+
+  <!-- 📱 MOBILE LOGIN MODAL (ENGLISH INSTRUCTIONS, NO OWNER CLAIM VISIBLE) -->
+  <div class="auth-overlay" id="authModal" style="display: flex;">
+    <div class="auth-card">
+      <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
+        <span>📱 ORBIT AI Mobile Login</span>
+      </div>
+      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">
+        Please enter your mobile number to receive an instant OTP.
+      </p>
+
+      <div id="authTabPhone">
+        <div class="form-group"><label>Mobile Number</label><input id="loginPhone" type="tel" placeholder="Enter 10-digit mobile number" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%; margin-bottom:10px;" onclick="issuePhoneOtp()">Get OTP on Mobile</button>
+        <div class="form-group"><label>6-Digit OTP</label><input id="loginOtp" placeholder="Enter 6-digit OTP" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyPhoneOtp()">Verify & Login</button>
+      </div>
+
+      <!-- Owner claim hidden securely -->
+      <div id="authTabOwner" style="display:none;">
+        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
+        <div class="form-group"><label>Owner Mobile</label><input id="ownPhone" placeholder="Enter owner mobile" /></div>
+        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" placeholder="Enter claim code" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Workspace</button>
+      </div>
+
+      <div style="margin-top:12px; text-align:center;">
+        <button class="btn-3d" style="background:none; border:none; color:var(--powder-blue); font-size:0.75rem; cursor:pointer;" onclick="toggleOwnerMode()">⚙️ Owner Access</button>
+      </div>
+
+      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach); text-align:center;"></div>
+    </div>
+  </div>
 
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
@@ -753,24 +842,27 @@
         <div class="nav-section-label" data-i18n="sec_workspace">WORKSPACE</div>
         <button class="nav-btn active" onclick="switchView('overview')">🔴 <span data-i18n="nav_overview">Overview</span></button>
         <button class="nav-btn" onclick="switchView('chat')">💬 <span data-i18n="nav_chat">AI Chat</span></button>
-        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub</span></button>
+        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub Pro</span></button>
         <button class="nav-btn" onclick="switchView('prompts')">✨ <span data-i18n="nav_prompts">Prompt Library</span></button>
         <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Files & Tools</span></button>
         <button class="nav-btn" onclick="switchView('history')">🕒 <span data-i18n="nav_history">Chat History</span></button>
-        <button class="nav-btn" onclick="switchView('search')">🔍 <span data-i18n="nav_search">AI Search</span></button>
-        <button class="nav-btn" onclick="switchView('agents')">🤖 <span data-i18n="nav_agents">AI Agents</span></button>
-        <button class="nav-btn" onclick="switchView('projects')">📁 <span data-i18n="nav_projects">Projects</span></button>
-        <button class="nav-btn" onclick="switchView('knowledge')">📚 <span data-i18n="nav_knowledge">Knowledge Base</span></button>
-        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_media">Image & Video AI</span></button>
-        <button class="nav-btn" onclick="switchView('automation')">⚡ <span data-i18n="nav_automation">Automation</span></button>
+        
+        <!-- PRO FEATURES WITH 🔒 LOCK FOR FREE USERS -->
+        <button class="nav-btn" onclick="switchView('search')">🔍 <span data-i18n="nav_search">AI Search</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('agents')">🤖 <span data-i18n="nav_agents">AI Agents</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('projects')">📁 <span data-i18n="nav_projects">Projects</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('knowledge')">📚 <span data-i18n="nav_knowledge">Knowledge Base</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_media">Image & Video AI</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('automation')">⚡ <span data-i18n="nav_automation">Automation</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic Project Suite</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
 
         <div class="nav-section-label" data-i18n="sec_personal">PERSONAL</div>
         <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile & Account</span></button>
-        <button class="nav-btn owner-only" onclick="switchView('apiconn')">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
+        <button class="nav-btn owner-only" onclick="switchView('apiconn')" style="display:none;">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
         <button class="nav-btn" onclick="switchView('security')">🛡️ <span data-i18n="nav_security">Permissions & Security</span></button>
         <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
         <button class="nav-btn" onclick="switchView('subscription')">💠 <span data-i18n="nav_pro">Pro Subscription</span></button>
-        <button class="nav-btn owner-only" onclick="switchView('admin')">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
+        <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
       </div>
     </aside>
 
@@ -779,7 +871,7 @@
         <div class="topbar-left">
           <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
           <select id="globalModelSelect" class="pill-select" onchange="onModelSelectChange(this.value)">
-            <option value="openrouter/auto">openrouter/auto</option>
+            <option value="openrouter/auto">openrouter/auto (Auto Select)</option>
           </select>
         </div>
 
@@ -799,13 +891,13 @@
             <option value="as">অসমীয়া (Assamese)</option>
             <option value="ur">اردو (Urdu)</option>
             <option value="sa">संस्कृतम् (Sanskrit)</option>
+            <option value="ne">नेपाली (Nepali)</option>
           </select>
           <button class="btn-3d" onclick="toggleTheme()" id="themeBtn">🌗 Theme</button>
           <button class="btn-3d btn-peach-blue" onclick="openAuthModal()" id="authBtn">Login / Setup</button>
         </div>
       </header>
 
-      <!-- 1. OVERVIEW DASHBOARD -->
       <section class="workspace-view active" id="view-overview">
         <div class="orbit-core-hero tilt-glass">
           <div style="flex: 1; min-width: 260px;">
@@ -816,11 +908,10 @@
             </p>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
               <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
-              <button class="btn-3d" onclick="switchView('models')" data-i18n="nav_models">AI Model Hub</button>
+              <button class="btn-3d" onclick="switchView('models')" data-i18n="nav_models">AI Model Hub Pro</button>
               <button class="btn-3d" onclick="switchView('files')" data-i18n="nav_files">Files & Tools</button>
             </div>
           </div>
-          <!-- 3D GLOSSY RED RUBY GLASS ORB (Matched to uploaded reference image) -->
           <div id="orbitCoreContainer" title="3D Glossy Crimson Glass Orb"></div>
         </div>
 
@@ -843,7 +934,6 @@
         </div>
       </section>
 
-      <!-- 2. AI CHAT -->
       <section class="workspace-view" id="view-chat">
         <div class="chat-layout">
           <div style="padding: 14px 20px; border-bottom: 1px solid rgba(233,232,248,0.22); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -875,19 +965,34 @@
         </div>
       </section>
 
-      <!-- 3. AI MODEL HUB -->
       <section class="workspace-view" id="view-models">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-          <h2 data-i18n="nav_models">AI Model Hub</h2>
+          <h2 data-i18n="nav_models">AI Model Hub Pro</h2>
           <div style="display: flex; gap: 10px;">
-            <input id="modelSearchInput" class="input-3d" placeholder="Search OpenRouter / Claude / GPT models..." oninput="renderModelsGrid()" />
+            <input id="modelSearchInput" class="input-3d" placeholder="Search models..." oninput="renderModelsGrid()" />
             <button class="btn-3d btn-peach-blue" onclick="loadModels()">🔄 Refresh Models</button>
           </div>
         </div>
-        <div class="grid-3d" id="modelsGrid"></div>
+        
+        <div class="card-3d tilt-glass" style="margin-top:22px;">
+          <div class="card-title"><span>KIE.ai Market Models Hub (128+ Models)</span> <span class="kie-tag">Pro Section</span></div>
+          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Complete suite of KIE.ai chat, image, music, and video market models.</p>
+          <div class="grid-3d" id="kieGrid"></div>
+        </div>
+
+        <div class="card-3d tilt-glass" style="margin-top:26px;">
+          <div class="card-title"><span>OpenRouter Market Models</span> <span class="kie-tag">Pro Section</span></div>
+          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">All OpenRouter models (Limited to top 3 in Free Tier, All in Pro Tier).</p>
+          <div class="grid-3d" id="modelsGrid"></div>
+        </div>
+
+        <div class="card-3d tilt-glass" id="customApiModelsCard" style="margin-top:26px; display:none;">
+          <div class="card-title"><span>Custom API Models</span> <span class="kie-tag">Dynamic Key</span></div>
+          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Models loaded automatically from your custom API key connection.</p>
+          <div class="grid-3d" id="customApiGrid"></div>
+        </div>
       </section>
 
-      <!-- 4. PROMPT LIBRARY -->
       <section class="workspace-view" id="view-prompts">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create / Save Prompt</div>
@@ -900,7 +1005,6 @@
         <div class="grid-3d" id="promptsGrid"></div>
       </section>
 
-      <!-- 5. FILES & TOOLS -->
       <section class="workspace-view" id="view-files">
         <div class="card-3d tilt-glass">
           <div class="card-title">Upload & Analyze Files (PDF, DOCX, TXT, CSV, JSON, Images, Videos) — 18MB Limit</div>
@@ -913,7 +1017,6 @@
         <div class="grid-3d" id="filesGrid"></div>
       </section>
 
-      <!-- 6. CHAT HISTORY -->
       <section class="workspace-view" id="view-history">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h2 data-i18n="nav_history">Chat History</h2>
@@ -922,7 +1025,6 @@
         <div class="grid-3d" id="historyGrid"></div>
       </section>
 
-      <!-- 7. AI SEARCH -->
       <section class="workspace-view" id="view-search">
         <div class="card-3d tilt-glass">
           <div class="card-title">AI Live Web Search</div>
@@ -934,7 +1036,6 @@
         </div>
       </section>
 
-      <!-- 8. AI AGENTS -->
       <section class="workspace-view" id="view-agents">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create Custom AI Agent</div>
@@ -947,7 +1048,6 @@
         <div class="grid-3d" id="agentsGrid"></div>
       </section>
 
-      <!-- 9. PROJECTS -->
       <section class="workspace-view" id="view-projects">
         <div class="card-3d tilt-glass">
           <div class="card-title">Create Project Workspace</div>
@@ -960,7 +1060,6 @@
         <div class="grid-3d" id="projectsGrid"></div>
       </section>
 
-      <!-- 10. KNOWLEDGE BASE -->
       <section class="workspace-view" id="view-knowledge">
         <div class="card-3d tilt-glass">
           <div class="card-title">Add Document to Knowledge Base (Used automatically in AI Chat)</div>
@@ -973,22 +1072,87 @@
         <div class="grid-3d" id="knowledgeGrid"></div>
       </section>
 
-      <!-- 11. IMAGE & VIDEO AI -->
       <section class="workspace-view" id="view-media">
         <div class="card-3d tilt-glass">
-          <div class="card-title">AI Image & Video Generation Studio</div>
+          <div class="card-title">AI Image & Video Generation Studio (8K Ultra HD)</div>
           <p style="color: var(--lavender-white); opacity:0.85; font-size: 0.9rem; margin-bottom: 12px;">
-            Generates 9:16 cinematic video prompts & photorealistic visual specs via ORBIT AI.
+            Generates 8K Ultra HD cinematic video prompts & photorealistic visual specs via KIE.ai market models.
           </p>
           <div style="display: flex; gap: 10px;">
-            <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 9:16 cinematic video or photorealistic graphic..." />
+            <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 8K Ultra HD cinematic video or graphic..." />
             <button class="btn-3d btn-peach-blue" onclick="generateMediaPrompt()">Generate Spec 🎨</button>
           </div>
+          <div class="aca-grid" style="margin-top:14px;">
+            <select id="mediaKieModel" class="pill-select"></select>
+            <select id="mediaRatio" class="pill-select"><option value="9:16">9:16 Vertical</option><option value="16:9">16:9 Wide</option><option value="1:1">1:1 Square</option></select>
+            <select id="mediaQuality" class="pill-select"><option value="8K Ultra HD" selected>8K Ultra HD (Max Quality)</option><option value="4K UHD">4K UHD</option></select>
+            <input id="mediaCustomModel" class="input-3d" placeholder="Custom KIE model ID (optional)" />
+          </div>
+          <button class="btn-3d btn-peach-blue" onclick="generateKieMedia()">Generate in 8K Ultra HD via KIE.ai 🎬</button>
+          <div id="mediaKieOutput" class="media-result" style="margin-top:14px;"></div>
           <div id="mediaOutput" style="margin-top: 14px;"></div>
         </div>
       </section>
 
-      <!-- 12. AUTOMATION -->
+      <section class="workspace-view" id="view-academic">
+        <div class="card-3d tilt-glass">
+          <div class="card-title"><span data-i18n="nav_academic">Academic Project Suite</span> <span>🎓</span></div>
+          <p style="font-size:0.88rem;opacity:0.9;margin-bottom:12px;">Generate a fully structured academic project report. Select your exact degree, stream, academic year, semester, and project scope.</p>
+          
+          <div class="aca-grid">
+            <div class="form-group">
+              <label>Degree / Qualification:</label>
+              <select id="acaDegree" class="pill-select">
+                <option selected>B.Pharmacy</option><option>B.Tech / B.E.</option><option>M.Pharmacy</option><option>M.Tech / M.E.</option><option>B.Sc / M.Sc</option><option>Diploma</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Stream / Department:</label>
+              <select id="acaField" class="pill-select">
+                <option>Pharmaceutics</option><option>Pharmaceutical Chemistry</option><option>Pharmacology</option><option>Pharmacognosy</option><option>Computer Engineering</option><option>Information Technology</option><option>AI &amp; Data Science</option><option>Mechanical Engineering</option><option>Civil Engineering</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Academic Year:</label>
+              <select id="acaYear" class="pill-select">
+                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option selected>Final Year (4th Year)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Semester:</label>
+              <select id="acaSem" class="pill-select">
+                <option>Semester I</option><option>Semester II</option><option>Semester III</option><option>Semester IV</option><option>Semester V</option><option>Semester VI</option><option>Semester VII</option><option selected>Semester VIII</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Project Scope / Length:</label>
+              <select id="acaLength" class="pill-select">
+                <option value="150">Short (~150 words per section)</option>
+                <option value="300" selected>Standard (~300 words per section)</option>
+                <option value="500">Comprehensive (~500 words per section)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Project Title / Topic:</label>
+            <input id="acaTitle" class="input-3d" placeholder="e.g., Formulation and Evaluation of Herbal Anti-Acne Gel..." />
+          </div>
+
+          <div class="chk-row" id="acaSections"></div>
+          <label style="display:flex;gap:8px;align-items:center;font-size:0.88rem;margin-bottom:14px;"><input type="checkbox" id="acaUseChat" checked /> Use current AI Chat context</label>
+          
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn-3d btn-peach-blue" id="acaGenBtn" onclick="generateAcademicReport()">Generate Project Report 🎓</button>
+            <button class="btn-3d" onclick="acaStop=true">⏹ Stop</button>
+            <button class="btn-3d" onclick="copyAcademicReport()">Copy Markdown</button>
+            <button class="btn-3d" onclick="downloadAcademicReport()">Download .md</button>
+          </div>
+          <div id="acaStatus" style="margin-top:10px;font-size:0.85rem;color:var(--sunset-peach);"></div>
+          <div id="acaOutput" class="doc-out"></div>
+        </div>
+      </section>
+
       <section class="workspace-view" id="view-automation">
         <div class="card-3d tilt-glass">
           <div class="card-title">AI Task & Workflow Automation</div>
@@ -1000,11 +1164,19 @@
         </div>
       </section>
 
-      <!-- 13. PROFILE & ACCOUNT -->
       <section class="workspace-view" id="view-profile">
         <div class="card-3d tilt-glass">
-          <div class="card-title">Profile & Personalization</div>
-          <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px;"></div>
+          <div class="card-title" data-i18n="nav_profile">Profile & Account</div>
+          <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px; font-size:1.05rem;"></div>
+          
+          <div style="margin: 16px 0; padding: 14px; border-radius: 14px; background: rgba(141,185,240,0.1); border: 1px solid var(--powder-blue);">
+            <strong>Subscription Tier View:</strong>
+            <div style="display:flex; gap:10px; margin-top:8px;">
+              <button class="btn-3d" id="btnTierFree" onclick="switchUserTier('free')">Free Tier View (Limited Models)</button>
+              <button class="btn-3d btn-peach-blue" id="btnTierPro" onclick="switchUserTier('pro')">Pro Tier View (All Models & Features)</button>
+            </div>
+          </div>
+
           <div class="form-group">
             <label>Backend Server URL (Important for Android APK):</label>
             <input id="apiBaseUrlInput" class="input-3d" placeholder="http://localhost:3000" />
@@ -1013,28 +1185,27 @@
         </div>
       </section>
 
-      <!-- 14. API CONNECTIONS (OWNER ONLY) -->
       <section class="workspace-view" id="view-apiconn">
         <div class="card-3d tilt-glass">
-          <div class="card-title">Owner API Connections (Stored Server-Side Only)</div>
+          <div class="card-title">Dynamic Custom API Key Integration</div>
+          <p style="font-size:0.85rem; opacity:0.9; margin-bottom:12px;">Add any provider API key (OpenAI, Anthropic, Custom LLM). Models will instantly load into Model Hub.</p>
           <div class="form-group">
-            <label>OpenRouter API Key (Masked on Frontend)</label>
-            <input type="password" id="cfgOpenRouterKey" placeholder="sk-or-v1-..." />
+            <label>Custom API Provider Name (e.g. MyCustomAI)</label>
+            <input type="text" id="cfgCustomName" class="input-3d" placeholder="Custom Provider" />
           </div>
           <div class="form-group">
-            <label>Tavily Web Search API Key (Optional for Live Search)</label>
-            <input type="password" id="cfgTavilyKey" placeholder="tvly-..." />
+            <label>Custom API Key</label>
+            <input type="password" id="cfgCustomKey" class="input-3d" placeholder="key-..." />
           </div>
           <div class="form-group">
-            <label>Custom AI Endpoint URL</label>
-            <input type="text" id="cfgCustomUrl" placeholder="https://..." />
+            <label>Custom API Endpoint Base URL</label>
+            <input type="text" id="cfgCustomEndpoint" class="input-3d" placeholder="https://api.example.com/v1" />
           </div>
-          <button class="btn-3d btn-peach-blue" onclick="saveProviderConfig()">Save & Verify Connections 🔑</button>
-          <div id="providerStatusMsg" style="margin-top: 12px; font-size: 0.9rem;"></div>
+          <button class="btn-3d btn-peach-blue" onclick="saveCustomApiKeyAdapter()">Save & Load Custom Models 🔑</button>
+          <div id="customApiStatusMsg" style="margin-top: 12px; font-size: 0.9rem;"></div>
         </div>
       </section>
 
-      <!-- 15. PERMISSIONS & SECURITY -->
       <section class="workspace-view" id="view-security">
         <div class="card-3d tilt-glass">
           <div class="card-title">Security, Roles & Session Protection</div>
@@ -1047,38 +1218,46 @@
         </div>
       </section>
 
-      <!-- 16. COMPLETE SETTINGS -->
       <section class="workspace-view" id="view-settings">
         <h2 style="margin-bottom: 14px;" data-i18n="nav_settings">Complete 3D Workspace Settings</h2>
         <div class="grid-3d">
           <div class="card-3d tilt-glass"><div class="card-title">1. Appearance & 3D Glass</div><button class="btn-3d" onclick="toggleTheme()">Switch Dark / Light Glass Theme</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">2. Language & Region</div><p>Use topbar selector for all 14 languages (मराठी, हिंदी, English, etc.).</p></div>
+          <div class="card-3d tilt-glass"><div class="card-title">2. Language & Region</div><p>Use the top-bar selector for all 15 languages.</p></div>
           <div class="card-3d tilt-glass"><div class="card-title">3. Voice & Speech</div><button class="btn-3d" onclick="speakText('ORBIT AI Private Intelligence OS is online.')">Test Voice Output 🔊</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">4. Data Export & Control</div><button class="btn-3d" onclick="exportAllWorkspaceData()">Export Full Local Data 📦</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">5. Diagnostics & Health</div><button class="btn-3d btn-peach-blue" onclick="checkHealth()">Run System Check 🩺</button></div>
+          <div class="card-3d tilt-glass"><div class="card-title">6. Owner Tools 👑</div><button class="btn-3d btn-peach-blue owner-only" style="display:none;" onclick="switchView('admin')">Open Admin Panel</button><p style="font-size:0.85rem;">Guest requests, auto-OTP approval and pro subscription requests (owner only).</p></div>
         </div>
       </section>
 
-      <!-- 17. PRO SUBSCRIPTION -->
       <section class="workspace-view" id="view-subscription">
         <div class="grid-3d">
           <div class="card-3d tilt-glass">
             <div class="card-title">Free Personal Tier</div>
-            <p>Standard local workspace access & basic chat.</p>
+            <p>Access to standard models (OpenRouter Auto & basic chat). Upgrade to Pro for 128+ KIE.ai market models and advanced features.</p>
+            <div style="margin-top:16px;" id="subFreeStatus"></div>
           </div>
           <div class="card-3d tilt-glass" style="border-bottom-color: var(--sunset-peach);">
-            <div class="card-title">ORBIT AI PRO (Active Private OS) 💠</div>
-            <p style="line-height: 1.7;">Unlimited Multi-Model Routing, Real PDF/DOCX Parsing, Custom Agents, 3D Glass Design & Android APK Support.</p>
+            <div class="card-title">ORBIT AI PRO (Ultimate Edition) 💠</div>
+            <p style="line-height: 1.7; margin-bottom:14px;">128+ KIE.ai models, Unlimited Multi-Model Routing, Real PDF/DOCX Parsing, Academic Project Suite & 8K Ultra HD Media.</p>
+            <div id="subProStatus">
+              <button class="btn-3d btn-peach-blue" onclick="redirectToRazorpay()">Upgrade to Pro (₹799 - Pay via QR / UPI)</button>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- 18. ADMIN PANEL -->
       <section class="workspace-view" id="view-admin">
         <div class="card-3d tilt-glass">
-          <div class="card-title">👑 Owner Admin Panel — Guest Requests & Users</div>
-          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 14px;">Refresh Requests & Users</button>
+          <div class="card-title">👑 Owner Admin Panel — Guest Requests, Pro Upgrades & Users</div>
+          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 14px;">Refresh Admin Data</button>
+          
+          <h4 style="margin-top:10px; color:var(--sunset-peach);">Pro Subscription Upgrade Requests</h4>
+          <div id="adminProRequestsList" style="margin-bottom:18px;"></div>
+
+          <h4 style="margin-top:10px;">Guest Access Requests</h4>
           <div id="adminRequestsList"></div>
+
           <hr style="border-color: rgba(233,232,248,0.22); margin: 18px 0;" />
           <div id="adminUsersList"></div>
         </div>
@@ -1086,48 +1265,7 @@
     </div>
   </div>
 
-  <!-- AUTHENTICATION MODAL -->
-  <div class="auth-overlay" id="authModal">
-    <div class="auth-card">
-      <div class="card-title">
-        <span>🔐 ORBIT AI Access</span>
-        <button class="btn-3d" onclick="closeAuthModal()">✕</button>
-      </div>
-
-      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
-      </div>
-
-      <div id="authTabOwner">
-        <div class="form-group"><label>Owner Name</label><input id="ownName" placeholder="Mayur" /></div>
-        <div class="form-group"><label>Owner Email</label><input id="ownEmail" placeholder="owner@orbit.ai" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" placeholder="ORBIT-OWNER-2026" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
-      </div>
-
-      <div id="authTabGuest" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
-        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
-        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
-      </div>
-
-      <div id="authTabOtp" style="display:none;">
-        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
-        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP Code</button>
-        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
-      </div>
-
-      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach);"></div>
-      <button class="btn-3d" style="width:100%; margin-top: 12px;" onclick="logoutUser()">Logout Current Session</button>
-    </div>
-  </div>
-
   <script>
-    // Auto-fallback to localhost:3000 if opened directly via file:/// protocol
     let defaultBase = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
     let API_BASE = localStorage.getItem('orbit_api_base') || defaultBase;
     let currentUser = null;
@@ -1139,97 +1277,78 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
-    // Clean Subtitles (No raw color hex codes or numbering displayed on UI)
     const I18N = {
       en: {
-        sec_workspace: "WORKSPACE",
-        sec_personal: "PERSONAL",
-        nav_overview: "Overview",
-        nav_chat: "AI Chat",
-        nav_models: "AI Model Hub",
-        nav_prompts: "Prompt Library",
-        nav_files: "Files & Tools",
-        nav_history: "Chat History",
-        nav_search: "AI Search",
-        nav_agents: "AI Agents",
-        nav_projects: "Projects",
-        nav_knowledge: "Knowledge Base",
-        nav_media: "Image & Video AI",
-        nav_automation: "Automation",
-        nav_profile: "Profile & Account",
-        nav_apiconn: "API Connections",
-        nav_security: "Permissions & Security",
-        nav_settings: "Settings",
-        nav_pro: "Pro Subscription",
-        nav_admin: "Admin Panel",
+        sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub Pro", nav_academic: "Academic Project Suite",
+        nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History",
+        nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base",
+        nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile & Account",
+        nav_apiconn: "API Connections", nav_security: "Permissions & Security", nav_settings: "Settings",
+        nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
         hero_title: "ORBIT AI — Private Intelligence OS",
         hero_sub: "Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, and private execution.",
-        btn_launch_chat: "Launch AI Chat",
-        card_status: "System & Model Status",
-        card_quick_chat: "Quick AI Ask",
-        card_stats: "Workspace Statistics"
+        btn_launch_chat: "Launch AI Chat", card_status: "System & Model Status", card_quick_chat: "Quick AI Ask", card_stats: "Workspace Statistics",
+        auth_sub: "Please enter owner credentials to claim workspace."
       },
       mr: {
-        sec_workspace: "कार्यक्षेत्र (WORKSPACE)",
-        sec_personal: "वैयक्तिक (PERSONAL)",
-        nav_overview: "मुख्य डॅशबोर्ड",
-        nav_chat: "AI चॅट",
-        nav_models: "AI मॉडेल हब",
-        nav_prompts: "प्रॉम्प्ट लायब्ररी",
-        nav_files: "फाईल्स आणि टूल्स",
-        nav_history: "चॅट इतिहास",
-        nav_search: "AI वेब सर्च",
-        nav_agents: "AI एजंट्स",
-        nav_projects: "प्रोजेक्ट्स",
-        nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज आणि व्हिडिओ AI",
-        nav_automation: "ऑटोमेशन",
-        nav_profile: "प्रोफाईल आणि खाते",
-        nav_apiconn: "API कनेक्शन्स",
-        nav_security: "परवानग्या आणि सुरक्षा",
-        nav_settings: "सेटिंग्ज",
-        nav_pro: "प्रो सबस्क्रिप्शन",
-        nav_admin: "ॲडमिन पॅनेल",
+        sec_workspace: "कार्यक्षेत्र (WORKSPACE)", sec_personal: "वैयक्तिक (PERSONAL)",
+        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब प्रो", nav_academic: "शैक्षणिक प्रोजेक्ट सूट",
+        nav_prompts: "प्रॉम्प्ट लायब्ररी", nav_files: "फाईल्स आणि टूल्स", nav_history: "चॅट इतिहास",
+        nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
+        nav_media: "इमेज आणि व्हिडिओ AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफाईल आणि खाते",
+        nav_apiconn: "API कनेक्शन्स", nav_security: "परवानग्या आणि सुरक्षा", nav_settings: "सेटिंग्ज",
+        nav_pro: "प्रो सबस्क्रिप्शन", nav_admin: "ॲडमिन पॅनेल",
         hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
         hero_sub: "अत्याधुनिक मल्टी-मॉडेल AI वर्कस्पेस, डॉक्युमेंट विश्लेषण आणि स्मार्ट एजंट्ससह तुमची स्वतःची प्रायव्हेट सिस्टीम.",
-        btn_launch_chat: "AI चॅट सुरू करा",
-        card_status: "सिस्टीम आणि मॉडेल स्थिती",
-        card_quick_chat: "झटपट AI प्रश्न",
-        card_stats: "वर्कस्पेस आकडेवारी"
+        btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम स्थिती", card_quick_chat: "झटपट AI प्रश्न", card_stats: "वर्कस्पेस आकडेवारी",
+        auth_sub: "कृपया वर्कस्पेस क्लेम करण्यासाठी ओनर क्रेडेंशियल्स प्रविष्ट करा."
       },
       hi: {
-        sec_workspace: "वर्कस्पेस",
-        sec_personal: "व्यक्तिगत",
-        nav_overview: "ओवरव्यू",
-        nav_chat: "AI चैट",
-        nav_models: "AI मॉडल हब",
-        nav_prompts: "प्रॉम्प्ट लाइब्रेरी",
-        nav_files: "फ़ाइलें और टूल्स",
-        nav_history: "चैट इतिहास",
-        nav_search: "AI सर्च",
-        nav_agents: "AI एजेंट्स",
-        nav_projects: "प्रोजेक्ट्स",
-        nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज और वीडियो AI",
-        nav_automation: "ऑटोमेशन",
-        nav_profile: "प्रोफ़ाइल",
-        nav_apiconn: "API कनेक्शन",
-        nav_security: "सुरक्षा",
-        nav_settings: "सेटिंग्स",
-        nav_pro: "प्रो प्लान",
-        nav_admin: "एडमिन पैनल",
+        sec_workspace: "वर्कस्पेस", sec_personal: "व्यक्तिगत",
+        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब प्रो", nav_academic: "एकेडमिक प्रोजेक्ट सूट",
+        nav_prompts: "प्रॉम्प्ट लाइब्रेरी", nav_files: "फ़ाइलें और टूल्स", nav_history: "चैट इतिहास",
+        nav_search: "AI सर्च", nav_agents: "AI एजेंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
+        nav_media: "इमेज और वीडियो AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफ़ाइल",
+        nav_apiconn: "API कनेक्शन", nav_security: "सुरक्षा", nav_settings: "सेटिंग्स",
+        nav_pro: "प्रो प्लान", nav_admin: "एडमिन पैनल",
         hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
         hero_sub: "मल्टी-मॉडल AI, डॉक्यूमेंट एनालिसिस और स्मार्ट एजेंट्स के साथ आपका निजी ऑपरेटिंग सिस्टम।",
-        btn_launch_chat: "AI चैट खोलें",
-        card_status: "सिस्टम स्थिति",
-        card_quick_chat: "त्वरित AI प्रश्न",
-        card_stats: "आंकड़े"
+        btn_launch_chat: "AI चैट खोलें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न", card_stats: "आंकड़े",
+        auth_sub: "कृपया ओनर क्रेडेंशियल्स दर्ज करें।"
       }
     };
 
+    const I18N_KEYS = ["sec_workspace","sec_personal","nav_overview","nav_chat","nav_models","nav_prompts","nav_files","nav_history","nav_search","nav_agents","nav_projects","nav_knowledge","nav_media","nav_automation","nav_profile","nav_apiconn","nav_security","nav_settings","nav_pro","nav_admin","nav_academic","btn_launch_chat"];
+    const I18N_PACK = {
+      bn: ["কর্মক্ষেত্র","ব্যক্তিগত","ওভারভিউ","AI চ্যাট","AI মডেল হাব প্রো","প্রম্পট লাইব্রেরি","ফাইল ও টুলস","চ্যাট ইতিহাস","AI সার্চ","AI এজেন্ট","প্রজেক্ট","নলেজ বেস","ইমেজ ও ভিডিও AI","অটোমেশন","প্রোফাইল ও অ্যাকাউন্ট","API সংযোগ","অনুমতি ও নিরাপত্তা","সেটিংস","প্রো সাবস্ক্রিপশন","অ্যাডমিন প্যানেল","একাডেমিক প্রজেক্ট স্যুট","AI চ্যাট শুরু করুন"],
+      ta: ["பணியிடம்","தனிப்பட்டவை","மேலோட்டம்","AI அரட்டை","AI மாடல் ஹப் ப்ரோ","ப்ராம்ப்ட் நூலகம்","கோப்புகள் & கருவிகள்","அரட்டை வரலாறு","AI தேடல்","AI முகவர்கள்","திட்டங்கள்","அறிவுத் தளம்","படம் & வீடியோ AI","தானியக்கம்","சுயவிவரம் & கணக்கு","API இணைப்புகள்","அனுமதிகள் & பாதுகாப்பு","அமைப்புகள்","ப்ரோ சந்தா","நிர்வாக பேனல்","கல்வித் திட்டத் தொகுப்பு","AI அரட்டையைத் தொடங்கு"],
+      te: ["వర్క్‌స్పేస్","వ్యక్తిగతం","అవలోకనం","AI చాట్","AI మోడల్ హబ్ ప్రో","ప్రాంప్ట్ లైబ్రరీ","ఫైళ్లు & టూల్స్","చాట్ చరిత్ర","AI సెర్చ్","AI ఏజెంట్లు","ప్రాజెక్టులు","నాలెడ్జ్ బేస్","ఇమేజ్ & వీడియో AI","ఆటోమేషన్","ప్రొఫైల్ & ఖాతా","API కనెక్షన్లు","అనుమతులు & భద్రత","సెట్టింగ్స్","ప్రో సబ్‌స్క్రిప్షన్","అడ్మిన్ ప్యానెల్","అకడమిక్ ప్రాజెక్ట్ సూట్","AI చాట్ ప్రారంభించండి"],
+      gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ પ્રો","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
+      kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
+      ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","AI ചാറ്റ് തുടങ്ങുക"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল এবং ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ and ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡमिन ਪੈनল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
+      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
+      ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فایلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","AI چیٹ شروع کریں"],
+      sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","periyojanaः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","AI संवादम् आरभस्व"],
+      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","AI च्याट सुरु गर्नुहोस्"]
+    };
+    Object.keys(I18N_PACK).forEach(l => {
+      I18N[l] = {};
+      I18N_KEYS.forEach((k, i) => { I18N[l][k] = I18N_PACK[l][i]; });
+    });
+    const RTL_LANGS = ['ur'];
+    const SPEECH_LANG = { en:'en-IN', mr:'mr-IN', hi:'hi-IN', bn:'bn-IN', ta:'ta-IN', te:'te-IN', gu:'gu-IN', kn:'kn-IN', ml:'ml-IN', pa:'pa-IN', or:'or-IN', as:'as-IN', ur:'ur-IN', sa:'hi-IN', ne:'ne-NP' };
+
     function changeLanguage(lang) {
+      if (!I18N[lang]) lang = 'en';
       localStorage.setItem('orbit_lang', lang);
-      const dict = { ...I18N.en, ...(I18N[lang] || {}) };
+      document.documentElement.lang = lang;
+      document.documentElement.dir = RTL_LANGS.includes(lang) ? 'rtl' : 'ltr';
+      const sel = document.getElementById('langSelect');
+      if (sel && sel.value !== lang) sel.value = lang;
+      const dict = { ...I18N.en, ...I18N[lang] };
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) el.textContent = dict[key];
@@ -1254,9 +1373,7 @@
       });
     }
 
-    // =========================================================
-    // REAL-TIME 3D GLOSSY RED MAGMA GLASS ORB (CUSTOM GLSL SHADER)
-    // =========================================================
+    const ORBIT_LITE = window.matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.hardwareConcurrency || 8) <= 4;
     let coreState = 'idle';
     let coreRenderer, coreScene, coreCamera, redGlassSphere, innerEmberParticles;
 
@@ -1269,12 +1386,11 @@
       coreCamera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
       coreCamera.position.z = 4.3;
 
-      coreRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      coreRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: !ORBIT_LITE, powerPreference: ORBIT_LITE ? 'low-power' : 'high-performance' });
       coreRenderer.setSize(270, 270);
-      coreRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      coreRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, ORBIT_LITE ? 1.25 : 2));
       container.appendChild(coreRenderer.domElement);
 
-      // Custom GLSL Shader for Photorealistic Glossy Red-Orange Glass Orb (like reference photo)
       const vertexShader = `
         varying vec3 vNormal;
         varying vec3 vPosition;
@@ -1290,7 +1406,8 @@
         }
       `;
 
-      const fragmentShader = `
+      const fragmentShader = `#define FBM_OCT ${ORBIT_LITE ? 2 : 4}
+
         uniform float uTime;
         uniform float uSpeed;
         varying vec3 vNormal;
@@ -1298,7 +1415,6 @@
         varying vec3 vViewPosition;
         varying vec2 vUv;
 
-        // 3D procedural plasma/caustic noise inside the glass sphere
         float hash(vec3 p) {
           p = fract(p * 0.3183099 + 0.1);
           p *= 17.0;
@@ -1320,7 +1436,7 @@
         float fbm(vec3 p) {
           float v = 0.0;
           float a = 0.5;
-          for (int i = 0; i < 4; i++) {
+          for (int i = 0; i < FBM_OCT; i++) {
             v += a * noise(p);
             p = p * 2.05 + vec3(uTime * 0.25);
             a *= 0.5;
@@ -1332,15 +1448,12 @@
           vec3 normal = normalize(vNormal);
           vec3 viewDir = normalize(vViewPosition);
 
-          // Fresnel Rim for true thick refractive crystal glass edge
           float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 2.6);
 
-          // Internal swirling crimson & fiery orange caustics
           vec3 samplePos = vPosition * 2.4 + vec3(0.0, -uTime * 0.6, uTime * 0.4);
           float n = fbm(samplePos);
           float n2 = fbm(samplePos * 1.8 - vec3(uTime * 0.5));
 
-          // Deep ruby core + bright molten orange-red bottom caustic (matching reference image)
           float bottomGlow = smoothstep(0.4, -0.95, vPosition.y);
           vec3 deepRuby = vec3(0.28, 0.01, 0.06);
           vec3 crimsonRed = vec3(0.96, 0.06, 0.08);
@@ -1350,34 +1463,29 @@
           vec3 col = mix(deepRuby, crimsonRed, smoothstep(0.2, 0.75, n));
           col = mix(col, moltenOrange, smoothstep(0.35, 0.85, n2) * 0.85 + bottomGlow * 0.65);
 
-          // Concentrated bottom caustic hotspot (like light focused through a glass marble)
           float causticSpot = pow(max(0.0, dot(normal, normalize(vec3(0.0, -0.75, 0.65)))), 5.0);
           col += hotCoreYellow * causticSpot * (0.75 + 0.35 * sin(uTime * 3.0));
 
-          // Top-left cool studio sky reflection on glass surface
           vec3 lightDir1 = normalize(vec3(-0.6, 0.75, 0.85));
           vec3 halfVec1 = normalize(lightDir1 + viewDir);
           float spec1 = pow(max(dot(normal, halfVec1), 0.0), 90.0);
           float softReflect = pow(max(dot(normal, lightDir1), 0.0), 4.0);
 
-          // Secondary sharp window highlight
           vec3 lightDir2 = normalize(vec3(0.65, 0.55, 0.75));
           vec3 halfVec2 = normalize(lightDir2 + viewDir);
           float spec2 = pow(max(dot(normal, halfVec2), 0.0), 140.0);
 
-          // Combine glossy reflections + glass rim
           col += vec3(0.95, 0.75, 0.88) * softReflect * 0.25;
           col += vec3(1.0, 0.35, 0.25) * fresnel * 0.85;
           col += vec3(1.0, 0.98, 0.95) * spec1 * 1.35;
           col += vec3(1.0, 0.9, 0.85) * spec2 * 0.9;
 
-          // Translucent glassy alpha (clearer in middle, denser at refractive rim & caustic core)
           float alpha = clamp(0.76 + fresnel * 0.24 + spec1 + causticSpot * 0.2, 0.0, 1.0);
           gl_FragColor = vec4(col, alpha);
         }
       `;
 
-      const sphereGeo = new THREE.SphereGeometry(1.38, 96, 96);
+      const sphereGeo = new THREE.SphereGeometry(1.38, ORBIT_LITE ? 40 : 96, ORBIT_LITE ? 40 : 96);
       const shaderMat = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader,
@@ -1391,7 +1499,6 @@
       redGlassSphere = new THREE.Mesh(sphereGeo, shaderMat);
       coreScene.add(redGlassSphere);
 
-      // Subtle floating bokeh sparks around the red glass orb
       const sparkCount = 28;
       const sparkPos = new Float32Array(sparkCount * 3);
       for (let i = 0; i < sparkCount; i++) {
@@ -1412,7 +1519,6 @@
       innerEmberParticles = new THREE.Points(sparkGeo, sparkMat);
       coreScene.add(innerEmberParticles);
 
-      // Interactive mouse rotation
       let targetRotX = 0, targetRotY = 0;
       container.addEventListener('mousemove', e => {
         const r = container.getBoundingClientRect();
@@ -1424,8 +1530,20 @@
         targetRotY = 0;
       });
 
-      function animateOrb() {
+      let orbVisible = true, orbLast = 0;
+      if ('IntersectionObserver' in window) new IntersectionObserver(es => { orbVisible = es[0].isIntersecting; }).observe(container);
+      coreRenderer.domElement.addEventListener('webglcontextlost', ev => { ev.preventDefault(); orbVisible = false; });
+      coreRenderer.domElement.addEventListener('webglcontextrestored', () => { orbVisible = true; });
+      container.addEventListener('touchmove', e => {
+        const t = e.touches[0], r = container.getBoundingClientRect();
+        targetRotY = (((t.clientX - r.left) / r.width) - 0.5) * 1.2;
+        targetRotX = (((t.clientY - r.top) / r.height) - 0.5) * 1.2;
+      }, { passive: true });
+      function animateOrb(now) {
         requestAnimationFrame(animateOrb);
+        if (!orbVisible || document.hidden) return;
+        if (ORBIT_LITE && now - orbLast < 33) return;
+        orbLast = now || 0;
         const mult = coreState === 'thinking' ? 3.0 : (coreState === 'responding' ? 2.0 : 1.0);
         shaderMat.uniforms.uTime.value += 0.016 * mult;
 
@@ -1452,10 +1570,12 @@
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
       camera.position.z = 15;
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+      renderer.setPixelRatio(1);
       renderer.setSize(window.innerWidth, window.innerHeight);
+      window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 
-      const count = 180;
+      const count = ORBIT_LITE ? 70 : 180;
       const pos = new Float32Array(count * 3);
       for (let i = 0; i < count * 3; i++) pos[i] = (Math.random() - 0.5) * 40;
       const geo = new THREE.BufferGeometry();
@@ -1464,8 +1584,11 @@
       const points = new THREE.Points(geo, mat);
       scene.add(points);
 
-      function loop() {
+      let bgLast = 0;
+      function loop(now) {
         requestAnimationFrame(loop);
+        if (document.hidden || (ORBIT_LITE && now - bgLast < 40)) return;
+        bgLast = now || 0;
         points.rotation.y += 0.0007;
         points.rotation.x += 0.0003;
         renderer.render(scene, camera);
@@ -1490,7 +1613,17 @@
       return data;
     }
 
+    // Pro Feature Locking Check (English alerts)
     function switchView(name) {
+      const proViews = ['search', 'agents', 'projects', 'knowledge', 'media', 'automation', 'academic'];
+      const isOwner = currentUser && currentUser.role === 'owner';
+      const isPro = isOwner || (currentUser && currentUser.tier === 'pro');
+
+      if (proViews.includes(name) && !isPro) {
+        alert('🔒 This feature is locked! Please upgrade to ORBIT AI Pro (₹799) to unlock it.');
+        name = 'subscription';
+      }
+
       document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
       const target = document.getElementById(`view-${name}`);
       if (target) target.classList.add('active');
@@ -1516,10 +1649,16 @@
     function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
     function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
 
-    function showAuthTab(tab) {
-      document.getElementById('authTabOwner').style.display = tab === 'owner' ? 'block' : 'none';
-      document.getElementById('authTabGuest').style.display = tab === 'guest' ? 'block' : 'none';
-      document.getElementById('authTabOtp').style.display = tab === 'otp' ? 'block' : 'none';
+    function toggleOwnerMode() {
+      const ownerTab = document.getElementById('authTabOwner');
+      const phoneTab = document.getElementById('authTabPhone');
+      if (ownerTab.style.display === 'none') {
+        ownerTab.style.display = 'block';
+        phoneTab.style.display = 'none';
+      } else {
+        ownerTab.style.display = 'none';
+        phoneTab.style.display = 'block';
+      }
     }
 
     async function checkAuthStatus() {
@@ -1527,9 +1666,17 @@
         const data = await apiFetch('/api/auth/status');
         currentUser = data.user;
         updateAuthUI();
-      } catch (e) {}
+        if (currentUser) {
+          closeAuthModal();
+        } else {
+          openAuthModal();
+        }
+      } catch (e) {
+        openAuthModal();
+      }
     }
 
+    let activeUserTier = 'free';
     function updateAuthUI() {
       const roleBadge = document.getElementById('roleBadge');
       const authBtn = document.getElementById('authBtn');
@@ -1542,88 +1689,155 @@
       if (currentUser) {
         roleBadge.textContent = `${currentUser.name} (${currentUser.role.toUpperCase()})`;
         authBtn.textContent = currentUser.name;
+        activeUserTier = isOwner ? 'pro' : (currentUser.tier || 'free');
       } else {
         roleBadge.textContent = 'Private Intelligence OS';
-        authBtn.textContent = 'Login / Setup';
+        authBtn.textContent = 'Login';
+        activeUserTier = 'free';
       }
 
       const prof = document.getElementById('profileDetails');
       if (prof) {
         prof.innerHTML = currentUser
-          ? `<strong>Name:</strong> ${currentUser.name}<br><strong>Email:</strong> ${currentUser.email}<br><strong>Role:</strong> ${currentUser.role}`
-          : `Not logged in. Click "Login / Setup" in the top bar.`;
+          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Phone:</strong> ${esc(currentUser.phone || currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
+          : `Not logged in.`;
+      }
+      
+      const subFree = document.getElementById('subFreeStatus');
+      if (subFree) {
+        if (activeUserTier === 'free' && !isOwner) {
+          subFree.innerHTML = '<span style="color:var(--powder-blue);">✓ Free Plan Active (Overview & AI Chat available)</span>';
+        } else {
+          subFree.innerHTML = '<span style="color:#2ecc71;">✓ Pro Subscription Active! (All features unlocked)</span>';
+        }
+      }
+    }
+
+    async function issuePhoneOtp() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      if (!phone || phone.length < 10) {
+        alert('Please enter a valid mobile number.');
+        return;
+      }
+      try {
+        const res = await apiFetch('/api/auth/issue-phone', {
+          method: 'POST',
+          body: JSON.stringify({ phone })
+        });
+        document.getElementById('authStatusMsg').innerHTML = `<span style="color:#2ecc71;">${res.message}</span>`;
+      } catch (e) {
+        document.getElementById('authStatusMsg').textContent = e.message;
+      }
+    }
+
+    async function verifyPhoneOtp() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const otp = document.getElementById('loginOtp').value.trim();
+      if (!phone || !otp) {
+        alert('Please enter both mobile number and OTP.');
+        return;
+      }
+      try {
+        const res = await apiFetch('/api/auth/verify-phone', {
+          method: 'POST',
+          body: JSON.stringify({ phone, otp })
+        });
+        if (res.token) localStorage.setItem('orbit_token', res.token);
+        currentUser = res.user;
+        updateAuthUI();
+        closeAuthModal();
+        switchView('overview');
+      } catch (e) {
+        document.getElementById('authStatusMsg').textContent = e.message;
       }
     }
 
     async function claimOwner() {
       try {
         const name = document.getElementById('ownName').value;
-        const email = document.getElementById('ownEmail').value;
+        const phone = document.getElementById('ownPhone').value;
         const claimCode = document.getElementById('ownCode').value;
         const res = await apiFetch('/api/auth/owner/claim', {
           method: 'POST',
-          body: JSON.stringify({ name, email, claimCode })
+          body: JSON.stringify({ name, phone, claimCode })
         });
         if (res.token) localStorage.setItem('orbit_token', res.token);
         currentUser = res.user;
         updateAuthUI();
         closeAuthModal();
+        switchView('overview');
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
     }
 
-    async function submitGuestRequest() {
+    // QR Code and ₹799 Payment Window (UPI ID: mayur0797@axl)
+    function redirectToRazorpay() {
+      if (!currentUser) {
+        alert('Please login first.');
+        openAuthModal();
+        return;
+      }
+      
+      if (currentUser.role === 'owner' || activeUserTier === 'pro') {
+        alert('You are already Pro or Admin!');
+        return;
+      }
+
+      const modalHTML = `
+        <div id="paymentModal" style="position:fixed; inset:0; background:rgba(12,14,20,0.92); backdrop-filter:blur(20px); z-index:20000; display:flex; align-items:center; justify-content:center; padding:16px;">
+          <div style="background:var(--glass-surface); border:2px solid var(--powder-blue); border-radius:24px; padding:24px; max-width:400px; width:100%; text-align:center; box-shadow:var(--glass-3d-shadow);">
+            <h3 style="color:var(--powder-blue); margin-bottom:10px;">ORBIT AI Pro Subscription</h3>
+            <p style="font-size:1.1rem; color:var(--sunset-peach); font-weight:bold; margin-bottom:15px;">Price: ₹799</p>
+            
+            <p style="font-size:0.85rem; margin-bottom:10px; opacity:0.85;">Scan the QR code below (PhonePe, GPay, Paytm) or pay via UPI:</p>
+            
+            <div style="background:#fff; padding:10px; border-radius:12px; display:inline-block; margin-bottom:15px;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=mayur0797@axl&pn=Mayur%20Sonawane&am=799&cu=INR" alt="Payment QR Code" style="width:180px; height:180px; object-fit:contain;" />
+            </div>
+            
+            <p style="font-size:0.8rem; margin-bottom:12px; color:var(--powder-blue);">UPI ID: <strong>mayur0797@axl</strong></p>
+
+            <div class="form-group" style="text-align:left;">
+              <label style="font-size:0.8rem;">Enter UPI Transaction ID (UTR) after payment:</label>
+              <input type="text" id="upiTxnId" class="input-3d" placeholder="e.g. 4321XXXXXXXX" style="width:100%; margin-top:5px;" />
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+              <button class="btn-3d btn-peach-blue" style="flex:1;" onclick="verifyUserPayment()">Confirm Payment</button>
+              <button class="btn-3d" style="flex:1; background:rgba(255,255,255,0.1);" onclick="document.getElementById('paymentModal').remove()">Close</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const existing = document.getElementById('paymentModal');
+      if (existing) existing.remove();
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    async function verifyUserPayment() {
+      const txnId = document.getElementById('upiTxnId').value.trim();
+      if (!txnId) {
+        alert('Please enter the transaction ID.');
+        return;
+      }
       try {
-        const name = document.getElementById('reqName').value;
-        const email = document.getElementById('reqEmail').value;
-        const reason = document.getElementById('reqReason').value;
-        const res = await apiFetch('/api/auth/request', {
+        const res = await apiFetch('/api/payment/verify-manual', {
           method: 'POST',
-          body: JSON.stringify({ name, email, reason })
+          body: JSON.stringify({ paymentId: txnId, upiId: 'UPI / QR Payment' })
         });
-        document.getElementById('authStatusMsg').textContent = `Request submitted! Status: ${res.status} (ID: ${res.requestId})`;
+        if (res.ok) {
+          currentUser = res.user;
+          if (res.token) localStorage.setItem('orbit_token', res.token);
+          updateAuthUI();
+          document.getElementById('paymentModal').remove();
+          alert('Congratulations! Your payment has been verified and ORBIT AI Pro Subscription is now active!');
+          switchView('overview');
+        }
       } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
+        alert('Error: ' + e.message);
       }
-    }
-
-    async function issueOtp() {
-      try {
-        const email = document.getElementById('otpEmail').value;
-        const res = await apiFetch('/api/auth/issue', {
-          method: 'POST',
-          body: JSON.stringify({ email })
-        });
-        document.getElementById('authStatusMsg').textContent = `OTP Ready: ${res.devOtp || 'Check Admin Panel'}`;
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function verifyOtpLogin() {
-      try {
-        const email = document.getElementById('otpEmail').value;
-        const otp = document.getElementById('otpCode').value;
-        const res = await apiFetch('/api/auth/verify', {
-          method: 'POST',
-          body: JSON.stringify({ email, otp })
-        });
-        if (res.token) localStorage.setItem('orbit_token', res.token);
-        currentUser = res.user;
-        updateAuthUI();
-        closeAuthModal();
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function logoutUser() {
-      await apiFetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
-      localStorage.removeItem('orbit_token');
-      currentUser = null;
-      updateAuthUI();
-      closeAuthModal();
     }
 
     function getActiveConversation() {
@@ -1637,39 +1851,17 @@
       return conv;
     }
 
-    function saveConversations() {
-      localStorage.setItem('orbit_conversations', JSON.stringify(conversations));
-      updateOverviewStats();
-    }
-
-    function newConversation() {
-      const conv = { id: 'conv_' + Date.now(), title: 'New Conversation', messages: [], updatedAt: new Date().toISOString() };
-      conversations.unshift(conv);
-      activeConvId = conv.id;
-      saveConversations();
-      renderChatMessages();
-    }
+    function saveConversations() { localStorage.setItem('orbit_conversations', JSON.stringify(conversations)); updateOverviewStats(); }
+    function newConversation() { const conv = { id: 'conv_' + Date.now(), title: 'New Conversation', messages: [], updatedAt: new Date().toISOString() }; conversations.unshift(conv); activeConvId = conv.id; saveConversations(); renderChatMessages(); }
 
     function renderChatMessages() {
       const box = document.getElementById('chatMessages');
       const conv = getActiveConversation();
       if (!conv.messages.length) {
-        box.innerHTML = `<div class="card-3d" style="text-align:center; max-width:520px; margin:40px auto;">
-          <div class="card-title" style="justify-content:center;">🔴 ORBIT AI 3D Glass Chat</div>
-          <p style="color:var(--lavender-white);">Select any AI model from the top bar, attach PDF/DOCX/Images, and start conversing.</p>
-        </div>`;
+        box.innerHTML = `<div class="card-3d" style="text-align:center; max-width:520px; margin:40px auto;"><div class="card-title" style="justify-content:center;">🔴 ORBIT AI 3D Glass Chat</div><p style="color:var(--lavender-white);">Select any AI model and start conversing.</p></div>`;
         return;
       }
-      box.innerHTML = conv.messages.map((m, idx) => {
-        const htmlContent = window.marked ? marked.parse(m.content || '') : m.content;
-        return `<div class="msg-bubble ${m.role === 'user' ? 'msg-user' : 'msg-ai'}">
-          <div>${htmlContent}</div>
-          <div class="msg-actions">
-            <button onclick="copyText(${idx})">📋 Copy</button>
-            ${m.role === 'assistant' ? `<button onclick="speakMessage(${idx})">🔊 Speak</button>` : ''}
-          </div>
-        </div>`;
-      }).join('');
+      box.innerHTML = conv.messages.map((m, idx) => `<div class="msg-bubble ${m.role === 'user' ? 'msg-user' : 'msg-ai'}"><div>${window.marked ? marked.parse(m.content) : m.content}</div></div>`).join('');
       box.scrollTop = box.scrollHeight;
     }
 
@@ -1679,104 +1871,37 @@
       const fd = new FormData();
       fd.append('file', file);
       try {
-        setOrbitCoreState('thinking');
         const res = await apiFetch('/api/upload', { method: 'POST', body: fd });
         pendingAttachments.push(res.file);
         renderAttachmentChips();
-      } catch (e) {
-        alert('Upload error: ' + e.message);
-      } finally {
-        setOrbitCoreState('idle');
-        input.value = '';
-      }
+      } catch (e) { alert('Upload error: ' + e.message); }
+      finally { input.value = ''; }
     }
 
     function renderAttachmentChips() {
       const bar = document.getElementById('chatAttachmentBar');
-      bar.innerHTML = pendingAttachments.map((a, i) => `
-        <span class="att-chip">${a.originalName} <button onclick="pendingAttachments.splice(${i},1);renderAttachmentChips()" style="background:none;border:none;color:#fff;cursor:pointer;">✕</button></span>
-      `).join('');
+      if (bar) bar.innerHTML = pendingAttachments.map((a, i) => `<span class="att-chip">${a.originalName} <button onclick="pendingAttachments.splice(${i},1);renderAttachmentChips()" style="background:none;border:none;color:#fff;">✕</button></span>`).join('');
     }
 
     async function sendMessage() {
       const input = document.getElementById('chatInput');
       const text = input.value.trim();
       if (!text && !pendingAttachments.length) return;
-
       const conv = getActiveConversation();
-      conv.messages.push({ role: 'user', content: text || `[Attached ${pendingAttachments.length} file(s)]` });
-      if (conv.messages.length === 1 && text) conv.title = text.slice(0, 42);
-      conv.updatedAt = new Date().toISOString();
+      conv.messages.push({ role: 'user', content: text || '[Attached file]' });
       input.value = '';
       renderChatMessages();
       saveConversations();
-
-      await executeAiChatRequest(conv);
-    }
-
-    async function executeAiChatRequest(conv) {
-      setOrbitCoreState('thinking');
-      const projectId = document.getElementById('chatProjectSelect').value || null;
-      const attsToSend = [...pendingAttachments];
-      pendingAttachments = [];
-      renderAttachmentChips();
-
       try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: conv.messages,
-            attachments: attsToSend,
-            projectId
-          })
-        });
-        setOrbitCoreState('responding');
+        const res = await apiFetch('/api/chat', { method: 'POST', body: JSON.stringify({ model: currentModel, messages: conv.messages, attachments: pendingAttachments }) });
+        pendingAttachments = [];
         conv.messages.push({ role: 'assistant', content: res.reply });
         saveConversations();
         renderChatMessages();
       } catch (e) {
         conv.messages.push({ role: 'assistant', content: `⚠️ **Error:** ${e.message}` });
         renderChatMessages();
-      } finally {
-        setTimeout(() => setOrbitCoreState('idle'), 900);
       }
-    }
-
-    function regenerateLast() {
-      const conv = getActiveConversation();
-      if (!conv.messages.length) return;
-      if (conv.messages[conv.messages.length - 1].role === 'assistant') conv.messages.pop();
-      renderChatMessages();
-      executeAiChatRequest(conv);
-    }
-
-    function stopGeneration() {
-      if (activeAbortController) activeAbortController.abort();
-      setOrbitCoreState('idle');
-    }
-
-    function copyText(idx) {
-      const conv = getActiveConversation();
-      if (conv.messages[idx]) navigator.clipboard.writeText(conv.messages[idx].content);
-    }
-
-    function exportCurrentChat() {
-      const conv = getActiveConversation();
-      const blob = new Blob([JSON.stringify(conv, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${conv.title.replace(/\s+/g, '_')}.json`;
-      a.click();
-    }
-
-    function runQuickAsk() {
-      const q = document.getElementById('quickAskInput').value.trim();
-      if (!q) return;
-      document.getElementById('quickAskInput').value = '';
-      switchView('chat');
-      document.getElementById('chatInput').value = q;
-      sendMessage();
     }
 
     async function loadModels() {
@@ -1784,393 +1909,34 @@
         const data = await apiFetch('/api/models');
         allModels = data.models || [];
         const sel = document.getElementById('globalModelSelect');
-        sel.innerHTML = allModels.slice(0, 80).map(m => `<option value="${m.id}" ${m.id === currentModel ? 'selected' : ''}>${m.name}</option>`).join('');
-        renderModelsGrid();
+        sel.innerHTML = `<option value="openrouter/auto">openrouter/auto</option>` + allModels.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
       } catch (e) {}
     }
 
-    function onModelSelectChange(val) {
-      currentModel = val;
-      localStorage.setItem('orbit_model', val);
-      renderModelsGrid();
-    }
-
-    function renderModelsGrid() {
-      const q = (document.getElementById('modelSearchInput')?.value || '').toLowerCase();
-      const grid = document.getElementById('modelsGrid');
-      if (!grid) return;
-      const filtered = allModels.filter(m => m.id.toLowerCase().includes(q) || (m.name || '').toLowerCase().includes(q)).slice(0, 36);
-      grid.innerHTML = filtered.map(m => `
-        <div class="card-3d tilt-glass" style="${m.id === currentModel ? 'border-bottom-color:var(--sunset-peach);' : ''}">
-          <div class="card-title"><span>${m.name}</span></div>
-          <p style="font-size:0.82rem; margin-bottom:12px;">ID: ${m.id}<br>Context: ${m.context_length || 'Auto'} tokens</p>
-          <button class="btn-3d ${m.id === currentModel ? 'btn-peach-blue' : ''}" onclick="onModelSelectChange('${m.id}');document.getElementById('globalModelSelect').value='${m.id}'">
-            ${m.id === currentModel ? '✓ Active Model' : 'Select Model'}
-          </button>
-        </div>
-      `).join('');
-      attach3DGlassTilt();
-    }
-
-    function renderPrompts() {
-      const grid = document.getElementById('promptsGrid');
-      if (!grid) return;
-      grid.innerHTML = promptsList.map((p, i) => `
-        <div class="card-3d tilt-glass">
-          <div class="card-title">${p.title}</div>
-          <p style="font-size:0.88rem; margin-bottom:12px;">${p.content}</p>
-          <div style="display:flex; gap:8px;">
-            <button class="btn-3d btn-peach-blue" onclick="usePrompt(${i})">Use in Chat</button>
-            <button class="btn-3d" onclick="promptsList.splice(${i},1);localStorage.setItem('orbit_prompts',JSON.stringify(promptsList));renderPrompts();">Delete</button>
-          </div>
-        </div>
-      `).join('');
-      attach3DGlassTilt();
-    }
-
-    function savePromptItem() {
-      const title = document.getElementById('promptTitle').value.trim();
-      const content = document.getElementById('promptContent').value.trim();
-      if (!title || !content) return;
-      promptsList.unshift({ id: 'p_' + Date.now(), title, content });
-      localStorage.setItem('orbit_prompts', JSON.stringify(promptsList));
-      document.getElementById('promptTitle').value = '';
-      document.getElementById('promptContent').value = '';
-      renderPrompts();
-    }
-
-    function usePrompt(i) {
-      const p = promptsList[i];
-      if (!p) return;
-      switchView('chat');
-      document.getElementById('chatInput').value = p.content;
-    }
-
-    async function uploadWorkspaceFile() {
-      const input = document.getElementById('workspaceFileInput');
-      const file = input.files[0];
-      if (!file) return;
-      const status = document.getElementById('uploadStatusMsg');
-      status.textContent = 'Uploading & parsing document...';
-      const fd = new FormData();
-      fd.append('file', file);
-      try {
-        const res = await apiFetch('/api/upload', { method: 'POST', body: fd });
-        status.textContent = `✓ Uploaded: ${res.file.originalName}`;
-        input.value = '';
-        loadWorkspaceFiles();
-      } catch (e) {
-        status.textContent = `Error: ${e.message}`;
-      }
-    }
-
-    async function loadWorkspaceFiles() {
-      try {
-        const data = await apiFetch('/api/files');
-        const grid = document.getElementById('filesGrid');
-        grid.innerHTML = (data.files || []).map(f => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">${f.originalName}</div>
-            <p style="font-size:0.8rem; margin-bottom:8px;">Size: ${(f.size / 1024).toFixed(1)} KB</p>
-            <div style="max-height:90px; overflow-y:auto; font-size:0.78rem; background:rgba(0,0,0,0.4); padding:8px; border-radius:10px; margin-bottom:10px;">
-              ${f.extractedText ? f.extractedText.slice(0, 300) + '...' : 'Binary / Media file stored.'}
-            </div>
-            <div style="display:flex; gap:8px;">
-              <a class="btn-3d" href="${API_BASE}${f.url}" target="_blank" style="text-decoration:none;">⬇ Download</a>
-              <button class="btn-3d" onclick="deleteFileItem('${f.id}')">🗑 Delete</button>
-            </div>
-          </div>
-        `).join('');
-        attach3DGlassTilt();
-      } catch (e) {}
-    }
-
-    async function deleteFileItem(id) {
-      await apiFetch(`/api/files/${id}`, { method: 'DELETE' });
-      loadWorkspaceFiles();
-    }
-
-    function renderHistoryList() {
-      const q = (document.getElementById('historySearch')?.value || '').toLowerCase();
-      const grid = document.getElementById('historyGrid');
-      const list = conversations.filter(c => c.title.toLowerCase().includes(q));
-      grid.innerHTML = list.map(c => `
-        <div class="card-3d tilt-glass">
-          <div class="card-title">${c.title}</div>
-          <p style="font-size:0.82rem; margin-bottom:10px;">${c.messages.length} messages</p>
-          <div style="display:flex; gap:8px;">
-            <button class="btn-3d btn-peach-blue" onclick="activeConvId='${c.id}';switchView('chat');renderChatMessages();">Open</button>
-            <button class="btn-3d" onclick="conversations=conversations.filter(x=>x.id!=='${c.id}');saveConversations();renderHistoryList();">Delete</button>
-          </div>
-        </div>
-      `).join('');
-      attach3DGlassTilt();
-    }
-
-    async function loadWorkspaceModules() {
-      try {
-        const ws = await apiFetch('/api/workspace');
-        document.getElementById('agentsGrid').innerHTML = (ws.agents || []).map(a => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">🤖 ${a.name}</div>
-            <p style="font-size:0.86rem; margin-bottom:10px;">${a.instructions}</p>
-            <button class="btn-3d btn-peach-blue" onclick="switchView('chat');document.getElementById('chatInput').value='[Act as ${a.name}: ${a.instructions}] ';">Run Agent</button>
-          </div>
-        `).join('');
-
-        document.getElementById('projectsGrid').innerHTML = (ws.projects || []).map(p => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">📁 ${p.name}</div>
-            <p style="font-size:0.86rem;">${p.instructions}</p>
-          </div>
-        `).join('');
-
-        const chatProjSel = document.getElementById('chatProjectSelect');
-        chatProjSel.innerHTML = `<option value="">No Project Context</option>` + (ws.projects || []).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-
-        document.getElementById('knowledgeGrid').innerHTML = (ws.knowledge || []).map(k => `
-          <div class="card-3d tilt-glass">
-            <div class="card-title">📚 ${k.title}</div>
-            <p style="font-size:0.84rem;">${k.content.slice(0, 180)}...</p>
-          </div>
-        `).join('');
-        attach3DGlassTilt();
-      } catch (e) {}
-    }
-
-    async function createAgent() {
-      const name = document.getElementById('agentName').value.trim();
-      const instructions = document.getElementById('agentInstructions').value.trim();
-      if (!name) return;
-      await apiFetch('/api/agents', { method: 'POST', body: JSON.stringify({ name, instructions }) });
-      document.getElementById('agentName').value = '';
-      document.getElementById('agentInstructions').value = '';
-      loadWorkspaceModules();
-    }
-
-    async function createProject() {
-      const name = document.getElementById('projName').value.trim();
-      const instructions = document.getElementById('projInstructions').value.trim();
-      if (!name) return;
-      await apiFetch('/api/projects', { method: 'POST', body: JSON.stringify({ name, instructions }) });
-      document.getElementById('projName').value = '';
-      document.getElementById('projInstructions').value = '';
-      loadWorkspaceModules();
-    }
-
-    async function addKnowledgeDoc() {
-      const title = document.getElementById('kbTitle').value.trim();
-      const content = document.getElementById('kbContent').value.trim();
-      if (!title || !content) return;
-      await apiFetch('/api/knowledge', { method: 'POST', body: JSON.stringify({ title, content }) });
-      document.getElementById('kbTitle').value = '';
-      document.getElementById('kbContent').value = '';
-      loadWorkspaceModules();
-    }
-
-    async function runAiWebSearch() {
-      const query = document.getElementById('aiSearchInput').value.trim();
-      if (!query) return;
-      const box = document.getElementById('aiSearchResults');
-      box.innerHTML = 'Searching live web...';
-      try {
-        const res = await apiFetch('/api/search', { method: 'POST', body: JSON.stringify({ query }) });
-        box.innerHTML = `<div class="card-3d" style="margin-bottom:12px;"><strong>Summary:</strong> ${res.answer || 'Results fetched'}</div>` +
-          (res.results || []).map(r => `<div class="card-3d" style="margin-bottom:8px;"><a href="${r.url}" target="_blank" style="color:var(--powder-blue);font-weight:700;">${r.title}</a><p style="font-size:0.85rem;">${r.content}</p></div>`).join('');
-      } catch (e) {
-        box.innerHTML = `<div class="card-3d" style="border-color:#ff5555;">⚠️ ${e.message}</div>`;
-      }
-    }
-
-    function toggleVoiceInput() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) return alert('Speech Recognition not supported in this browser/WebView.');
-      const rec = new SpeechRecognition();
-      rec.lang = localStorage.getItem('orbit_lang') === 'mr' ? 'mr-IN' : 'en-IN';
-      rec.onresult = e => {
-        document.getElementById('chatInput').value += ' ' + e.results[0][0].transcript;
-      };
-      rec.start();
-    }
-
-    function speakText(text) {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      window.speechSynthesis.speak(u);
-    }
-
-    function speakMessage(idx) {
-      const conv = getActiveConversation();
-      if (conv.messages[idx]) speakText(conv.messages[idx].content);
-    }
-
-    async function generateMediaPrompt() {
-      const p = document.getElementById('mediaPrompt').value.trim();
-      if (!p) return;
-      const out = document.getElementById('mediaOutput');
-      out.innerHTML = 'Generating cinematic specification via ORBIT AI...';
-      try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: [{ role: 'user', content: `Create a high-precision 9:16 cinematic video & photorealistic visual generation prompt with camera angles and lighting for: ${p}` }]
-          })
-        });
-        out.innerHTML = `<div class="card-3d">${marked.parse(res.reply)}</div>`;
-      } catch (e) {
-        out.innerHTML = `Error: ${e.message}`;
-      }
-    }
-
-    async function runAutomationTask() {
-      const task = document.getElementById('autoTaskInput').value.trim();
-      if (!task) return;
-      const out = document.getElementById('autoTaskOutput');
-      out.innerHTML = 'Executing automated step-by-step workflow...';
-      try {
-        const res = await apiFetch('/api/chat', {
-          method: 'POST',
-          body: JSON.stringify({
-            model: currentModel,
-            messages: [{ role: 'user', content: `Break down and execute this goal completely step-by-step: ${task}` }]
-          })
-        });
-        out.innerHTML = `<div class="card-3d">${marked.parse(res.reply)}</div>`;
-      } catch (e) {
-        out.innerHTML = `Error: ${e.message}`;
-      }
-    }
-
-    async function saveProviderConfig() {
-      try {
-        const openrouterKey = document.getElementById('cfgOpenRouterKey').value;
-        const tavilyKey = document.getElementById('cfgTavilyKey').value;
-        const customUrl = document.getElementById('cfgCustomUrl').value;
-        await apiFetch('/api/providers/config', {
-          method: 'POST',
-          body: JSON.stringify({ openrouterKey, tavilyKey, customUrl })
-        });
-        document.getElementById('providerStatusMsg').textContent = '✓ Provider keys securely updated on server!';
-        checkHealth();
-        loadModels();
-      } catch (e) {
-        document.getElementById('providerStatusMsg').textContent = `⚠️ ${e.message}`;
-      }
-    }
+    function onModelSelectChange(val) { currentModel = val; localStorage.setItem('orbit_model', val); }
 
     async function loadAdminData() {
       try {
-        const reqs = await apiFetch('/api/auth/requests');
         const usrs = await apiFetch('/api/auth/users');
-
-        document.getElementById('adminRequestsList').innerHTML = `<h4>Guest Access Requests</h4>` +
-          (reqs.requests || []).map(r => `
-            <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span><strong>${r.name}</strong> (${r.email}) — <em>${r.status}</em></span>
-              <div>
-                <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Issue OTP</button>
-                <button class="btn-3d" onclick="rejectReq('${r.id}')">Reject</button>
-              </div>
-            </div>
-          `).join('');
-
-        document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users</h4>` +
-          (usrs.users || []).map(u => `
-            <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span>${u.name} (${u.email}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'}</span>
-              <button class="btn-3d" onclick="toggleRevokeUser('${u.id}', ${!u.revoked})">${u.revoked ? 'Restore' : 'Revoke'}</button>
-            </div>
-          `).join('');
-      } catch (e) {
-        document.getElementById('adminRequestsList').innerHTML = `<p style="color:#ff8888;">Owner permission required to view Admin Panel.</p>`;
-      }
-    }
-
-    async function approveReq(requestId) {
-      const res = await apiFetch('/api/auth/approve', { method: 'POST', body: JSON.stringify({ requestId }) });
-      alert(`Approved! Guest OTP for ${res.request.email} is: ${res.otp}`);
-      loadAdminData();
-    }
-
-    async function rejectReq(requestId) {
-      await apiFetch('/api/auth/reject', { method: 'POST', body: JSON.stringify({ requestId }) });
-      loadAdminData();
-    }
-
-    async function toggleRevokeUser(userId, revoked) {
-      await apiFetch('/api/auth/users/revoke', { method: 'POST', body: JSON.stringify({ userId, revoked }) });
-      loadAdminData();
+        document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users</h4>` + (usrs.users || []).map(u => `<div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;"><span>${esc(u.phone)} — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span></div>`).join('');
+      } catch (e) { document.getElementById('adminUsersList').innerHTML = `<p style="color:#ff8888;">Owner permission required.</p>`; }
     }
 
     function saveApiBaseUrl() {
-      const val = document.getElementById('apiBaseUrlInput').value.trim().replace(/\/$/, '');
-      API_BASE = val;
-      localStorage.setItem('orbit_api_base', val);
-      alert('Server URL saved! Re-checking connection...');
-      checkHealth();
+      API_BASE = document.getElementById('apiBaseUrlInput').value.trim().replace(/\/$/, '');
+      localStorage.setItem('orbit_api_base', API_BASE);
+      alert('Server URL saved!');
     }
 
-    function exportAllWorkspaceData() {
-      const dump = { conversations, promptsList, exportedAt: new Date().toISOString() };
-      const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'ORBIT_AI_Workspace_Backup.json';
-      a.click();
-    }
-
-    async function checkHealth() {
-      const el = document.getElementById('overviewStatusText');
-      try {
-        const h = await apiFetch('/api/health');
-        el.innerHTML = `<strong>Backend:</strong> Online (v${h.version})<br>
-          <strong>OpenRouter Key:</strong> ${h.openrouterConfigured ? '🟢 Configured' : '🟠 Missing in .env'}<br>
-          <strong>PDF/DOCX Parsers:</strong> ${h.parsers?.pdf ? '🟢 Active' : '⚪ Ready'}`;
-      } catch (e) {
-        el.innerHTML = `🔴 Backend unreachable (${e.message})<br><small style="opacity:0.8;">Run <code>npm.cmd start</code> in PowerShell & open <code>http://localhost:3000</code></small>`;
-      }
-    }
-
-    function updateOverviewStats() {
-      const el = document.getElementById('overviewStats');
-      if (!el) return;
-      el.innerHTML = `<strong>Saved Conversations:</strong> ${conversations.length}<br>
-        <strong>Saved Prompts:</strong> ${promptsList.length}<br>
-        <strong>Active Model:</strong> ${currentModel}`;
-    }
+    function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
     window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('orbit_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-
-      const savedLang = localStorage.getItem('orbit_lang') || 'en';
-      document.getElementById('langSelect').value = savedLang;
-      changeLanguage(savedLang);
-
+      document.documentElement.setAttribute('data-theme', localStorage.getItem('orbit_theme') || 'dark');
       document.getElementById('apiBaseUrlInput').value = API_BASE;
-
-      init3DOrbitCore();
-      initBgParticles();
-      attach3DGlassTilt();
-      checkHealth();
       checkAuthStatus();
       loadModels();
-      renderPrompts();
       renderChatMessages();
-      loadWorkspaceModules();
-      updateOverviewStats();
     });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('ServiceWorker registered!'))
-          .catch(err => console.log('ServiceWorker error: ', err));
-      });
-    }
   </script>
 </body>
 </html>
