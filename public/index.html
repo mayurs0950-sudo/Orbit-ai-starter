@@ -660,14 +660,15 @@
       box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
     }
 
+    /* Force Login Modal (Visible by default until claimed/logged in) */
     .auth-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(12, 14, 20, 0.68);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      z-index: 100;
-      display: none;
+      background: rgba(12, 14, 20, 0.92);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      z-index: 10000;
+      display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
@@ -799,6 +800,47 @@
 
   <canvas id="bg3dCanvas"></canvas>
 
+  <!-- 🔐 FORCE AUTH MODAL (Loads on start until user authenticates) -->
+  <div class="auth-overlay" id="authModal" style="display: flex;">
+    <div class="auth-card">
+      <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
+        <span>🔐 ORBIT AI Access</span>
+      </div>
+      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">
+        Please enter owner credentials to claim workspace.
+      </p>
+
+      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
+        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
+        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
+      </div>
+
+      <div id="authTabOwner">
+        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
+        <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
+        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter owner claim code" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
+      </div>
+
+      <div id="authTabGuest" style="display:none;">
+        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
+        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
+        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
+      </div>
+
+      <div id="authTabOtp" style="display:none;">
+        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
+        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP to Email</button>
+        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
+      </div>
+
+      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: #ff6b6b; text-align:center;"></div>
+    </div>
+  </div>
+
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="brand-header">
@@ -827,11 +869,11 @@
 
         <div class="nav-section-label" data-i18n="sec_personal">PERSONAL</div>
         <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile & Account</span></button>
-        <button class="nav-btn owner-only" onclick="switchView('apiconn')">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
+        <button class="nav-btn owner-only" onclick="switchView('apiconn')" style="display:none;">🔑 <span data-i18n="nav_apiconn">API Connections</span></button>
         <button class="nav-btn" onclick="switchView('security')">🛡️ <span data-i18n="nav_security">Permissions & Security</span></button>
         <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
         <button class="nav-btn" onclick="switchView('subscription')">💠 <span data-i18n="nav_pro">Pro Subscription</span></button>
-        <button class="nav-btn owner-only" onclick="switchView('admin')">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
+        <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
       </div>
     </aside>
 
@@ -882,7 +924,7 @@
               <button class="btn-3d" onclick="switchView('files')" data-i18n="nav_files">Files & Tools</button>
             </div>
           </div>
-          <!-- 3D GLOSSY RED RUBY GLASS ORB (Matched to uploaded reference image) -->
+          <!-- 3D GLOSSY RED RUBY GLASS ORB -->
           <div id="orbitCoreContainer" title="3D Glossy Crimson Glass Orb"></div>
         </div>
 
@@ -937,21 +979,25 @@
         </div>
       </section>
 
-      <!-- 3. AI MODEL HUB -->
+      <!-- 3. AI MODEL HUB (PRO DUAL SECTION: OPENROUTER & KIE.AI) -->
       <section class="workspace-view" id="view-models">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <h2 data-i18n="nav_models">AI Model Hub</h2>
           <div style="display: flex; gap: 10px;">
-            <input id="modelSearchInput" class="input-3d" placeholder="Search OpenRouter / Claude / GPT models..." oninput="renderModelsGrid()" />
+            <input id="modelSearchInput" class="input-3d" placeholder="Search models..." oninput="renderModelsGrid()" />
             <button class="btn-3d btn-peach-blue" onclick="loadModels()">🔄 Refresh Models</button>
           </div>
         </div>
+        
+        <!-- SECTION 1: KIE.AI MARKET MODELS -->
         <div class="card-3d tilt-glass" style="margin-top:22px;">
-          <div class="card-title"><span>KIE.ai Market Models</span> <span class="kie-tag">via backend</span></div>
-          <p style="font-size:0.85rem;opacity:0.9;">Chat models can be selected for AI Chat. Image and video models open in Image &amp; Video AI.</p>
-          <div class="grid-3d" id="kieGrid" style="margin-top:14px;"></div>
+          <div class="card-title"><span>KIE.ai Market Models Hub</span> <span class="kie-tag">All Models</span></div>
+          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Complete suite of KIE.ai chat, image, music, and video market models.</p>
+          <div class="grid-3d" id="kieGrid"></div>
         </div>
-        <h3 style="margin-top:26px;">OpenRouter</h3>
+
+        <!-- SECTION 2: OPENROUTER MODELS -->
+        <h3 style="margin-top:26px;margin-bottom:12px;color:var(--powder-blue);">OpenRouter Market Models</h3>
         <div class="grid-3d" id="modelsGrid"></div>
       </section>
 
@@ -1063,33 +1109,59 @@
         </div>
       </section>
 
-      <!-- 11b. ACADEMIC PROJECT SUITE -->
+      <!-- 11b. ACADEMIC PROJECT SUITE (UPGRADED WITH DEGREE, STREAM, YEAR, SEMESTER, LENGTH) -->
       <section class="workspace-view" id="view-academic">
         <div class="card-3d tilt-glass">
           <div class="card-title"><span data-i18n="nav_academic">Academic Project Suite</span> <span>🎓</span></div>
-          <p style="font-size:0.88rem;opacity:0.9;margin-bottom:12px;">Generate a structured project report for B.Pharmacy or Engineering. Review every section, add your own observed data, and follow your institute's format.</p>
+          <p style="font-size:0.88rem;opacity:0.9;margin-bottom:12px;">Generate a fully structured academic project report. Select your exact degree, stream, academic year, semester, and project scope.</p>
+          
           <div class="aca-grid">
-            <select id="acaField" class="pill-select">
-              <optgroup label="B.Pharmacy">
-                <option>Pharmaceutics</option><option>Pharmaceutical Chemistry</option><option>Pharmacology</option>
-                <option>Pharmacognosy</option><option>Pharmaceutical Analysis</option><option>Pharmacy Practice</option>
-              </optgroup>
-              <optgroup label="Engineering">
-                <option>Computer Engineering</option><option>Information Technology</option><option>AI &amp; Data Science</option>
-                <option>Mechanical Engineering</option><option>Civil Engineering</option><option>Electrical Engineering</option>
-                <option>Electronics &amp; Telecommunication</option><option>Chemical Engineering</option>
-              </optgroup>
-            </select>
-            <select id="acaLevel" class="pill-select"><option>Diploma</option><option selected>Bachelor's degree</option><option>Final-year project</option></select>
-            <select id="acaLength" class="pill-select"><option value="150">Short (~150 words/section)</option><option value="300" selected>Standard (~300 words/section)</option><option value="500">Detailed (~500 words/section)</option></select>
+            <div class="form-group">
+              <label>Degree / Qualification:</label>
+              <select id="acaDegree" class="pill-select">
+                <option selected>B.Pharmacy</option><option>B.Tech / B.E.</option><option>M.Pharmacy</option><option>M.Tech / M.E.</option><option>B.Sc / M.Sc</option><option>Diploma</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Stream / Department:</label>
+              <select id="acaField" class="pill-select">
+                <option>Pharmaceutics</option><option>Pharmaceutical Chemistry</option><option>Pharmacology</option><option>Pharmacognosy</option><option>Computer Engineering</option><option>Information Technology</option><option>AI &amp; Data Science</option><option>Mechanical Engineering</option><option>Civil Engineering</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Academic Year:</label>
+              <select id="acaYear" class="pill-select">
+                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option selected>Final Year (4th Year)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Semester:</label>
+              <select id="acaSem" class="pill-select">
+                <option>Semester I</option><option>Semester II</option><option>Semester III</option><option>Semester IV</option><option>Semester V</option><option>Semester VI</option><option>Semester VII</option><option selected>Semester VIII</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Project Scope / Length:</label>
+              <select id="acaLength" class="pill-select">
+                <option value="150">Short (~150 words per section)</option>
+                <option value="300" selected>Standard (~300 words per section)</option>
+                <option value="500">Comprehensive (~500 words per section)</option>
+              </select>
+            </div>
           </div>
-          <input id="acaTitle" class="input-3d" style="width:100%;margin-bottom:12px;" placeholder="Project title, e.g. Formulation and evaluation of herbal tablets" />
+
+          <div class="form-group">
+            <label>Project Title / Topic:</label>
+            <input id="acaTitle" class="input-3d" placeholder="e.g., Formulation and Evaluation of Herbal Anti-Acne Gel..." />
+          </div>
+
           <div class="chk-row" id="acaSections"></div>
-          <label style="display:flex;gap:8px;align-items:center;font-size:0.88rem;margin-bottom:14px;"><input type="checkbox" id="acaUseChat" checked /> Use the current AI Chat conversation as context</label>
+          <label style="display:flex;gap:8px;align-items:center;font-size:0.88rem;margin-bottom:14px;"><input type="checkbox" id="acaUseChat" checked /> Use current AI Chat context</label>
+          
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn-3d btn-peach-blue" id="acaGenBtn" onclick="generateAcademicReport()">Generate Report 🎓</button>
+            <button class="btn-3d btn-peach-blue" id="acaGenBtn" onclick="generateAcademicReport()">Generate Project Report 🎓</button>
             <button class="btn-3d" onclick="acaStop=true">⏹ Stop</button>
-            <button class="btn-3d" onclick="copyAcademicReport()">Copy</button>
+            <button class="btn-3d" onclick="copyAcademicReport()">Copy Markdown</button>
             <button class="btn-3d" onclick="downloadAcademicReport()">Download .md</button>
           </div>
           <div id="acaStatus" style="margin-top:10px;font-size:0.85rem;color:var(--sunset-peach);"></div>
@@ -1109,11 +1181,11 @@
         </div>
       </section>
 
-      <!-- 13. PROFILE & ACCOUNT -->
+      <!-- 13. PROFILE & ACCOUNT (SHOWS CURRENT LOGGED-IN USER DATA) -->
       <section class="workspace-view" id="view-profile">
         <div class="card-3d tilt-glass">
           <div class="card-title" data-i18n="nav_profile">Profile & Account</div>
-          <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px;"></div>
+          <div id="profileDetails" style="line-height: 1.8; margin-bottom: 14px; font-size:1.05rem;"></div>
           <div class="form-group">
             <label>Backend Server URL (Important for Android APK):</label>
             <input id="apiBaseUrlInput" class="input-3d" placeholder="http://localhost:3000" />
@@ -1122,7 +1194,7 @@
         </div>
       </section>
 
-      <!-- 14. API CONNECTIONS (OWNER ONLY) -->
+      <!-- 14. API CONNECTIONS -->
       <section class="workspace-view" id="view-apiconn">
         <div class="card-3d tilt-glass">
           <div class="card-title">Owner API Connections (Stored Server-Side Only)</div>
@@ -1156,7 +1228,7 @@
         </div>
       </section>
 
-      <!-- 16. COMPLETE SETTINGS -->
+      <!-- 16. SETTINGS -->
       <section class="workspace-view" id="view-settings">
         <h2 style="margin-bottom: 14px;" data-i18n="nav_settings">Complete 3D Workspace Settings</h2>
         <div class="grid-3d">
@@ -1196,46 +1268,6 @@
     </div>
   </div>
 
-  <!-- AUTHENTICATION MODAL -->
-  <div class="auth-overlay" id="authModal">
-    <div class="auth-card">
-      <div class="card-title">
-        <span>🔐 ORBIT AI Access</span>
-        <button class="btn-3d" onclick="closeAuthModal()">✕</button>
-      </div>
-
-      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
-      </div>
-
-      <div id="authTabOwner">
-        <div class="form-group"><label>Owner Name</label><input id="ownName" placeholder="Mayur" /></div>
-        <div class="form-group"><label>Owner Email</label><input id="ownEmail" placeholder="owner@orbit.ai" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" placeholder="ORBIT-OWNER-2026" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
-      </div>
-
-      <div id="authTabGuest" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
-        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
-        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
-      </div>
-
-      <div id="authTabOtp" style="display:none;">
-        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
-        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP Code</button>
-        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
-      </div>
-
-      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach);"></div>
-      <button class="btn-3d" style="width:100%; margin-top: 12px;" onclick="logoutUser()">Logout Current Session</button>
-    </div>
-  </div>
-
   <script>
     let defaultBase = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
     let API_BASE = localStorage.getItem('orbit_api_base') || defaultBase;
@@ -1248,97 +1280,49 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
-    // Clean Subtitles (No raw color hex codes or numbering displayed on UI)
+    // Clean Subtitles
     const I18N = {
       en: {
-        sec_workspace: "WORKSPACE",
-        sec_personal: "PERSONAL",
-        nav_overview: "Overview",
-        nav_chat: "AI Chat",
-        nav_models: "AI Model Hub",
-        nav_prompts: "Prompt Library",
-        nav_files: "Files & Tools",
-        nav_history: "Chat History",
-        nav_search: "AI Search",
-        nav_agents: "AI Agents",
-        nav_projects: "Projects",
-        nav_knowledge: "Knowledge Base",
-        nav_media: "Image & Video AI",
-        nav_automation: "Automation",
-        nav_profile: "Profile & Account",
-        nav_apiconn: "API Connections",
-        nav_security: "Permissions & Security",
-        nav_settings: "Settings",
-        nav_pro: "Pro Subscription",
-        nav_admin: "Admin Panel",
+        sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_academic: "Academic Project Suite",
+        nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History",
+        nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base",
+        nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile & Account",
+        nav_apiconn: "API Connections", nav_security: "Permissions & Security", nav_settings: "Settings",
+        nav_pro: "Pro Subscription", nav_admin: "Admin Panel",
         hero_title: "ORBIT AI — Private Intelligence OS",
         hero_sub: "Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, and private execution.",
-        btn_launch_chat: "Launch AI Chat",
-        card_status: "System & Model Status",
-        card_quick_chat: "Quick AI Ask",
-        card_stats: "Workspace Statistics"
+        btn_launch_chat: "Launch AI Chat", card_status: "System & Model Status", card_quick_chat: "Quick AI Ask", card_stats: "Workspace Statistics",
+        auth_sub: "Please enter owner credentials to claim workspace."
       },
       mr: {
-        sec_workspace: "कार्यक्षेत्र (WORKSPACE)",
-        sec_personal: "वैयक्तिक (PERSONAL)",
-        nav_overview: "मुख्य डॅशबोर्ड",
-        nav_chat: "AI चॅट",
-        nav_models: "AI मॉडेल हब",
-        nav_prompts: "प्रॉम्प्ट लायब्ररी",
-        nav_files: "फाईल्स आणि टूल्स",
-        nav_history: "चॅट इतिहास",
-        nav_search: "AI वेब सर्च",
-        nav_agents: "AI एजंट्स",
-        nav_projects: "प्रोजेक्ट्स",
-        nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज आणि व्हिडिओ AI",
-        nav_automation: "ऑटोमेशन",
-        nav_profile: "प्रोफाईल आणि खाते",
-        nav_apiconn: "API कनेक्शन्स",
-        nav_security: "परवानग्या आणि सुरक्षा",
-        nav_settings: "सेटिंग्ज",
-        nav_pro: "प्रो सबस्क्रिप्शन",
-        nav_admin: "ॲडमिन पॅनेल",
+        sec_workspace: "कार्यक्षेत्र (WORKSPACE)", sec_personal: "वैयक्तिक (PERSONAL)",
+        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब", nav_academic: "शैक्षणिक प्रोजेक्ट सूट",
+        nav_prompts: "प्रॉम्प्ट लायब्ररी", nav_files: "फाईल्स आणि टूल्स", nav_history: "चॅट इतिहास",
+        nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
+        nav_media: "इमेज आणि व्हिडिओ AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफाईल आणि खाते",
+        nav_apiconn: "API कनेक्शन्स", nav_security: "परवानग्या आणि सुरक्षा", nav_settings: "सेटिंग्ज",
+        nav_pro: "प्रो सबस्क्रिप्शन", nav_admin: "ॲडमिन पॅनेल",
         hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
         hero_sub: "अत्याधुनिक मल्टी-मॉडेल AI वर्कस्पेस, डॉक्युमेंट विश्लेषण आणि स्मार्ट एजंट्ससह तुमची स्वतःची प्रायव्हेट सिस्टीम.",
-        btn_launch_chat: "AI चॅट सुरू करा",
-        card_status: "सिस्टीम आणि मॉडेल स्थिती",
-        card_quick_chat: "झटपट AI प्रश्न",
-        card_stats: "वर्कस्पेस आकडेवारी"
+        btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम स्थिती", card_quick_chat: "झटपट AI प्रश्न", card_stats: "वर्कस्पेस आकडेवारी",
+        auth_sub: "कृपया वर्कस्पेस क्लेम करण्यासाठी ओनर क्रेडेंशियल्स प्रविष्ट करा."
       },
       hi: {
-        sec_workspace: "वर्कस्पेस",
-        sec_personal: "व्यक्तिगत",
-        nav_overview: "ओवरव्यू",
-        nav_chat: "AI चैट",
-        nav_models: "AI मॉडल हब",
-        nav_prompts: "प्रॉम्प्ट लाइब्रेरी",
-        nav_files: "फ़ाइलें और टूल्स",
-        nav_history: "चैट इतिहास",
-        nav_search: "AI सर्च",
-        nav_agents: "AI एजेंट्स",
-        nav_projects: "प्रोजेक्ट्स",
-        nav_knowledge: "नॉलेज बेस",
-        nav_media: "इमेज और वीडियो AI",
-        nav_automation: "ऑटोमेशन",
-        nav_profile: "प्रोफ़ाइल",
-        nav_apiconn: "API कनेक्शन",
-        nav_security: "सुरक्षा",
-        nav_settings: "सेटिंग्स",
-        nav_pro: "प्रो प्लान",
-        nav_admin: "एडमिन पैनल",
+        sec_workspace: "वर्कस्पेस", sec_personal: "व्यक्तिगत",
+        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब", nav_academic: "एकेडमिक प्रोजेक्ट सूट",
+        nav_prompts: "प्रॉम्प्ट लाइब्रेरी", nav_files: "फ़ाइलें और टूल्स", nav_history: "चैट इतिहास",
+        nav_search: "AI सर्च", nav_agents: "AI एजेंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
+        nav_media: "इमेज और वीडियो AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफ़ाइल",
+        nav_apiconn: "API कनेक्शन", nav_security: "सुरक्षा", nav_settings: "सेटिंग्स",
+        nav_pro: "प्रो प्लान", nav_admin: "एडमिन पैनल",
         hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
         hero_sub: "मल्टी-मॉडल AI, डॉक्यूमेंट एनालिसिस और स्मार्ट एजेंट्स के साथ आपका निजी ऑपरेटिंग सिस्टम।",
-        btn_launch_chat: "AI चैट खोलें",
-        card_status: "सिस्टम स्थिति",
-        card_quick_chat: "त्वरित AI प्रश्न",
-        card_stats: "आंकड़े"
+        btn_launch_chat: "AI चैट खोलें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न", card_stats: "आंकड़े",
+        auth_sub: "कृपया ओनर क्रेडेंशियल्स दर्ज करें।"
       }
     };
 
-    Object.assign(I18N.en, { nav_academic: "Academic Project Suite" });
-    Object.assign(I18N.mr, { nav_academic: "शैक्षणिक प्रोजेक्ट सूट" });
-    Object.assign(I18N.hi, { nav_academic: "एकेडमिक प्रोजेक्ट सूट" });
     const I18N_KEYS = ["sec_workspace","sec_personal","nav_overview","nav_chat","nav_models","nav_prompts","nav_files","nav_history","nav_search","nav_agents","nav_projects","nav_knowledge","nav_media","nav_automation","nav_profile","nav_apiconn","nav_security","nav_settings","nav_pro","nav_admin","nav_academic","btn_launch_chat"];
     const I18N_PACK = {
       bn: ["কর্মক্ষেত্র","ব্যক্তিগত","ওভারভিউ","AI চ্যাট","AI মডেল হাব","প্রম্পট লাইব্রেরি","ফাইল ও টুলস","চ্যাট ইতিহাস","AI সার্চ","AI এজেন্ট","প্রজেক্ট","নলেজ বেস","ইমেজ ও ভিডিও AI","অটোমেশন","প্রোফাইল ও অ্যাকাউন্ট","API সংযোগ","অনুমতি ও নিরাপত্তা","সেটিংস","প্রো সাবস্ক্রিপশন","অ্যাডমিন প্যানেল","একাডেমিক প্রজেক্ট স্যুট","AI চ্যাট শুরু করুন"],
@@ -1347,8 +1331,8 @@
       gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
       kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","ಅಕಾಡೆಮಿಕ್ ಪ್ರಾಜೆಕ್ಟ್ ಸೂಟ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
       ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ്","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","അക്കാദമിക് പ്രോജക്ട് സ്യൂട്ട്","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ ਅਤੇ ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈਨਲ","ਅਕਾਦਮਿਕ ਪ੍ਰੋਜੈਕਟ ਸੂਟ","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
-      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭରଭ୍ୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","ଏକାଡେମିକ୍ ପ୍ରୋଜେକ୍ଟ ସୁଟ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ ਅਤੇ ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮਿਨ ਪੈਨਲ","ਅਕਾਦਮਿਕ ਪ੍ਰੋਜੈਕਟ ਸੂਟ","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","ଏକାଡେମିକ୍ ପ୍ରୋଜେକ୍ଟ ସୁଟ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
       as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","একাডেমিক প্ৰকল্প স্যুট","AI চেট আৰম্ভ কৰক"],
       ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل ہب","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","اکیڈمک پروجیکٹ سوٹ","AI چیٹ شروع کریں"],
       sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम्","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","शैक्षणिक-परियोजना-संचयः","AI संवादम् आरभस्व"],
@@ -1673,7 +1657,14 @@
         const data = await apiFetch('/api/auth/status');
         currentUser = data.user;
         updateAuthUI();
-      } catch (e) {}
+        if (currentUser) {
+          closeAuthModal();
+        } else {
+          openAuthModal();
+        }
+      } catch (e) {
+        openAuthModal();
+      }
     }
 
     function updateAuthUI() {
@@ -1696,7 +1687,7 @@
       const prof = document.getElementById('profileDetails');
       if (prof) {
         prof.innerHTML = currentUser
-          ? `<strong>Name:</strong> ${currentUser.name}<br><strong>Email:</strong> ${currentUser.email}<br><strong>Role:</strong> ${currentUser.role}`
+          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Tier:</strong> ${esc(currentUser.tier || 'Free')}`
           : `Not logged in. Click "Login / Setup" in the top bar.`;
       }
     }
@@ -1769,7 +1760,7 @@
       localStorage.removeItem('orbit_token');
       currentUser = null;
       updateAuthUI();
-      closeAuthModal();
+      openAuthModal();
     }
 
     function getActiveConversation() {
@@ -2218,7 +2209,7 @@
             <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
               <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>${esc(r.status)}</em></span>
               <div>
-                <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Issue OTP</button>
+                <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Send OTP</button>
                 <button class="btn-3d" onclick="rejectReq('${r.id}')">Reject</button>
               </div>
             </div>
@@ -2238,7 +2229,7 @@
 
     async function approveReq(requestId) {
       const res = await apiFetch('/api/auth/approve', { method: 'POST', body: JSON.stringify({ requestId }) });
-      alert(`Approved! Guest OTP for ${res.request.email} is: ${res.otp}`);
+      alert(`Approved! OTP sent to user email.`);
       loadAdminData();
     }
 
@@ -2294,6 +2285,7 @@
     }
     const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+    // Full KIE.ai Market Models Suite
     const KIE_MODELS = [
       { id: 'google/gemini-4', name: 'Gemini 4', kind: 'chat', vendor: 'Google', note: 'Reasoning, long context, chat' },
       { id: 'bytedance/seedance-2.5', name: 'ByteDance Seedance 2.5', kind: 'video', vendor: 'ByteDance', note: 'Text / image to video' },
@@ -2302,8 +2294,7 @@
     ];
 
     function kieOptionsHtml() {
-      const chat = KIE_MODELS.filter(m => m.kind === 'chat');
-      return `<optgroup label="KIE.ai">${chat.map(m => `<option value="kie:${esc(m.id)}" ${('kie:' + m.id) === currentModel ? 'selected' : ''}>KIE · ${esc(m.name)}</option>`).join('')}</optgroup>`;
+      return `<optgroup label="KIE.ai Market">${KIE_MODELS.map(m => `<option value="kie:${esc(m.id)}" ${('kie:' + m.id) === currentModel ? 'selected' : ''}>KIE · ${esc(m.name)} (${esc(m.kind)})</option>`).join('')}</optgroup>`;
     }
 
     function renderKieHub() {
@@ -2370,12 +2361,13 @@
         }
         throw new Error('Timed out waiting for KIE.ai');
       } catch (e) {
-        out.innerHTML = `<div class="card-3d" style="border-color:#ff5555;">⚠️ ${esc(e.message)}<br><small>This needs the /api/kie/generate and /api/kie/status routes plus KIE_API_KEY on the server.</small></div>`;
+        out.innerHTML = `<div class="card-3d" style="border-color:#ff5555;">⚠️ ${esc(e.message)}</div>`;
       } finally {
         setOrbitCoreState('idle');
       }
     }
 
+    // Academic Project Suite (Upgraded)
     const ACA_SECTIONS = [
       ['abstract', 'Abstract', 1], ['intro', 'Introduction', 1], ['lit', 'Literature Review', 0],
       ['aim', 'Aim and Objectives', 1], ['theory', 'Theory / Principle', 1],
@@ -2395,22 +2387,27 @@
       const conv = conversations.find(c => c.id === activeConvId);
       if (!conv || !conv.messages.length) return '';
       const text = conv.messages.slice(-12).map(m => `${m.role.toUpperCase()}: ${String(m.content).slice(0, 1200)}`).join('\n');
-      return `\n\nUse this AI Chat conversation as background context (the student's own notes and questions):\n"""\n${text}\n"""`;
+      return `\n\nUse this AI Chat conversation as background context:\n"""\n${text}\n"""`;
     }
 
     async function generateAcademicReport() {
       const title = document.getElementById('acaTitle').value.trim();
       const status = document.getElementById('acaStatus');
       const out = document.getElementById('acaOutput');
-      const picked = [...document.querySelectorAll('#acaSections input:checked')].map(c => ACA_SECTIONS.find(s => s[0] === c.value));
-      if (!title) { status.textContent = 'Enter a project title first.'; return; }
-      if (!picked.length) { status.textContent = 'Select at least one section.'; return; }
+      const degree = document.getElementById('acaDegree').value;
       const field = document.getElementById('acaField').value;
-      const level = document.getElementById('acaLevel').value;
+      const year = document.getElementById('acaYear').value;
+      const sem = document.getElementById('acaSem').value;
       const words = document.getElementById('acaLength').value;
+      const picked = [...document.querySelectorAll('#acaSections input:checked')].map(c => ACA_SECTIONS.find(s => s[0] === c.value));
+      
+      if (!title) { status.textContent = 'Enter project title first.'; return; }
+      if (!picked.length) { status.textContent = 'Select at least one section.'; return; }
+      
       const ctx = acaChatContext();
       const btn = document.getElementById('acaGenBtn');
-      btn.disabled = true; acaStop = false; acaDoc = `# ${title}\n\n*${field} — ${level}*\n\n`;
+      btn.disabled = true; acaStop = false; 
+      acaDoc = `# ${title}\n\n**Degree:** ${degree} | **Field:** ${field} | **Year:** ${year} (${sem})\n\n`;
       out.innerHTML = marked.parse(acaDoc);
       setOrbitCoreState('thinking');
       try {
@@ -2418,12 +2415,12 @@
           if (acaStop) { status.textContent = 'Stopped.'; break; }
           const [, label] = picked[i];
           status.textContent = `Writing ${i + 1}/${picked.length}: ${label}...`;
-          const prompt = `You are an academic writing assistant for ${field} students (${level}). Project title: "${title}".\nWrite ONLY the section "${label}" in clear, well-structured Markdown, about ${words} words. Use headings, numbered steps or tables where useful. Rules: do not invent citations, authors, or experimental data; where a measured value is needed, write a placeholder such as [enter observed value]. For References, list only topics/keywords to search, not fake papers.${ctx}`;
+          const prompt = `You are an academic project writer for ${degree} students in ${field} (${year}, ${sem}). Project title: "${title}".\nWrite ONLY the section "${label}" in clear Markdown, about ${words} words. Use headings and structured points.${ctx}`;
           const res = await apiFetch('/api/chat', { method: 'POST', body: JSON.stringify({ model: currentModel, messages: [{ role: 'user', content: prompt }] }) });
           acaDoc += `## ${label}\n\n${res.reply}\n\n`;
           out.innerHTML = marked.parse(acaDoc);
         }
-        if (!acaStop) status.textContent = 'Done. Review every section, add your real observations, and follow your institute format.';
+        if (!acaStop) status.textContent = 'Done. Review every section and add your practical results.';
       } catch (e) {
         status.textContent = `⚠️ ${e.message}`;
       } finally {
@@ -2434,16 +2431,14 @@
 
     function copyAcademicReport() {
       if (!acaDoc) return;
-      (navigator.clipboard ? navigator.clipboard.writeText(acaDoc) : Promise.reject()).then(
-        () => { document.getElementById('acaStatus').textContent = 'Copied to clipboard.'; },
-        () => { document.getElementById('acaStatus').textContent = 'Copy blocked by this browser. Use Download .md instead.'; });
+      navigator.clipboard.writeText(acaDoc).then(() => { document.getElementById('acaStatus').textContent = 'Copied to clipboard.'; });
     }
 
     function downloadAcademicReport() {
       if (!acaDoc) return;
       const a = document.createElement('a');
       a.href = URL.createObjectURL(new Blob([acaDoc], { type: 'text/markdown' }));
-      a.download = (document.getElementById('acaTitle').value.trim().replace(/[^\w\- ]+/g, '').slice(0, 50) || 'ORBIT_Project_Report') + '.md';
+      a.download = (document.getElementById('acaTitle').value.trim().replace(/[^\w\- ]+/g, '').slice(0, 50) || 'Project_Report') + '.md';
       a.click();
     }
 
@@ -2470,15 +2465,6 @@
       loadWorkspaceModules();
       updateOverviewStats();
     });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('ServiceWorker registered!'))
-          .catch(err => console.log('ServiceWorker error: ', err));
-      });
-    }
   </script>
 </body>
 </html>
