@@ -288,7 +288,6 @@ app.post('/api/auth/owner/claim', (req, res) => {
     return res.status(403).json({ error: 'Invalid Owner Claim Code.' });
   }
 
-  // If owner already exists, require matching owner email so strangers cannot hijack
   if (auth.owner && auth.owner.email && auth.owner.email.toLowerCase() !== email.trim().toLowerCase()) {
     return res.status(403).json({ error: 'Owner email does not match registered owner.' });
   }
@@ -396,7 +395,6 @@ app.post('/api/auth/approve', requireOwner, async (req, res) => {
     user.tier = tier || user.tier || 'free';
   }
 
-  // Generate OTP immediately on approval and email it to the guest
   const otp = String(Math.floor(100000 + Math.random() * 900000));
   auth.otps = auth.otps || {};
   auth.otps[lower] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 30 * 60 * 1000 };
@@ -567,7 +565,6 @@ app.post('/api/payment/verify', requireAuth, (req, res) => {
     return res.status(400).json({ error: 'Payment signature verification failed.' });
   }
 
-  // Signature is valid -> Upgrade user to PRO immediately!
   const auth = loadAuthData();
   const user = auth.users.find(u => u.id === req.user.id || u.email.toLowerCase() === req.user.email.toLowerCase());
   if (user) {
@@ -586,7 +583,6 @@ app.post('/api/payment/verify', requireAuth, (req, res) => {
     paidAt: new Date().toISOString()
   });
 
-  // Remove from pending proRequests if present
   auth.proRequests = (auth.proRequests || []).filter(r => r.email.toLowerCase() !== req.user.email.toLowerCase());
   saveAuthData(auth);
 
@@ -601,7 +597,6 @@ app.post('/api/payment/verify', requireAuth, (req, res) => {
   });
 });
 
-// Manual Admin Pro Approval (Fallback / Owner Override)
 app.post('/api/auth/pro-request', requireAuth, (req, res) => {
   const auth = loadAuthData();
   const email = req.user.email.toLowerCase();
@@ -699,7 +694,6 @@ app.post('/api/providers/config', requireOwner, (req, res) => {
   res.json({ ok: true, message: 'All provider, Razorpay & SMTP keys securely saved on server!' });
 });
 
-// Dynamic Custom API Key Adapter (Fetches and stores custom provider models on backend)
 app.post('/api/providers/custom', requireOwner, async (req, res) => {
   const { name, apiKey, endpoint } = req.body;
   if (!name || !apiKey || !endpoint) {
@@ -749,7 +743,6 @@ app.post('/api/providers/custom', requireOwner, async (req, res) => {
   });
 });
 
-// KIE.ai Media Generation (8K Ultra HD)
 app.post('/api/kie/generate', requireAuth, async (req, res) => {
   if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
     return res.status(403).json({ error: 'Pro Subscription required for 8K KIE.ai Media Studio.' });
@@ -915,7 +908,6 @@ app.post('/api/chat', requireAuth, async (req, res) => {
   const { messages = [], model = 'openrouter/auto', attachments = [], projectId = null } = req.body;
   const ws = loadWorkspaceData();
 
-  // Build context from Project, Knowledge Base, and Attachments
   let systemContext = [];
   if (projectId) {
     const proj = (ws.projects || []).find(p => p.id === projectId);
@@ -934,7 +926,6 @@ app.post('/api/chat', requireAuth, async (req, res) => {
     ? [{ role: 'system', content: systemContext.join('\n\n') }, ...messages]
     : messages;
 
-  // 1. Custom Provider Routing (custom:provId:modelId)
   if (model.startsWith('custom:')) {
     const parts = model.split(':');
     const provId = parts[1];
@@ -955,7 +946,6 @@ app.post('/api/chat', requireAuth, async (req, res) => {
     }
   }
 
-  // 2. KIE.ai Model Routing (kie:modelId)
   if (model.startsWith('kie:')) {
     if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
       return res.status(403).json({ error: 'Pro Subscription required to use KIE.ai models.' });
@@ -975,10 +965,8 @@ app.post('/api/chat', requireAuth, async (req, res) => {
         }
       } catch (e) {}
     }
-    // Fallback to OpenRouter if KIE chat endpoint falls back
   }
 
-  // 3. OpenRouter Routing
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'OPENROUTER_API_KEY missing in .env or API Connections' });
 
