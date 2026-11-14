@@ -837,7 +837,7 @@
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
       </div>
 
-      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: #ff6b6b; text-align:center;"></div>
+      <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach); text-align:center;"></div>
     </div>
   </div>
 
@@ -855,7 +855,7 @@
         <div class="nav-section-label" data-i18n="sec_workspace">WORKSPACE</div>
         <button class="nav-btn active" onclick="switchView('overview')">🔴 <span data-i18n="nav_overview">Overview</span></button>
         <button class="nav-btn" onclick="switchView('chat')">💬 <span data-i18n="nav_chat">AI Chat</span></button>
-        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub</span></button>
+        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub Pro</span></button>
         <button class="nav-btn" onclick="switchView('prompts')">✨ <span data-i18n="nav_prompts">Prompt Library</span></button>
         <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Files & Tools</span></button>
         <button class="nav-btn" onclick="switchView('history')">🕒 <span data-i18n="nav_history">Chat History</span></button>
@@ -920,7 +920,7 @@
             </p>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
               <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
-              <button class="btn-3d" onclick="switchView('models')" data-i18n="nav_models">AI Model Hub</button>
+              <button class="btn-3d" onclick="switchView('models')" data-i18n="nav_models">AI Model Hub Pro</button>
               <button class="btn-3d" onclick="switchView('files')" data-i18n="nav_files">Files & Tools</button>
             </div>
           </div>
@@ -979,10 +979,10 @@
         </div>
       </section>
 
-      <!-- 3. AI MODEL HUB (PRO DUAL SECTION: OPENROUTER & KIE.AI) -->
+      <!-- 3. AI MODEL HUB PRO (DUAL SECTION: OPENROUTER & KIE.AI) -->
       <section class="workspace-view" id="view-models">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-          <h2 data-i18n="nav_models">AI Model Hub</h2>
+          <h2 data-i18n="nav_models">AI Model Hub Pro</h2>
           <div style="display: flex; gap: 10px;">
             <input id="modelSearchInput" class="input-3d" placeholder="Search models..." oninput="renderModelsGrid()" />
             <button class="btn-3d btn-peach-blue" onclick="loadModels()">🔄 Refresh Models</button>
@@ -991,14 +991,17 @@
         
         <!-- SECTION 1: KIE.AI MARKET MODELS (FULL 128+ SUITE) -->
         <div class="card-3d tilt-glass" style="margin-top:22px;">
-          <div class="card-title"><span>KIE.ai Market Models Hub</span> <span class="kie-tag">128+ Models</span></div>
+          <div class="card-title"><span>KIE.ai Market Models Hub (128+ Models)</span> <span class="kie-tag">Pro Section</span></div>
           <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">Complete suite of KIE.ai chat, image, music, and video market models.</p>
           <div class="grid-3d" id="kieGrid"></div>
         </div>
 
         <!-- SECTION 2: OPENROUTER MODELS -->
-        <h3 style="margin-top:26px;margin-bottom:12px;color:var(--powder-blue);">OpenRouter Market Models</h3>
-        <div class="grid-3d" id="modelsGrid"></div>
+        <div class="card-3d tilt-glass" style="margin-top:26px;">
+          <div class="card-title"><span>OpenRouter Market Models</span> <span class="kie-tag">Pro Section</span></div>
+          <p style="font-size:0.85rem;opacity:0.9;margin-bottom:14px;">All OpenRouter models (Limited to top 3 in Free Tier, All in Pro Tier).</p>
+          <div class="grid-3d" id="modelsGrid"></div>
+        </div>
 
         <!-- SECTION 3: DYNAMIC CUSTOM API KEY MODELS -->
         <div class="card-3d tilt-glass" id="customApiModelsCard" style="margin-top:26px; display:none;">
@@ -1099,7 +1102,7 @@
         <div class="card-3d tilt-glass">
           <div class="card-title">AI Image & Video Generation Studio (8K Ultra HD)</div>
           <p style="color: var(--lavender-white); opacity:0.85; font-size: 0.9rem; margin-bottom: 12px;">
-            Generates 8K Ultra HD cinematic video prompts & photorealistic visual specs via KIE.ai 128+ market models.
+            Generates 8K Ultra HD cinematic video prompts & photorealistic visual specs via KIE.ai market models.
           </p>
           <div style="display: flex; gap: 10px;">
             <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 8K Ultra HD cinematic video or graphic..." />
@@ -1313,7 +1316,7 @@
     const I18N = {
       en: {
         sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
-        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_academic: "Academic Project Suite",
+        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub Pro", nav_academic: "Academic Project Suite",
         nav_prompts: "Prompt Library", nav_files: "Files & Tools", nav_history: "Chat History",
         nav_search: "AI Search", nav_agents: "AI Agents", nav_projects: "Projects", nav_knowledge: "Knowledge Base",
         nav_media: "Image & Video AI", nav_automation: "Automation", nav_profile: "Profile & Account",
@@ -1326,7 +1329,7 @@
       },
       mr: {
         sec_workspace: "कार्यक्षेत्र (WORKSPACE)", sec_personal: "वैयक्तिक (PERSONAL)",
-        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब", nav_academic: "शैक्षणिक प्रोजेक्ट सूट",
+        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब प्रो", nav_academic: "शैक्षणिक प्रोजेक्ट सूट",
         nav_prompts: "प्रॉम्प्ट लायब्ररी", nav_files: "फाईल्स आणि टूल्स", nav_history: "चॅट इतिहास",
         nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
         nav_media: "इमेज आणि व्हिडिओ AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफाईल आणि खाते",
@@ -1339,7 +1342,7 @@
       },
       hi: {
         sec_workspace: "वर्कस्पेस", sec_personal: "व्यक्तिगत",
-        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब", nav_academic: "एकेडमिक प्रोजेक्ट सूट",
+        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब प्रो", nav_academic: "एकेडमिक प्रोजेक्ट सूट",
         nav_prompts: "प्रॉम्प्ट लाइब्रेरी", nav_files: "फ़ाइलें और टूल्स", nav_history: "चैट इतिहास",
         nav_search: "AI सर्च", nav_agents: "AI एजेंट्स", nav_projects: "प्रोजेक्ट्स", nav_knowledge: "नॉलेज बेस",
         nav_media: "इमेज और वीडियो AI", nav_automation: "ऑटोमेशन", nav_profile: "प्रोफ़ाइल",
@@ -1354,18 +1357,18 @@
 
     const I18N_KEYS = ["sec_workspace","sec_personal","nav_overview","nav_chat","nav_models","nav_prompts","nav_files","nav_history","nav_search","nav_agents","nav_projects","nav_knowledge","nav_media","nav_automation","nav_profile","nav_apiconn","nav_security","nav_settings","nav_pro","nav_admin","nav_academic","btn_launch_chat"];
     const I18N_PACK = {
-      bn: ["কর্মক্ষেত্র","ব্যক্তিগত","ওভারভিউ","AI চ্যাট","AI মডেল হাব","প্রম্পট লাইব্রেরি","ফাইল ও টুলস","চ্যাট ইতিহাস","AI সার্চ","AI এজেন্ট","প্রজেক্ট","নলেজ বেস","ইমেজ ও ভিডিও AI","অটোমেশন","প্রোফাইল ও অ্যাকাউন্ট","API সংযোগ","অনুমতি ও নিরাপত্তা","সেটিংস","প্রো সাবস্ক্রিপশন","অ্যাডমিন প্যানেল","একাডেমিক প্রজেক্ট স্যুট","AI চ্যাট শুরু করুন"],
-      ta: ["பணியிடம்","தனிப்பட்டவை","மேலோட்டம்","AI அரட்டை","AI மாடல் ஹப்","ப்ராம்ப்ட் நூலகம்","கோப்புகள் & கருவிகள்","அரட்டை வரலாறு","AI தேடல்","AI முகவர்கள்","திட்டங்கள்","அறிவுத் தளம்","படம் & வீடியோ AI","தானியக்கம்","சுயவிவரம் & கணக்கு","API இணைப்புகள்","அனுமதிகள் & பாதுகாப்பு","அமைப்புகள்","ப்ரோ சந்தா","நிர்வாக பேனல்","கல்வித் திட்டத் தொகுப்பு","AI அரட்டையைத் தொடங்கு"],
-      te: ["వర్క్‌స్పేస్","వ్యక్తిగతం","అవలోకనం","AI చాట్","AI మోడల్ హబ్","ప్రాంప్ట్ లైబ్రరీ","ఫైళ్లు & టూల్స్","చాట్ చరిత్ర","AI సెర్చ్","AI ఏజెంట్లు","ప్రాజెక్టులు","నాలెడ్జ్ బేస్","ఇమేజ్ & వీడియో AI","ఆటోమేషన్","ప్రొఫైల్ & ఖాతా","API కనెక్షన్లు","అనుమతులు & భద్రత","సెట్టింగ్స్","ప్రో సబ్‌స్క్రిప్షన్","అడ్మిన్ ప్యానెల్","అకడమిక్ ప్రాజెక్ట్ సూట్","AI చాట్ ప్రారంభించండి"],
-      gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
-      kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","ಅಕಾಡೆಮಿಕ್ ಪ್ರಾಜೆಕ್ಟ್ ಸೂಟ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
-      ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ്","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","അക്കാദമിക് പ്രോജക്ട് സ്യൂട്ട്","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫਾਈਲ ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ ਅਤੇ ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡमिन ਪੈਨਲ","ਅਕਾਦਮਿਕ ਪ੍ਰੋਜੈਕਟ ਸੂਟ","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
-      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","ଏକାଡେମିକ୍ ପ୍ରୋଜେକ୍ଟ ସୁଟ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
-      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","একাডেমিক প্ৰকল্প স্যুট","AI চেট আৰম্ভ কৰক"],
-      ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل ہب","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","اکیڈمک پروجیکٹ سوٹ","AI چیٹ شروع کریں"],
-      sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम्","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","शैक्षणिक-परियोजना-संचयः","AI संवादम् आरभस्व"],
-      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","शैक्षिक प्रोजेक्ट सुइट","AI च्याट सुरु गर्नुहोस्"]
+      bn: ["কর্মক্ষেত্র","ব্যক্তিগত","ওভারভিউ","AI চ্যাট","AI মডেল হাব প্রো","প্রম্পট লাইব্রেরি","ফাইল ও টুলস","চ্যাট ইতিহাস","AI সার্চ","AI এজেন্ট","প্রজেক্ট","নলেজ বেস","ইমেজ ও ভিডিও AI","অটোমেশন","প্রোফাইল ও অ্যাকাউন্ট","API সংযোগ","অনুমতি ও নিরাপত্তা","সেটিংস","প্রো সাবস্ক্রিপশন","অ্যাডমিন প্যানেল","একাডেমিক প্রজেক্ট স্যুট","AI চ্যাট শুরু করুন"],
+      ta: ["பணியிடம்","தனிப்பட்டவை","மேலோட்டம்","AI அரட்டை","AI மாடல் ஹப் ப்ரோ","ப்ராம்ப்ட் நூலகம்","கோப்புகள் & கருவிகள்","அரட்டை வரலாறு","AI தேடல்","AI முகவர்கள்","திட்டங்கள்","அறிவுத் தளம்","படம் & வீடியோ AI","தானியக்கம்","சுயவிவரம் & கணக்கு","API இணைப்புகள்","அனுமதிகள் & பாதுகாப்பு","அமைப்புகள்","ப்ரோ சந்தா","நிர்வாக பேனல்","கல்வித் திட்டத் தொகுப்பு","AI அரட்டையைத் தொடங்கு"],
+      te: ["వర్క్‌స్పేస్","వ్యక్తిగతం","అవలోకనం","AI చాట్","AI మోడల్ హబ్ ప్రో","ప్రాంప్ట్ లైబ్రరీ","ఫైళ్లు & టూల్స్","చాట్ చరిత్ర","AI సెర్చ్","AI ఏజెంట్లు","ప్రాజెక్టులు","నాలెడ్జ్ బేస్","ఇమేజ్ & వీడియో AI","ఆటోమేషన్","ప్రొఫైల్ & ఖాతా","API కనెక్షన్లు","అనుమతులు & భద్రత","సెట్టింగ్స్","ప్రో సబ్‌స్క్రిప్షన్","అడ్మిన్ ప్యానెల్","అకడమిక్ ప్రాజెక్ట్ సూట్","AI చాట్ ప్రారంభించండి"],
+      gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ પ્રો","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
+      kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","ಅಕಾಡೆಮಿಕ್ ಪ್ರಾಜೆಕ್ಟ್ ಸೂಟ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
+      ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","അക്കാദമിക് പ്രോജക്ട് സ്യൂട്ട്","AI ചാറ്റ് തുടങ്ങുക"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","ਪ੍ਰੋਫাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ ਅਤੇ ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈਨਲ","ਅਕਾਦਮਿਕ ਪ੍ਰੋਜੈਕਟ ਸੂਟ","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","ଏକାଡେମିକ୍ ପ୍ରୋଜେକ୍ଟ ସୁଟ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
+      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","একাডেমিক প্ৰকল্প স্যুট","AI চেট আৰম্ভ কৰক"],
+      ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","اکیڈمک پروجیکٹ سوٹ","AI چیٹ شروع کریں"],
+      sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","शैक्षणिक-परियोजना-संचयः","AI संवादम् आरभस्व"],
+      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","शैक्षिक प्रोजेक्ट सुइट","AI च्याट सुरु गर्नुहोस्"]
     };
     Object.keys(I18N_PACK).forEach(l => {
       I18N[l] = {};
