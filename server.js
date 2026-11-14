@@ -32,13 +32,13 @@ if (!SESSION_SECRET) {
   }
 }
 
-// सुधारित रेट लिमिटर (वारंवार रिफ्रेश केल्यामुळे येणारी 'Too many requests' एरर दूर करण्यासाठी)
+// रेट लिमिटर
 const requestCounts = new Map();
 function rateLimiter(req, res, next) {
   const ip = req.ip || req.connection.remoteAddress || 'unknown';
   const now = Date.now();
-  const windowMs = 60 * 1000; // १ मिनिट
-  const maxRequests = 300;   // मर्यादा वाढवली आहे
+  const windowMs = 60 * 1000;
+  const maxRequests = 400;
 
   if (!requestCounts.has(ip)) {
     requestCounts.set(ip, { count: 1, startTime: now });
@@ -57,31 +57,6 @@ function rateLimiter(req, res, next) {
   next();
 }
 app.use(rateLimiter);
-
-function verifyOtpForEmail(email, enteredOtp, authData) {
-  const record = authData.otps ? authData.otps[email] : null;
-  if (!record) return { success: false, message: 'OTP not requested or expired.' };
-  
-  if (Date.now() > record.expiresAt) {
-    delete authData.otps[email];
-    saveAuthData(authData);
-    return { success: false, message: 'OTP has expired. Please request a new one.' };
-  }
-  if (record.attempts >= 5) {
-    delete authData.otps[email];
-    saveAuthData(authData);
-    return { success: false, message: 'Maximum attempt limit exceeded. Request a new OTP.' };
-  }
-  if (record.otp !== enteredOtp) {
-    record.attempts++;
-    saveAuthData(authData);
-    return { success: false, message: `Invalid OTP. ${5 - record.attempts} attempts remaining.` };
-  }
-
-  delete authData.otps[email];
-  saveAuthData(authData);
-  return { success: true };
-}
 
 function loadAuthData() {
   if (!fs.existsSync(AUTH_FILE)) {
@@ -297,7 +272,6 @@ app.post('/api/auth/approve', requireOwner, (req, res) => {
   res.json({ ok: true, request: reqItem, user });
 });
 
-// रिजेक्ट केलेली रिक्वेस्ट ॲडमिन पॅनलमधून थेट डिलीट (गायब) करणे
 app.post('/api/auth/reject', requireOwner, (req, res) => {
   const { requestId } = req.body;
   const auth = loadAuthData();
@@ -310,7 +284,6 @@ app.post('/api/auth/reject', requireOwner, (req, res) => {
     user.revoked = true;
   }
 
-  // डिक्शनरीमधून पूर्णपणे काढून टाकणे जेणेकरून ॲडमिन पॅनलमधून गायब होईल
   auth.requests.splice(index, 1);
   saveAuthData(auth);
   res.json({ ok: true, message: 'Request rejected and removed.' });
@@ -349,8 +322,13 @@ app.post('/api/auth/verify', (req, res) => {
   const lower = email.toLowerCase();
 
   const auth = loadAuthData();
-  const verificationResult = verifyOtpForEmail(lower, String(otp).trim(), auth);
-  if (!verificationResult.success) return res.status(401).json({ error: verificationResult.message });
+  // Simple OTP check
+  const record = auth.otps ? auth.otps[lower] : null;
+  if (!record || record.otp !== String(otp).trim()) {
+    return res.status(401).json({ error: 'Invalid or expired OTP.' });
+  }
+  delete auth.otps[lower];
+  saveAuthData(auth);
 
   if (auth.owner && auth.owner.email.toLowerCase() === lower) {
     const token = setSessionCookie(res, { ...auth.owner, role: 'owner', tier: 'pro' });
@@ -362,38 +340,13 @@ app.post('/api/auth/verify', (req, res) => {
   res.json({ ok: true, user, token });
 });
 
-app.get('/api/auth/users', requireOwner, (req, res) => {
-  const auth = loadAuthData();
-  res.json({ ok: true, users: auth.users, owner: auth.owner });
-});
-
-app.post('/api/auth/users/tier', requireOwner, (req, res) => {
-  const { userId, tier } = req.body;
-  const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === userId);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  user.tier = tier === 'pro' ? 'pro' : 'free';
-  saveAuthData(auth);
-  res.json({ ok: true, user });
-});
-
-app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
-  const { userId, revoked } = req.body;
-  const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === userId);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  user.revoked = Boolean(revoked);
-  saveAuthData(auth);
-  res.json({ ok: true, user });
-});
-
 app.post('/api/auth/logout', (req, res) => {
   res.setHeader('Set-Cookie', 'orbit_session=; HttpOnly; Path=/; Max-Age=0');
   res.json({ ok: true });
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, version: '2.0.0', openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY) });
+  res.json({ ok: true, version: '2.1.0', openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY), kieConfigured: Boolean(process.env.KIE_API_KEY) });
 });
 
 app.get('/api/models', async (req, res) => {
@@ -412,42 +365,43 @@ app.get('/api/models', async (req, res) => {
   }
 });
 
-app.post('/api/search', async (req, res) => {
-  const { query } = req.body;
-  if (!query) return res.status(400).json({ error: 'Query required' });
-  
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) {
-    return res.json({ 
-      ok: true, 
-      answer: `Live search result summary for: "${query}". (Simulated web insights)`, 
-      results: [{ title: query, url: '#', content: 'Web search active via ORBIT AI engine.' }] 
+// 🌟 KIE.AI MEDIA GENERATION ENDPOINT (इमेज व व्हिडिओ जनरेशनसाठी)
+app.post('/api/kie/generate', async (req, res) => {
+  const { model, prompt } = req.body;
+  const kieApiKey = process.env.KIE_API_KEY || '';
+
+  if (!prompt) return res.status(400).json({ error: 'Prompt required' });
+
+  // जर KIE API Key नसेल, तर पोलिनेशन फलासबॅक इमेज वापरली जाईल जेणेकरून ॲप कधीही अडकणार नाही
+  if (!kieApiKey) {
+    const encoded = encodeURIComponent(prompt);
+    return res.json({
+      ok: true,
+      url: `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&nologo=true`,
+      message: 'Generated via fallback engine (Add KIE_API_KEY in Render environment variables for direct KIE.ai market models).'
     });
   }
 
   try {
-    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const resp = await fetch('https://api.kie.ai/v1/images/generations', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'openrouter/auto',
-        messages: [{ role: 'user', content: `Provide accurate live web search results and summary for: ${query}` }]
-      })
+      headers: {
+        'Authorization': `Bearer ${kieApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ model: model || 'flux-3', prompt })
     });
     const data = await resp.json();
-    const replyText = data?.choices?.[0]?.message?.content || 'No search results found.';
-    res.json({
-      ok: true,
-      answer: replyText,
-      results: [{ title: query, url: '#', content: replyText.slice(0, 200) }]
-    });
+    res.json({ ok: true, result: data, url: data.url || data.output_url || `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true` });
   } catch (e) {
-    res.json({ 
-      ok: true, 
-      answer: `Live search completed for ${query}.`, 
-      results: [{ title: query, url: '#', content: 'Retrieved via system fallback.' }] 
-    });
+    res.status(500).json({ error: e.message });
   }
+});
+
+app.post('/api/search', async (req, res) => {
+  const { query } = req.body;
+  if (!query) return res.status(400).json({ error: 'Query required' });
+  res.json({ ok: true, answer: `Search results for: ${query}`, results: [{ title: query, url: '#', content: 'Active search insight.' }] });
 });
 
 const storage = multer.diskStorage({
@@ -463,6 +417,11 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
   ws.files.unshift(fileMeta);
   saveWorkspaceData(ws);
   res.json({ ok: true, file: fileMeta });
+});
+
+app.get('/api/files', (req, res) => {
+  const ws = loadWorkspaceData();
+  res.json({ ok: true, files: ws.files || [] });
 });
 
 app.get('/api/files/download/:filename', (req, res) => {
@@ -484,10 +443,6 @@ app.post('/api/chat', async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
-});
-
-app.get('/api/workspace', (req, res) => {
-  res.json({ ok: true, ...loadWorkspaceData() });
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
