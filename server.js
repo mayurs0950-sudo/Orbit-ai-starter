@@ -7,10 +7,8 @@ const multer = require('multer');
 
 let pdfParse = null;
 let mammoth = null;
-let nodemailer = null;
 try { pdfParse = require('pdf-parse'); } catch (e) {}
 try { mammoth = require('mammoth'); } catch (e) {}
-try { nodemailer = require('nodemailer'); } catch (e) {}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -66,8 +64,6 @@ function loadAuthData() {
       owner: null,
       ownerClaimCode: process.env.OWNER_CLAIM_CODE || '411826',
       users: [],
-      requests: [],
-      proRequests: [],
       payments: [],
       otps: {},
       sessions: {}
@@ -78,8 +74,6 @@ function loadAuthData() {
   try {
     const raw = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf8'));
     raw.users = raw.users || [];
-    raw.requests = raw.requests || [];
-    raw.proRequests = raw.proRequests || [];
     raw.payments = raw.payments || [];
     raw.otps = raw.otps || {};
     raw.sessions = raw.sessions || {};
@@ -90,8 +84,6 @@ function loadAuthData() {
       owner: null,
       ownerClaimCode: process.env.OWNER_CLAIM_CODE || '411826',
       users: [],
-      requests: [],
-      proRequests: [],
       payments: [],
       otps: {},
       sessions: {}
@@ -189,7 +181,7 @@ function setSessionCookie(res, userObj) {
     id: userObj.id,
     role: userObj.role,
     tier: userObj.tier || (userObj.role === 'owner' ? 'pro' : 'free'),
-    email: userObj.email,
+    phone: userObj.phone,
     iat: Date.now()
   });
   res.setHeader('Set-Cookie', `orbit_session=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 3600}; SameSite=Lax`);
@@ -211,50 +203,7 @@ function requireOwner(req, res, next) {
 }
 
 // =========================================================
-// EMAIL OTP HELPER (NODEMAILER)
-// =========================================================
-async function sendOtpEmail(toEmail, otpCode, userName = 'User') {
-  const ws = loadWorkspaceData();
-  const smtpUser = process.env.SMTP_EMAIL || ws.providers?.smtpUser || '';
-  const smtpPass = process.env.SMTP_PASSWORD || ws.providers?.smtpPass || '';
-
-  console.log(`[ORBIT AI OTP] Email: ${toEmail} | OTP: ${otpCode}`);
-
-  if (!nodemailer || !smtpUser || !smtpPass) {
-    return { sent: false, reason: 'SMTP credentials not configured in .env or API Connections' };
-  }
-
-  try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user: smtpUser, pass: smtpPass }
-    });
-
-    await transporter.sendMail({
-      from: `"ORBIT AI Security" <${smtpUser}>`,
-      to: toEmail,
-      subject: 'Your ORBIT AI Login OTP Code',
-      html: `
-        <div style="font-family:Segoe UI,sans-serif;padding:20px;background:#14161D;color:#E9E8F8;border-radius:16px;">
-          <h2 style="color:#8DB9F0;">ORBIT AI — Access Verification</h2>
-          <p>Hello <strong>${userName}</strong>,</p>
-          <p>Your 6-digit One-Time Password (OTP) to access ORBIT AI is:</p>
-          <div style="font-size:28px;font-weight:900;letter-spacing:6px;padding:14px 20px;background:#1E222D;color:#F5B69E;border-radius:12px;display:inline-block;margin:12px 0;">
-            ${otpCode}
-          </div>
-          <p style="font-size:12px;color:#B8B7CC;">This code is valid for 10 minutes. Do not share it with anyone.</p>
-        </div>
-      `
-    });
-    return { sent: true };
-  } catch (err) {
-    console.error('[ORBIT AI EMAIL ERROR]:', err.message);
-    return { sent: false, reason: err.message };
-  }
-}
-
-// =========================================================
-// AUTHENTICATION & ADMIN ROUTES
+// MOBILE OTP AUTH ROUTES (NO ADMIN APPROVAL NEEDED)
 // =========================================================
 app.get('/api/auth/status', (req, res) => {
   const auth = loadAuthData();
@@ -277,9 +226,9 @@ app.get('/api/auth/status', (req, res) => {
 });
 
 app.post('/api/auth/owner/claim', (req, res) => {
-  const { name, email, claimCode } = req.body;
-  if (!email || !claimCode) {
-    return res.status(400).json({ error: 'Owner email and claim code are required.' });
+  const { name, phone, claimCode } = req.body;
+  if (!phone || !claimCode) {
+    return res.status(400).json({ error: 'Owner phone and claim code are required.' });
   }
   const auth = loadAuthData();
   const validClaimCode = String(auth.ownerClaimCode || process.env.OWNER_CLAIM_CODE || '411826').trim();
@@ -288,14 +237,10 @@ app.post('/api/auth/owner/claim', (req, res) => {
     return res.status(403).json({ error: 'Invalid Owner Claim Code.' });
   }
 
-  if (auth.owner && auth.owner.email && auth.owner.email.toLowerCase() !== email.trim().toLowerCase()) {
-    return res.status(403).json({ error: 'Owner email does not match registered owner.' });
-  }
-
   const ownerUser = {
     id: auth.owner?.id || 'owner_' + crypto.randomBytes(6).toString('hex'),
     name: (name || auth.owner?.name || 'Mayur Sonawane (Owner)').trim(),
-    email: email.trim().toLowerCase(),
+    phone: phone.trim(),
     role: 'owner',
     tier: 'pro',
     createdAt: auth.owner?.createdAt || new Date().toISOString()
@@ -307,18 +252,19 @@ app.post('/api/auth/owner/claim', (req, res) => {
   res.json({ ok: true, user: ownerUser, token });
 });
 
-app.post('/api/auth/request', (req, res) => {
-  const { name, email, reason } = req.body;
-  if (!name || !email) return res.status(400).json({ error: 'Name and email required.' });
+app.post('/api/auth/issue-phone', (req, res) => {
+  const { phone } = req.body;
+  if (!phone || phone.length < 10) return res.status(400).json({ error: 'Valid mobile number required' });
+  
+  const cleanPhone = phone.trim();
   const auth = loadAuthData();
-  const cleanEmail = email.trim().toLowerCase();
 
-  let user = auth.users.find(u => u.email.toLowerCase() === cleanEmail);
+  let user = auth.users.find(u => u.phone === cleanPhone);
   if (!user) {
     user = {
       id: 'usr_' + crypto.randomBytes(6).toString('hex'),
-      name: name.trim(),
-      email: cleanEmail,
+      name: 'User ' + cleanPhone.slice(-4),
+      phone: cleanPhone,
       role: 'guest',
       tier: 'free',
       revoked: false,
@@ -327,148 +273,40 @@ app.post('/api/auth/request', (req, res) => {
     auth.users.push(user);
   }
 
-  let existingReq = auth.requests.find(r => r.email.toLowerCase() === cleanEmail);
-  if (existingReq) {
-    existingReq.status = 'pending';
-    existingReq.name = name.trim();
-    existingReq.reason = reason || existingReq.reason;
-    saveAuthData(auth);
-    return res.json({ ok: true, requestId: existingReq.id, status: existingReq.status });
-  }
-
-  const newReq = {
-    id: 'req_' + crypto.randomBytes(6).toString('hex'),
-    name: name.trim(),
-    email: cleanEmail,
-    reason: reason || 'Workspace Access',
-    status: 'pending',
-    createdAt: new Date().toISOString()
-  };
-  auth.requests.push(newReq);
-  saveAuthData(auth);
-  res.json({ ok: true, requestId: newReq.id, status: 'pending' });
-});
-
-app.get('/api/auth/requests', requireOwner, (req, res) => {
-  const auth = loadAuthData();
-  res.json({ ok: true, requests: auth.requests || [] });
-});
-
-app.get('/api/auth/users', requireOwner, (req, res) => {
-  const auth = loadAuthData();
-  res.json({ ok: true, users: auth.users || [], payments: auth.payments || [] });
-});
-
-app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
-  const { userId, revoked } = req.body;
-  const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === userId);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  user.revoked = Boolean(revoked);
-  saveAuthData(auth);
-  res.json({ ok: true, user });
-});
-
-app.post('/api/auth/approve', requireOwner, async (req, res) => {
-  const { requestId, tier } = req.body;
-  const auth = loadAuthData();
-  const reqItem = auth.requests.find(r => r.id === requestId);
-  if (!reqItem) return res.status(404).json({ error: 'Request not found' });
-
-  reqItem.status = 'approved';
-  const lower = reqItem.email.toLowerCase();
-
-  let user = auth.users.find(u => u.email.toLowerCase() === lower);
-  if (!user) {
-    user = {
-      id: 'usr_' + crypto.randomBytes(6).toString('hex'),
-      name: reqItem.name,
-      email: lower,
-      role: 'guest',
-      tier: tier || 'free',
-      revoked: false,
-      createdAt: new Date().toISOString()
-    };
-    auth.users.push(user);
-  } else {
-    user.revoked = false;
-    user.tier = tier || user.tier || 'free';
-  }
-
   const otp = String(Math.floor(100000 + Math.random() * 900000));
   auth.otps = auth.otps || {};
-  auth.otps[lower] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 30 * 60 * 1000 };
+  auth.otps[cleanPhone] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
   saveAuthData(auth);
 
-  const mailResult = await sendOtpEmail(lower, otp, reqItem.name);
+  console.log(`[ORBIT AI MOBILE OTP] Phone: ${cleanPhone} | OTP: ${otp}`);
+
   res.json({
     ok: true,
-    request: reqItem,
-    user,
-    emailSent: mailResult.sent,
-    emailNote: mailResult.sent ? `OTP emailed to ${lower}` : `Approved! (Configure SMTP in API Connections to auto-email OTP. Fallback OTP: ${otp})`
+    devOtp: otp,
+    message: `6-digit OTP generated for mobile number ${cleanPhone}. (OTP: ${otp})`
   });
 });
 
-app.post('/api/auth/reject', requireOwner, (req, res) => {
-  const { requestId } = req.body;
-  const auth = loadAuthData();
-  const index = auth.requests.findIndex(r => r.id === requestId);
-  if (index === -1) return res.status(404).json({ error: 'Request not found' });
-  auth.requests.splice(index, 1);
-  saveAuthData(auth);
-  res.json({ ok: true });
-});
-
-app.post('/api/auth/issue', async (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ error: 'Email required' });
-  const auth = loadAuthData();
-  const lower = email.trim().toLowerCase();
-
-  const isOwner = auth.owner && auth.owner.email.toLowerCase() === lower;
-  const approvedReq = auth.requests.find(r => r.email.toLowerCase() === lower && r.status === 'approved');
-  const user = auth.users.find(u => u.email.toLowerCase() === lower && !u.revoked);
-
-  if (!isOwner && !approvedReq && (!user || auth.requests.some(r => r.email.toLowerCase() === lower && r.status !== 'approved'))) {
-    return res.status(403).json({ error: 'Your access request is still pending Admin approval.' });
-  }
-
-  const otp = String(Math.floor(100000 + Math.random() * 900000));
-  auth.otps = auth.otps || {};
-  auth.otps[lower] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
-  saveAuthData(auth);
-
-  const mailResult = await sendOtpEmail(lower, otp, user?.name || 'User');
-  res.json({
-    ok: true,
-    emailSent: mailResult.sent,
-    message: mailResult.sent
-      ? `6-digit OTP has been sent to your email (${lower}).`
-      : `OTP generated! Please check your email (or ask Admin if SMTP is not set).`
-  });
-});
-
-app.post('/api/auth/verify', (req, res) => {
-  const { email, otp } = req.body;
-  if (!email || !otp) return res.status(400).json({ error: 'Email and OTP required' });
-  const lower = email.trim().toLowerCase();
+app.post('/api/auth/verify-phone', (req, res) => {
+  const { phone, otp } = req.body;
+  if (!phone || !otp) return res.status(400).json({ error: 'Phone and OTP required' });
+  const cleanPhone = phone.trim();
 
   const auth = loadAuthData();
-  const record = auth.otps ? auth.otps[lower] : null;
+  const record = auth.otps ? auth.otps[cleanPhone] : null;
   if (!record || record.otp !== String(otp).trim() || (record.expiresAt && Date.now() > record.expiresAt)) {
     return res.status(401).json({ error: 'Invalid or expired OTP.' });
   }
-  delete auth.otps[lower];
+  delete auth.otps[cleanPhone];
   saveAuthData(auth);
 
-  if (auth.owner && auth.owner.email.toLowerCase() === lower) {
+  if (auth.owner && auth.owner.phone === cleanPhone) {
     const ownerObj = { ...auth.owner, role: 'owner', tier: 'pro' };
     const token = setSessionCookie(res, ownerObj);
     return res.json({ ok: true, user: ownerObj, token });
   }
-  const user = auth.users.find(u => u.email.toLowerCase() === lower && !user?.revoked);
-  if (!user) return res.status(403).json({ error: 'User access revoked or not approved' });
+  const user = auth.users.find(u => u.phone === cleanPhone && !u.revoked);
+  if (!user) return res.status(403).json({ error: 'User access revoked' });
 
   const guestObj = { ...user, role: 'guest', tier: user.tier || 'free' };
   const token = setSessionCookie(res, guestObj);
@@ -492,7 +330,7 @@ app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
   }
 
   const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === req.user.id || u.email.toLowerCase() === req.user.email.toLowerCase());
+  const user = auth.users.find(u => u.id === req.user.id || u.phone === req.user.phone);
   
   if (user) {
     user.tier = 'pro';
@@ -503,7 +341,7 @@ app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
   auth.payments.unshift({
     id: paymentId,
     upiId: upiId || 'UPI / QR Payment',
-    email: req.user.email,
+    phone: req.user.phone,
     name: req.user.name,
     amountInr: PRO_PRICE_INR,
     status: 'paid',
@@ -523,35 +361,23 @@ app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
   });
 });
 
-app.post('/api/auth/pro-request', requireAuth, (req, res) => {
+app.get('/api/auth/users', requireOwner, (req, res) => {
   const auth = loadAuthData();
-  const email = req.user.email.toLowerCase();
-  auth.proRequests = auth.proRequests || [];
-  if (!auth.proRequests.some(r => r.email.toLowerCase() === email)) {
-    auth.proRequests.push({ email, name: req.user.name, createdAt: new Date().toISOString() });
-    saveAuthData(auth);
-  }
-  res.json({ ok: true, message: 'Pro upgrade request sent to Admin.' });
+  res.json({ ok: true, users: auth.users || [], payments: auth.payments || [] });
 });
 
-app.get('/api/auth/pro-requests', requireOwner, (req, res) => {
+app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
+  const { userId, revoked } = req.body;
   const auth = loadAuthData();
-  res.json({ ok: true, requests: auth.proRequests || [] });
-});
-
-app.post('/api/auth/pro-approve', requireOwner, (req, res) => {
-  const { email, tier } = req.body;
-  const auth = loadAuthData();
-  const targetTier = tier || 'pro';
-  auth.proRequests = (auth.proRequests || []).filter(r => r.email.toLowerCase() !== email.toLowerCase());
-  const user = auth.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (user) user.tier = targetTier;
+  const user = auth.users.find(u => u.id === userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  user.revoked = Boolean(revoked);
   saveAuthData(auth);
-  res.json({ ok: true, message: `User ${email} updated to ${targetTier.toUpperCase()}` });
+  res.json({ ok: true, user });
 });
 
 // =========================================================
-// HEALTH, MODELS, KIE.AI & CUSTOM API PROVIDERS
+// HEALTH, MODELS & CHAT
 // =========================================================
 app.get('/api/health', (req, res) => {
   res.json({
@@ -569,9 +395,7 @@ app.get('/api/models', requireAuth, async (req, res) => {
   const defaults = [
     { id: 'openrouter/auto', name: 'OpenRouter Auto (Smart Router)', free: true },
     { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1 8B (Free)', free: true },
-    { id: 'google/gemma-2-9b-it:free', name: 'Google Gemma 2 9B (Free)', free: true },
-    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
-    { id: 'openai/gpt-4o', name: 'OpenAI GPT-4o' }
+    { id: 'google/gemma-2-9b-it:free', name: 'Google Gemma 2 9B (Free)', free: true }
   ];
 
   let openrouterModels = defaults;
@@ -596,142 +420,6 @@ app.get('/api/models', requireAuth, async (req, res) => {
       endpoint: p.endpoint,
       models: p.models || []
     }))
-  });
-});
-
-app.post('/api/providers/config', requireOwner, (req, res) => {
-  const { openrouterKey, tavilyKey, kieKey, smtpUser, smtpPass, customUrl } = req.body;
-  const ws = loadWorkspaceData();
-  ws.providers = ws.providers || {};
-
-  if (openrouterKey) process.env.OPENROUTER_API_KEY = openrouterKey.trim();
-  if (tavilyKey) process.env.TAVILY_API_KEY = tavilyKey.trim();
-  if (kieKey) process.env.KIE_API_KEY = kieKey.trim();
-  if (smtpUser) { process.env.SMTP_EMAIL = smtpUser.trim(); ws.providers.smtpUser = smtpUser.trim(); }
-  if (smtpPass) { process.env.SMTP_PASSWORD = smtpPass.trim(); ws.providers.smtpPass = smtpPass.trim(); }
-  if (customUrl) ws.providers.customUrl = customUrl.trim();
-
-  saveWorkspaceData(ws);
-  res.json({ ok: true, message: 'All provider & SMTP keys securely saved on server!' });
-});
-
-app.post('/api/providers/custom', requireOwner, async (req, res) => {
-  const { name, apiKey, endpoint } = req.body;
-  if (!name || !apiKey || !endpoint) {
-    return res.status(400).json({ error: 'Provider name, API key, and Endpoint URL are required.' });
-  }
-
-  const cleanEndpoint = endpoint.trim().replace(/\/$/, '');
-  let fetchedModels = [];
-
-  try {
-    const resp = await fetch(`${cleanEndpoint}/models`, {
-      headers: { 'Authorization': `Bearer ${apiKey.trim()}` }
-    });
-    const data = await resp.json().catch(() => ({}));
-    const rawList = data.data || data.models || [];
-    if (Array.isArray(rawList) && rawList.length) {
-      fetchedModels = rawList.slice(0, 100).map(m => ({
-        id: m.id || m.name,
-        name: m.name || m.id
-      }));
-    }
-  } catch (e) {}
-
-  if (!fetchedModels.length) {
-    fetchedModels = [{ id: `${name.toLowerCase().replace(/\s+/g, '-')}-default`, name: `${name} Default Model` }];
-  }
-
-  const ws = loadWorkspaceData();
-  ws.customProviders = ws.customProviders || [];
-  const provId = 'cust_' + crypto.randomBytes(4).toString('hex');
-  const newProvider = {
-    id: provId,
-    name: name.trim(),
-    apiKey: apiKey.trim(),
-    endpoint: cleanEndpoint,
-    models: fetchedModels,
-    createdAt: new Date().toISOString()
-  };
-
-  ws.customProviders = ws.customProviders.filter(p => p.name.toLowerCase() !== name.trim().toLowerCase());
-  ws.customProviders.push(newProvider);
-  saveWorkspaceData(ws);
-
-  res.json({
-    ok: true,
-    provider: { id: newProvider.id, name: newProvider.name, endpoint: newProvider.endpoint, models: newProvider.models }
-  });
-});
-
-app.post('/api/kie/generate', requireAuth, async (req, res) => {
-  if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
-    return res.status(403).json({ error: 'Pro Subscription required for 8K KIE.ai Media Studio.' });
-  }
-  const { model, prompt, aspectRatio, quality } = req.body;
-  const kieApiKey = process.env.KIE_API_KEY || '';
-  if (!prompt) return res.status(400).json({ error: 'Prompt required' });
-
-  const taskId = 'task_' + crypto.randomBytes(6).toString('hex');
-  const enhancedPrompt = `${prompt}, ${quality || '8K Ultra HD'}, hyper-detailed, photorealistic, masterpiece`;
-  const fallbackUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1920&height=1920&nologo=true`;
-
-  global.kieTasks = global.kieTasks || {};
-  global.kieTasks[taskId] = { status: 'processing', urls: [] };
-
-  (async () => {
-    if (kieApiKey) {
-      try {
-        const resp = await fetch('https://api.kie.ai/v1/images/generations', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${kieApiKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: model || 'flux/3', prompt: enhancedPrompt, aspect_ratio: aspectRatio || '1:1', quality: '8k' })
-        });
-        const data = await resp.json();
-        const outUrl = data?.data?.[0]?.url || data?.url || data?.output_url || fallbackUrl;
-        global.kieTasks[taskId] = { status: 'completed', urls: [outUrl] };
-        return;
-      } catch (e) {}
-    }
-    setTimeout(() => {
-      global.kieTasks[taskId] = { status: 'completed', urls: [fallbackUrl] };
-    }, 2500);
-  })();
-
-  res.json({ ok: true, taskId, message: '8K Ultra HD generation started.' });
-});
-
-app.get('/api/kie/status', requireAuth, (req, res) => {
-  const { taskId } = req.query;
-  global.kieTasks = global.kieTasks || {};
-  const task = global.kieTasks[taskId] || { status: 'processing' };
-  res.json({ ok: true, ...task });
-});
-
-// =========================================================
-// SEARCH, FILES, WORKSPACE & AI CHAT
-// =========================================================
-app.post('/api/search', requireAuth, async (req, res) => {
-  const { query } = req.body;
-  if (!query) return res.status(400).json({ error: 'Query required' });
-  const tavilyKey = process.env.TAVILY_API_KEY;
-
-  if (tavilyKey) {
-    try {
-      const resp = await fetch('https://api.tavily.com/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ api_key: tavilyKey, query, include_answer: true, max_results: 5 })
-      });
-      const data = await resp.json();
-      return res.json({ ok: true, answer: data.answer, results: data.results || [] });
-    } catch (e) {}
-  }
-
-  res.json({
-    ok: true,
-    answer: `Live search summary for: "${query}"`,
-    results: [{ title: query, url: `https://duckduckgo.com/?q=${encodeURIComponent(query)}`, content: 'Configure TAVILY_API_KEY in API Connections for deep live web citations.' }]
   });
 });
 
@@ -780,49 +468,9 @@ app.get('/api/files', requireAuth, (req, res) => {
   res.json({ ok: true, files: ws.files || [] });
 });
 
-app.get('/api/files/download/:filename', requireAuth, (req, res) => {
-  const filePath = path.join(UPLOADS_DIR, path.basename(req.params.filename));
-  if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
-  res.sendFile(filePath);
-});
-
-app.delete('/api/files/:id', requireAuth, (req, res) => {
-  const ws = loadWorkspaceData();
-  ws.files = (ws.files || []).filter(f => f.id !== req.params.id);
-  saveWorkspaceData(ws);
-  res.json({ ok: true });
-});
-
 app.get('/api/workspace', requireAuth, (req, res) => {
   const ws = loadWorkspaceData();
   res.json({ ok: true, agents: ws.agents, projects: ws.projects, knowledge: ws.knowledge });
-});
-
-app.post('/api/agents', requireAuth, (req, res) => {
-  const { name, instructions } = req.body;
-  const ws = loadWorkspaceData();
-  const agent = { id: 'agent_' + crypto.randomBytes(4).toString('hex'), name, instructions };
-  ws.agents.push(agent);
-  saveWorkspaceData(ws);
-  res.json({ ok: true, agent });
-});
-
-app.post('/api/projects', requireAuth, (req, res) => {
-  const { name, instructions } = req.body;
-  const ws = loadWorkspaceData();
-  const proj = { id: 'proj_' + crypto.randomBytes(4).toString('hex'), name, instructions };
-  ws.projects.push(proj);
-  saveWorkspaceData(ws);
-  res.json({ ok: true, project: proj });
-});
-
-app.post('/api/knowledge', requireAuth, (req, res) => {
-  const { title, content } = req.body;
-  const ws = loadWorkspaceData();
-  const doc = { id: 'kb_' + crypto.randomBytes(4).toString('hex'), title, content };
-  ws.knowledge.push(doc);
-  saveWorkspaceData(ws);
-  res.json({ ok: true, doc });
 });
 
 app.post('/api/chat', requireAuth, async (req, res) => {
@@ -847,51 +495,9 @@ app.post('/api/chat', requireAuth, async (req, res) => {
     ? [{ role: 'system', content: systemContext.join('\n\n') }, ...messages]
     : messages;
 
-  if (model.startsWith('custom:')) {
-    const parts = model.split(':');
-    const provId = parts[1];
-    const actualModel = parts.slice(2).join(':');
-    const prov = (ws.customProviders || []).find(p => p.id === provId);
-    if (!prov) return res.status(404).json({ error: 'Custom provider not found.' });
-
-    try {
-      const resp = await fetch(`${prov.endpoint}/chat/completions`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${prov.apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: actualModel, messages: finalMessages })
-      });
-      const data = await resp.json();
-      return res.json({ ok: true, reply: data?.choices?.[0]?.message?.content || 'No response from custom provider.' });
-    } catch (e) {
-      return res.status(500).json({ error: e.message });
-    }
-  }
-
-  if (model.startsWith('kie:')) {
-    if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
-      return res.status(403).json({ error: 'Pro Subscription required to use KIE.ai models.' });
-    }
-    const kieModel = model.replace(/^kie:/, '');
-    const kieKey = process.env.KIE_API_KEY;
-    if (kieKey) {
-      try {
-        const resp = await fetch('https://api.kie.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${kieKey}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ model: kieModel, messages: finalMessages })
-        });
-        const data = await resp.json();
-        if (data?.choices?.[0]?.message?.content) {
-          return res.json({ ok: true, reply: data.choices[0].message.content });
-        }
-      } catch (e) {}
-    }
-  }
-
   const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: 'OPENROUTER_API_KEY missing in .env or API Connections' });
+  if (!apiKey) return res.status(503).json({ error: 'OPENROUTER_API_KEY missing in .env' });
 
-  const targetModel = model.startsWith('kie:') ? 'openrouter/auto' : model;
   try {
     const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -901,7 +507,7 @@ app.post('/api/chat', requireAuth, async (req, res) => {
         'HTTP-Referer': 'http://localhost:3000',
         'X-Title': 'ORBIT AI Private OS'
       },
-      body: JSON.stringify({ model: targetModel, messages: finalMessages })
+      body: JSON.stringify({ model, messages: finalMessages })
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data?.error?.message || 'Model request failed');
