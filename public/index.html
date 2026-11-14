@@ -4,73 +4,36 @@
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>ORBIT AI — Private Intelligence OS (KIE.ai & Multi-Lang Optimized)</title>
+  <title>ORBIT AI — Private Intelligence OS (Liquid Glass Edition)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     :root {
-      --charcoal-deep: #14161D;
-      --charcoal-surface: #1E222D;
-      --powder-blue: #8DB9F0;
-      --powder-blue-glow: rgba(141, 185, 240, 0.42);
-      --lavender-white: #E9E8F8;
-      --lavender-muted: #B8B7CC;
-      --sunset-peach: #F5B69E;
-      --sunset-peach-glow: rgba(245, 182, 158, 0.42);
-      --crimson-glow: rgba(255, 38, 0, 0.55);
-
-      --glass-surface: linear-gradient(
-        135deg,
-        rgba(233, 232, 248, 0.18) 0%,
-        rgba(141, 185, 240, 0.10) 48%,
-        rgba(245, 182, 158, 0.12) 100%
-      );
-      --glass-sidebar: linear-gradient(
-        165deg,
-        rgba(233, 232, 248, 0.16) 0%,
-        rgba(30, 34, 45, 0.58) 55%,
-        rgba(20, 22, 29, 0.78) 100%
-      );
-      --glass-border-top: rgba(233, 232, 248, 0.62);
-      --glass-border-side: rgba(141, 185, 240, 0.32);
-      --glass-border-bottom: rgba(245, 182, 158, 0.42);
-
-      --glass-3d-shadow:
-        0 20px 40px -10px rgba(8, 10, 15, 0.8),
-        inset 0 1px 2px rgba(233, 232, 248, 0.5);
-
+      --bg-deep: #0D0F14;
+      --glass-surface: rgba(22, 25, 35, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --accent-blue: #3B82F6;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --text-main: #F0EEFA;
+      --text-muted: #94A3B8;
+      --accent-orange: #F97316;
+      --liquid-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.25);
       --radius-lg: 20px;
-      --radius-md: 14px;
     }
 
     [data-theme="light"] {
-      --charcoal-deep: #E9E8F8;
-      --charcoal-surface: #ffffff;
-      --lavender-white: #181B24;
-      --lavender-muted: #4A5060;
-      --glass-surface: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.78) 0%,
-        rgba(141, 185, 240, 0.28) 50%,
-        rgba(245, 182, 158, 0.28) 100%
-      );
-      --glass-sidebar: linear-gradient(
-        165deg,
-        rgba(255, 255, 255, 0.85) 0%,
-        rgba(233, 232, 248, 0.72) 100%
-      );
+      --bg-deep: #E8ECF5;
+      --glass-surface: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(0, 0, 0, 0.1);
+      --text-main: #1E293B;
+      --text-muted: #64748B;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
 
     body {
-      background-color: var(--charcoal-deep);
-      color: var(--lavender-white);
+      background-color: var(--bg-deep);
+      color: var(--text-main);
       height: 100dvh;
       max-height: 100vh;
       overflow: hidden;
@@ -78,439 +41,167 @@
     }
 
     .ambient-stage {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-      background: radial-gradient(circle at 50% 20%, #202534 0%, #12141B 75%);
-    }
-
-    [data-theme="light"] .ambient-stage {
-      background: radial-gradient(circle at 50% 20%, #ffffff 0%, #E9E8F8 75%);
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(circle at 50% 10%, #1a2238 0%, #0d0f14 80%);
     }
 
     .glow-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.78;
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.45;
     }
+    .orb-1 { width: 450px; height: 450px; background: #3b82f6; top: -10%; left: 20%; }
+    .orb-2 { width: 500px; height: 500px; background: #f97316; bottom: -15%; right: 10%; }
 
-    .orb-blue { width: 360px; height: 360px; background: rgba(141, 185, 240, 0.3); top: -10%; right: 10%; }
-    .orb-peach { width: 400px; height: 400px; background: rgba(245, 182, 158, 0.3); bottom: -12%; left: 12%; }
-
-    #bg3dCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
+    #bg3dCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
     .app-shell {
-      position: relative;
-      z-index: 5;
-      display: flex;
-      width: 100%;
-      height: 100%;
-      max-height: 100dvh;
-      padding: 8px;
-      gap: 10px;
-      overflow: hidden;
+      position: relative; z-index: 5; display: flex; width: 100%; height: 100%; padding: 10px; gap: 12px; overflow: hidden;
     }
 
     .sidebar {
-      width: 270px;
-      background: var(--glass-sidebar);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      width: 275px;
+      background: var(--glass-surface);
+      backdrop-filter: blur(25px) saturate(180%);
+      -webkit-backdrop-filter: blur(25px) saturate(180%);
       border-radius: var(--radius-lg);
-      border: 1.5px solid var(--glass-border-top);
-      box-shadow: var(--glass-3d-shadow);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.3s ease;
-      z-index: 30;
-      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--liquid-shadow);
+      display: flex; flex-direction: column; z-index: 30; overflow: hidden;
     }
 
     .brand-header {
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid rgba(233, 232, 248, 0.15);
+      padding: 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--glass-border);
     }
-
     .brand-prism-mini {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 32% 25%, #ffffff 0%, #ff9478 18%, #ff1e00 55%, #59000b 90%);
-      box-shadow: 0 0 18px rgba(255, 38, 0, 0.6);
-      flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #f97316);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
     }
+    .brand-title { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); }
 
-    .brand-title {
-      font-size: 1.15rem;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      background: linear-gradient(135deg, var(--lavender-white) 0%, var(--powder-blue) 50%, var(--sunset-peach) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .nav-scroll {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
-    }
-
-    .nav-section-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--sunset-peach);
-      margin: 12px 8px 6px;
-      font-weight: 800;
-    }
+    .nav-scroll { flex: 1; overflow-y: auto; padding: 12px; }
+    .nav-section-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-orange); margin: 12px 8px 6px; font-weight: 700; }
 
     .nav-btn {
-      width: 100%;
-      text-align: left;
-      padding: 10px 14px;
-      margin-bottom: 4px;
-      border-radius: 12px;
-      border: 1px solid rgba(233, 232, 248, 0.08);
-      background: rgba(233, 232, 248, 0.04);
-      color: var(--lavender-white);
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      width: 100%; text-align: left; padding: 10px 14px; margin-bottom: 4px; border-radius: 12px;
+      border: 1px solid transparent; background: transparent; color: var(--text-main);
+      font-size: 0.88rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px;
       transition: all 0.2s ease;
     }
-
     .nav-btn:hover, .nav-btn.active {
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.3), rgba(245, 182, 158, 0.25));
-      border-color: var(--powder-blue);
-      transform: translateX(4px);
+      background: rgba(255, 255, 255, 0.08); border-color: var(--glass-border);
     }
 
-    .main-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-      gap: 10px;
-    }
+    .main-area { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; gap: 10px; }
 
     .topbar {
-      min-height: 60px;
-      background: var(--glass-surface);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: var(--radius-lg);
-      border: 1.5px solid var(--glass-border-top);
-      box-shadow: var(--glass-3d-shadow);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 18px;
-      gap: 10px;
-      flex-shrink: 0;
-      flex-wrap: wrap;
+      min-height: 60px; background: var(--glass-surface);
+      backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border-radius: var(--radius-lg); border: 1px solid var(--glass-border);
+      box-shadow: var(--liquid-shadow); display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 20px; gap: 10px; flex-shrink: 0; flex-wrap: wrap;
     }
 
-    .topbar-left, .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .mobile-menu-btn {
-      display: none;
-      background: var(--glass-surface);
-      color: var(--lavender-white);
-      border: 1px solid var(--glass-border-top);
-      padding: 6px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+    .topbar-left, .topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .mobile-menu-btn { display: none; background: var(--glass-surface); color: var(--text-main); border: 1px solid var(--glass-border); padding: 6px 12px; border-radius: 10px; cursor: pointer; }
 
     .pill-select, .btn-3d, .input-3d {
-      background: rgba(20, 22, 29, 0.65);
-      color: var(--lavender-white);
-      border: 1.5px solid rgba(141, 185, 240, 0.35);
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      outline: none;
-      transition: all 0.2s ease;
+      background: rgba(15, 18, 25, 0.6); color: var(--text-main);
+      border: 1px solid var(--glass-border); padding: 8px 14px;
+      border-radius: 12px; font-size: 0.85rem; outline: none; transition: all 0.2s ease;
     }
-
-    .pill-select option { background: #181B24; color: #E9E8F8; }
-
-    .btn-3d {
-      cursor: pointer;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .btn-3d:hover {
-      transform: translateY(-2px);
-      border-color: var(--powder-blue);
-      box-shadow: 0 6px 16px var(--powder-blue-glow);
-    }
-
+    .pill-select option { background: #121622; color: #fff; }
+    .btn-3d { cursor: pointer; font-weight: 600; white-space: nowrap; }
+    .btn-3d:hover { background: rgba(255, 255, 255, 0.12); border-color: var(--accent-blue); }
     .btn-peach-blue {
-      background: linear-gradient(135deg, var(--powder-blue) 0%, var(--sunset-peach) 100%);
-      color: #14161D;
-      border: none;
-      font-weight: 800;
+      background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; border: none; font-weight: 700;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
     }
 
-    .workspace-view {
-      flex: 1;
-      overflow-y: auto;
-      padding: 4px 4px 20px;
-      display: none;
-      -webkit-overflow-scrolling: touch; /* मोबाईलवर स्मूथ स्क्रोलिंगसाठी */
-    }
-
+    .workspace-view { flex: 1; overflow-y: auto; padding: 4px 4px 20px; display: none; -webkit-overflow-scrolling: touch; }
     .workspace-view.active { display: block; }
 
-    .grid-3d {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
-    }
+    .grid-3d { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
 
     .card-3d {
       background: var(--glass-surface);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: var(--radius-lg);
-      border: 1.5px solid var(--glass-border-top);
-      padding: 20px;
-      box-shadow: var(--glass-3d-shadow);
+      backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
+      border-radius: var(--radius-lg); border: 1px solid var(--glass-border);
+      padding: 22px; box-shadow: var(--liquid-shadow);
     }
-
-    .card-title {
-      font-size: 1.02rem;
-      font-weight: 800;
-      color: var(--powder-blue);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .orbit-core-hero {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      background: var(--glass-surface);
-      backdrop-filter: blur(20px);
-      border: 2px solid var(--powder-blue);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-    }
-
-    #orbitCoreContainer {
-      width: 220px;
-      height: 220px;
-      position: relative;
-      margin: 0 auto;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 58%, rgba(255, 60, 0, 0.4) 0%, rgba(20, 10, 18, 0) 70%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .core-status-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 0.74rem;
-      font-weight: 800;
-      background: rgba(255, 60, 20, 0.25);
-      border: 1px solid #ff4d29;
-      color: var(--lavender-white);
-      margin-bottom: 10px;
-    }
+    .card-title { font-size: 1.05rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
 
     .chat-layout {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      height: 100%;
-      max-height: calc(100dvh - 84px);
-      background: var(--glass-surface);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius-lg);
-      border: 1.5px solid var(--glass-border-top);
-      overflow: hidden;
+      display: flex; flex-direction: column; flex: 1; height: 100%; max-height: calc(100dvh - 84px);
+      background: var(--glass-surface); backdrop-filter: blur(25px); border-radius: var(--radius-lg); border: 1px solid var(--glass-border); overflow: hidden;
     }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+    .msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; line-height: 1.5; font-size: 0.92rem; }
+    .msg-user { align-self: flex-end; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
+    .msg-ai { align-self: flex-start; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border); }
 
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .msg-bubble {
-      max-width: 85%;
-      padding: 12px 16px;
-      border-radius: 16px;
-      line-height: 1.5;
-      font-size: 0.92rem;
-      word-wrap: break-word;
-    }
-
-    .msg-user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.35), rgba(245, 182, 158, 0.3));
-      border: 1px solid var(--powder-blue);
-      color: #fff;
-    }
-
-    .msg-ai {
-      align-self: flex-start;
-      background: rgba(20, 22, 29, 0.7);
-      border: 1px solid rgba(233, 232, 248, 0.2);
-      color: var(--lavender-white);
-    }
-
-    .chat-composer {
-      padding: 12px;
-      border-top: 1px solid rgba(233, 232, 248, 0.15);
-      background: rgba(20, 22, 29, 0.5);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .composer-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .composer-input {
-      flex: 1;
-      background: rgba(16, 18, 25, 0.7);
-      border: 1.5px solid rgba(141, 185, 240, 0.3);
-      border-radius: 14px;
-      padding: 10px 14px;
-      color: var(--lavender-white);
-      font-size: 0.92rem;
-      resize: none;
-      height: 48px;
-    }
+    .chat-composer { padding: 12px; border-top: 1px solid var(--glass-border); background: rgba(15, 18, 25, 0.4); display: flex; gap: 8px; align-items: center; }
+    .composer-input { flex: 1; background: rgba(10, 12, 18, 0.6); border: 1px solid var(--glass-border); border-radius: 12px; padding: 10px 14px; color: #fff; resize: none; height: 48px; }
 
     .auth-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(12, 14, 20, 0.96);
-      backdrop-filter: blur(30px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
+      position: fixed; inset: 0; background: rgba(10, 12, 18, 0.92); backdrop-filter: blur(30px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px;
     }
-
     .auth-card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--glass-surface);
-      backdrop-filter: blur(30px);
-      border: 2px solid var(--powder-blue);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      width: 100%; max-width: 420px; background: var(--glass-surface); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; box-shadow: var(--liquid-shadow);
     }
-
     .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: var(--lavender-white); }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
     .form-group input, .form-group textarea, .form-group select {
-      width: 100%; padding: 10px 12px; border-radius: 12px; border: 1.5px solid rgba(141, 185, 240, 0.3); background: rgba(16, 18, 25, 0.7); color: #fff;
+      width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(10, 12, 18, 0.6); color: #fff;
     }
 
     @media (max-width: 860px) {
-      .app-shell { padding: 4px; gap: 4px; }
-      .sidebar {
-        position: fixed; left: 4px; top: 4px; bottom: 4px;
-        transform: translateX(-110%); transition: transform 0.25s ease; z-index: 1000;
-      }
+      .sidebar { position: fixed; left: 6px; top: 6px; bottom: 6px; transform: translateX(-110%); z-index: 1000; transition: transform 0.3s ease; }
       .sidebar.open { transform: translateX(0); }
       .mobile-menu-btn { display: inline-block; z-index: 1001; }
-      .topbar { min-height: 52px; padding: 6px 12px; }
     }
   </style>
 </head>
 <body>
 
   <div class="ambient-stage">
-    <div class="glow-orb orb-blue"></div>
-    <div class="glow-orb orb-peach"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
   </div>
 
   <canvas id="bg3dCanvas"></canvas>
 
-  <!-- ओनर क्लेम फॉर्म: ईमेल आणि कोड पूर्णपणे रिकामे ठेवले आहेत -->
+  <!-- 🔐 ऑथेंटिकेशन आणि ओनर क्लेम (ईमेल आणि कोड रिकामे) -->
   <div class="auth-overlay" id="forceAuthModal" style="display: flex;">
     <div class="auth-card">
-      <div class="card-title" style="justify-content: center; font-size: 1.25rem;">
-        <span>🔐 ORBIT AI Access</span>
-      </div>
-      <p style="text-align: center; font-size: 0.82rem; color: var(--sunset-peach); margin-bottom: 14px;" data-i18n="auth_sub">
-        Please enter owner credentials to claim workspace.
-      </p>
+      <div class="card-title" style="justify-content: center;"><span>🔐 ORBIT AI Access</span></div>
+      <p style="text-align: center; font-size: 0.82rem; color: var(--accent-orange); margin-bottom: 14px;" data-i18n="auth_sub">Please enter owner credentials.</p>
 
       <div style="display: flex; gap: 6px; margin-bottom: 14px;">
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
+        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner</button>
+        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest</button>
         <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
       </div>
 
       <div id="authTabOwner">
-        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" placeholder="Mayur Sonawane (Owner)" /></div>
+        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
         <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter owner claim code" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
+        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter claim code" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Workspace</button>
       </div>
 
       <div id="authTabGuest" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
-        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
-        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
+        <div class="form-group"><label>Name</label><input id="reqName" placeholder="Name" /></div>
+        <div class="form-group"><label>Email</label><input id="reqEmail" placeholder="Email" /></div>
+        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Collaboration" /></div>
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
       </div>
 
       <div id="authTabOtp" style="display:none;">
-        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
-        <button class="btn-3d" style="width:100%; margin-bottom:8px;" onclick="issueOtp()">Get OTP Code</button>
-        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
+        <div class="form-group"><label>Registered Email</label><input id="otpEmail" placeholder="Email" /></div>
+        <button class="btn-3d" style="width:100%; margin-bottom:8px;" onclick="issueOtp()">Get OTP to Email</button>
+        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="OTP" /></div>
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
       </div>
-
       <div id="authStatusMsg" style="margin-top: 10px; font-size: 0.82rem; color: #ff6b6b; text-align:center;"></div>
     </div>
   </div>
@@ -521,7 +212,7 @@
         <div class="brand-prism-mini"></div>
         <div>
           <div class="brand-title">ORBIT AI</div>
-          <div style="font-size: 0.7rem; color: var(--sunset-peach); font-weight:700;" id="roleBadge">Private Intelligence OS</div>
+          <div style="font-size: 0.7rem; color: var(--accent-orange); font-weight:700;" id="roleBadge">Private OS</div>
         </div>
       </div>
 
@@ -529,16 +220,15 @@
         <div class="nav-section-label" data-i18n="sec_workspace">WORKSPACE</div>
         <button class="nav-btn active" onclick="switchView('overview')">🔴 <span data-i18n="nav_overview">Overview</span></button>
         <button class="nav-btn" onclick="switchView('chat')">💬 <span data-i18n="nav_chat">AI Chat</span></button>
-        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">AI Model Hub</span></button>
-        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_kie_media">KIE.ai Media Studio</span></button>
+        <button class="nav-btn" onclick="switchView('models')">🧠 <span data-i18n="nav_models">KIE.ai Model Hub</span></button>
+        <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic Project Suite</span></button>
+        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_kie_media">KIE Media Studio</span></button>
         <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Server Storage</span></button>
         <button class="nav-btn" onclick="switchView('history')">🕒 <span data-i18n="nav_history">Code Memory</span></button>
         <button class="nav-btn" onclick="switchView('search')">🔍 <span data-i18n="nav_search">AI Search</span></button>
-        <button class="nav-btn" onclick="switchView('agents')">🤖 <span data-i18n="nav_agents">AI Agents</span></button>
-        <button class="nav-btn" onclick="switchView('vault')">🔒 <span data-i18n="nav_vault">Security Vault</span></button>
 
         <div class="nav-section-label" data-i18n="sec_personal">PERSONAL</div>
-        <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile & Account</span></button>
+        <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile</span></button>
         <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
         <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
       </div>
@@ -570,182 +260,133 @@
             <option value="ur">اردو (Urdu)</option>
             <option value="sa">संस्कृतम् (Sanskrit)</option>
           </select>
-          <button class="btn-3d" onclick="toggleTheme()" id="themeBtn">🌗 Theme</button>
+          <button class="btn-3d" onclick="toggleTheme()">Theme</button>
           <button class="btn-3d" onclick="logoutUser()">Logout</button>
         </div>
       </header>
 
-      <!-- 1. OVERVIEW DASHBOARD -->
+      <!-- 1. OVERVIEW -->
       <section class="workspace-view active" id="view-overview">
-        <div class="orbit-core-hero">
-          <div style="flex: 1; min-width: 260px;">
-            <span class="core-status-badge" id="coreStateBadge">ORBIT CORE: KIE.AI & MULTI-LANG OPTIMIZED</span>
-            <h1 style="font-size: 1.9rem; margin-bottom: 10px;" data-i18n="hero_title">ORBIT AI — Private Intelligence OS</h1>
-            <p style="color: var(--lavender-white); opacity:0.9; margin-bottom: 18px; line-height:1.5; font-size: 0.95rem;" data-i18n="hero_sub">
-              Optimized mobile performance, KIE.ai free/pro models integration, and full 15-language support.
-            </p>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-              <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
-              <button class="btn-3d" onclick="switchView('media')" data-i18n="nav_kie_media">🎨 KIE.ai Studio</button>
-            </div>
-          </div>
-          <div id="orbitCoreContainer"></div>
-        </div>
-
-        <div class="grid-3d">
-          <div class="card-3d">
-            <div class="card-title"><span data-i18n="card_status">System Status</span> <span>🟢</span></div>
-            <p id="overviewStatusText" style="font-size: 0.9rem; line-height:1.6;">Checking system health...</p>
-          </div>
-          <div class="card-3d">
-            <div class="card-title"><span data-i18n="card_quick_chat">Quick AI Ask</span> <span>⚡</span></div>
-            <div style="display: flex; gap: 8px; margin-top: 8px;">
-              <input id="quickAskInput" class="input-3d" style="flex:1;" placeholder="Ask ORBIT AI..." />
-              <button class="btn-3d btn-peach-blue" onclick="runQuickAsk()">Send</button>
-            </div>
-          </div>
+        <div class="card-3d">
+          <h1 style="font-size: 1.8rem; margin-bottom: 8px;" data-i18n="hero_title">ORBIT AI — Private Intelligence OS</h1>
+          <p style="color: var(--accent-orange); margin-bottom: 14px;" data-i18n="hero_sub">Liquid glass design, KIE.ai multi-model integration, and Academic Project Suite.</p>
+          <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
         </div>
       </section>
 
-      <!-- 2. AI CHAT -->
+      <!-- 2. CHAT -->
       <section class="workspace-view" id="view-chat">
         <div class="chat-layout">
-          <div style="padding: 12px 18px; border-bottom: 1px solid rgba(233,232,248,0.15); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="padding: 12px 18px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between;">
             <button class="btn-3d" onclick="newConversation()">+ New Chat</button>
-            <div style="display: flex; gap: 6px;">
-              <button class="btn-3d" onclick="recallPreviousCode()">💻 Recall Code</button>
-              <button class="btn-3d" onclick="exportCurrentChat()">⬇ Export</button>
-            </div>
+            <button class="btn-3d" onclick="recallPreviousCode()">💻 Recall Last Code</button>
           </div>
-
           <div class="chat-messages" id="chatMessages"></div>
-
           <div class="chat-composer">
-            <div class="composer-row">
-              <input type="file" id="chatFileInput" style="display:none" onchange="handleChatFileAttach(this)" />
-              <button class="btn-3d" onclick="document.getElementById('chatFileInput').click()">📎</button>
-              <textarea id="chatInput" class="composer-input" placeholder="Message ORBIT AI..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
-              <button class="btn-3d btn-peach-blue" onclick="sendMessage()">Send 🚀</button>
-            </div>
+            <input type="file" id="chatFileInput" style="display:none" onchange="handleChatFileAttach(this)" />
+            <button class="btn-3d" onclick="document.getElementById('chatFileInput').click()">📎</button>
+            <textarea id="chatInput" class="composer-input" placeholder="Message ORBIT AI..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+            <button class="btn-3d btn-peach-blue" onclick="sendMessage()">Send</button>
           </div>
         </div>
       </section>
 
-      <!-- 3. KIE.AI MEDIA STUDIO (IMAGE & VIDEO MODELS) -->
-      <section class="workspace-view" id="view-media">
-        <div class="card-3d">
-          <div class="card-title"><span data-i18n="nav_kie_media">🎨 KIE.ai Free & Pro Model Studio</span></div>
-          <p style="font-size: 0.88rem; opacity:0.85; margin-bottom: 12px;" data-i18n="kie_sub">
-            Select high-performance AI models from KIE.ai market (Seedance 2.5, Kling 4.0, Flux 3, Gemini 4) for instant generation.
-          </p>
+      <!-- 3. KIE.AI MODEL HUB -->
+      <section class="workspace-view" id="view-models">
+        <h2 style="margin-bottom: 12px;" data-i18n="nav_models">KIE.ai Comprehensive Model Hub</h2>
+        <p style="font-size: 0.85rem; color: var(--accent-orange); margin-bottom: 14px;">Explore video, image, and chat models from KIE.ai market.</p>
+        <div class="grid-3d" id="kieModelsMarketGrid">
+          <div class="card-3d">
+            <div class="card-title">ByteDance Seedance 2.5 <span>Video</span></div>
+            <p style="font-size: 0.82rem; margin-bottom: 10px;">Advanced AI video generation for longer motion.</p>
+            <button class="btn-3d btn-peach-blue" onclick="selectKieModel('seedance-2.5')">Use Model</button>
+          </div>
+          <div class="card-3d">
+            <div class="card-title">Kling 4.0 <span>Video / Image</span></div>
+            <p style="font-size: 0.82rem; margin-bottom: 10px;">High-fidelity text-to-video capabilities.</p>
+            <button class="btn-3d btn-peach-blue" onclick="selectKieModel('kling-4.0')">Use Model</button>
+          </div>
+          <div class="card-3d">
+            <div class="card-title">Black Forest Labs Flux 3 <span>Image</span></div>
+            <p style="font-size: 0.82rem; margin-bottom: 10px;">Ultra-rich high-resolution image rendering.</p>
+            <button class="btn-3d btn-peach-blue" onclick="selectKieModel('flux-3')">Use Model</button>
+          </div>
+          <div class="card-title" style="margin-top:10px;">OpenAI GPT Image 2.6 <span>Image</span></div>
+          <div class="card-title">Google Gemini 4 Hydrogen <span>Chat</span></div>
+        </div>
+      </section>
 
+      <!-- 4. 🎓 ACADEMIC & B.PHARMACY PROJECT SUITE -->
+      <section class="workspace-view" id="view-academic">
+        <div class="card-3d">
+          <div class="card-title" data-i18n="academic_title">🎓 Academic & B.Pharmacy Project Suite</div>
+          <p style="font-size: 0.88rem; margin-bottom: 14px; opacity: 0.85;">Generate complete structured project files, Theory, Practical methodologies, and Conclusions for Engineering & Pharmacy students.</p>
           <div class="form-group">
-            <label data-i18n="lbl_select_model">Select KIE.ai Model:</label>
-            <select id="kieModelSelect" class="pill-select" style="width:100%;">
-              <option value="seedance-2.5">ByteDance Seedance 2.5 (Video - Free Tier)</option>
-              <option value="kling-4.0">Kling 4.0 (Text/Image to Video)</option>
-              <option value="flux-3">Black Forest Labs Flux 3 (High-Res Image)</option>
-              <option value="gpt-image-2.6">OpenAI GPT Image 2.6</option>
-              <option value="gemini-4-hydro">Google Gemini 4 Hydrogen (Chat & Vision)</option>
+            <label>Project Title / Topic:</label>
+            <input id="acadTopic" class="input-3d" placeholder="e.g., Formulation and Evaluation of Herbal Anti-Acne Gel..." />
+          </div>
+          <div class="form-group">
+            <label>Department / Stream:</label>
+            <select id="acadStream" class="pill-select" style="width:100%;">
+              <option value="bpharm">B.Pharmacy / Pharmaceutical Sciences</option>
+              <option value="eng">Engineering / Computer Science / IT</option>
+              <option value="general">General Science / Research</option>
             </select>
           </div>
-
-          <div class="form-group">
-            <label data-i18n="lbl_prompt">Generation Prompt:</label>
-            <textarea id="kiePromptInput" class="input-3d" rows="3" placeholder="Describe your image or video in detail..."></textarea>
-          </div>
-
-          <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="runKieGeneration()" data-i18n="btn_generate">Generate via KIE.ai ⚡</button>
-          <div id="kieResultContainer" style="margin-top: 16px; text-align: center;"></div>
+          <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="generateAcademicProject()">Generate Project File 📑</button>
+          <div id="acadResultBox" style="margin-top: 16px; line-height: 1.6;"></div>
         </div>
       </section>
 
-      <!-- 4. AI MODEL HUB -->
-      <section class="workspace-view" id="view-models">
-        <h2 style="margin-bottom: 12px;" data-i18n="nav_models">AI Model Hub</h2>
-        <div class="grid-3d" id="modelsGrid"></div>
+      <!-- 5. KIE MEDIA STUDIO -->
+      <section class="workspace-view" id="view-media">
+        <div class="card-3d">
+          <div class="card-title">🎨 KIE Media Generation Studio</div>
+          <div class="form-group">
+            <label>Prompt:</label>
+            <textarea id="kiePromptInput" class="input-3d" rows="3" placeholder="Enter prompt..."></textarea>
+          </div>
+          <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="runKieGeneration()">Generate ⚡</button>
+          <div id="kieResultContainer" style="margin-top: 14px; text-align: center;"></div>
+        </div>
       </section>
 
-      <!-- 5. SERVER FILES -->
+      <!-- 6. FILES -->
       <section class="workspace-view" id="view-files">
         <div class="card-3d">
-          <div class="card-title" data-i18n="nav_files">Server File Storage</div>
-          <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
-            <input type="file" id="workspaceFileInput" class="input-3d" />
-            <button class="btn-3d btn-peach-blue" onclick="uploadWorkspaceFile()">Upload ☁️</button>
-          </div>
-          <div id="filesGrid" class="grid-3d" style="margin-top: 14px;"></div>
+          <div class="card-title">Server Storage</div>
+          <input type="file" id="workspaceFileInput" class="input-3d" style="margin-bottom:10px;" />
+          <button class="btn-3d btn-peach-blue" onclick="uploadWorkspaceFile()">Upload File</button>
+          <div id="filesGrid" class="grid-3d" style="margin-top:14px;"></div>
         </div>
       </section>
 
-      <!-- 6. CHAT HISTORY -->
+      <!-- 7. HISTORY -->
       <section class="workspace-view" id="view-history">
-        <h2 style="margin-bottom: 12px;" data-i18n="nav_history">Code Memory & History</h2>
-        <div id="historyGrid" class="grid-3d"></div>
+        <div class="card-3d"><div class="card-title">Code Memory</div><div id="historyGrid"></div></div>
       </section>
 
-      <!-- 7. AI SEARCH -->
+      <!-- 8. SEARCH -->
       <section class="workspace-view" id="view-search">
         <div class="card-3d">
-          <div class="card-title" data-i18n="nav_search">AI Live Web Search</div>
-          <div style="display: flex; gap: 8px; margin-top: 10px;">
-            <input id="aiSearchInput" class="input-3d" style="flex:1;" placeholder="Search live web..." />
-            <button class="btn-3d btn-peach-blue" onclick="runAiWebSearch()">Search</button>
-          </div>
-          <div id="aiSearchResults" style="margin-top: 12px;"></div>
+          <div class="card-title">AI Search</div>
+          <div style="display:flex; gap:8px;"><input id="aiSearchInput" class="input-3d" style="flex:1;" /><button class="btn-3d btn-peach-blue" onclick="runAiWebSearch()">Search</button></div>
+          <div id="aiSearchResults" style="margin-top:10px;"></div>
         </div>
       </section>
 
-      <!-- 8. AI AGENTS -->
-      <section class="workspace-view" id="view-agents">
-        <div class="card-3d">
-          <div class="card-title" data-i18n="nav_agents">AI Agents</div>
-          <div style="display: grid; gap: 8px; margin-top: 10px;">
-            <input id="agentName" class="input-3d" placeholder="Agent Name" />
-            <textarea id="agentInstructions" class="input-3d" rows="2" placeholder="Agent behavior..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="createAgent()">Create Agent</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="agentsGrid" style="margin-top: 14px;"></div>
-      </section>
-
-      <!-- 9. SECURITY VAULT -->
-      <section class="workspace-view" id="view-vault">
-        <div class="card-3d">
-          <div class="card-title" data-i18n="nav_vault">Security Vault</div>
-          <div style="display: grid; gap: 8px; margin-top: 10px;">
-            <input id="vaultTitle" class="input-3d" placeholder="Secret Note Title" />
-            <textarea id="vaultContent" class="input-3d" rows="2" placeholder="Secret data..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="saveVaultNote()">Lock Note</button>
-          </div>
-          <div id="vaultNotesGrid" style="margin-top: 14px;"></div>
-        </div>
-      </section>
-
-      <!-- 10. PROFILE -->
-      <section class="workspace-view" id="view-profile">
-        <div class="card-3d">
-          <div class="card-title" data-i18n="nav_profile">Profile & Account</div>
-          <div id="profileDetails" style="line-height: 1.7; margin-top: 10px;"></div>
-        </div>
-      </section>
-
-      <!-- 11. ADMIN PANEL -->
+      <!-- 9. PROFILE -->
+      <section class="workspace-view" id="view-profile"><div class="card-3d"><div class="card-title">Profile</div><div id="profileDetails"></div></div></section>
+      <!-- 10. ADMIN PANEL -->
       <section class="workspace-view" id="view-admin">
         <div class="card-3d">
-          <div class="card-title" data-i18n="nav_admin">Admin Panel</div>
-          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 12px;">Refresh Requests</button>
+          <div class="card-title">Admin Panel — Guest Requests</div>
+          <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom:12px;">Refresh Requests</button>
           <div id="adminRequestsList"></div>
         </div>
       </section>
-
-      <!-- 12. SETTINGS -->
-      <section class="workspace-view" id="view-settings">
-        <div class="card-3d">
-          <div class="card-title" data-i18n="nav_settings">Settings</div>
-          <button class="btn-3d" onclick="toggleTheme()" style="margin-top: 10px;">Toggle Theme</button>
-        </div>
-      </section>
+      <!-- 11. SETTINGS -->
+      <section class="workspace-view" id="view-settings"><div class="card-3d"><div class="card-title">Settings</div><button class="btn-3d" onclick="toggleTheme()">Toggle Theme</button></div></section>
     </div>
   </div>
 
@@ -754,61 +395,25 @@
     let API_BASE = localStorage.getItem('orbit_api_base') || defaultBase;
     let currentUser = null;
     let currentModel = localStorage.getItem('orbit_model') || 'openrouter/auto';
-    let allModels = [];
     let conversations = JSON.parse(localStorage.getItem('orbit_conversations') || '[]');
     let activeConvId = null;
-    let pendingAttachments = [];
-    let vaultNotes = JSON.parse(localStorage.getItem('orbit_vault_notes') || '[]');
 
-    // 🌟 COMPLETE 15 LANGUAGES i18n DICTIONARY FIX
+    // 🌟 COMPLETE 15 LANGUAGES i18n
     const I18N = {
-      en: {
-        sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
-        nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub",
-        nav_kie_media: "KIE.ai Media Studio", nav_files: "Server Storage", nav_history: "Code Memory",
-        nav_search: "AI Search", nav_agents: "AI Agents", nav_vault: "Security Vault",
-        nav_profile: "Profile & Account", nav_admin: "Admin Panel", nav_settings: "Settings",
-        hero_title: "ORBIT AI — Private Intelligence OS",
-        hero_sub: "Optimized mobile performance, KIE.ai free/pro models integration, and full 15-language support.",
-        btn_launch_chat: "Launch AI Chat", card_status: "System Status", card_quick_chat: "Quick AI Ask",
-        auth_sub: "Please enter owner credentials to claim workspace.",
-        lbl_select_model: "Select KIE.ai Model:", lbl_prompt: "Generation Prompt:", btn_generate: "Generate via KIE.ai ⚡"
-      },
-      mr: {
-        sec_workspace: "कार्यक्षेत्र", sec_personal: "वैयक्तिक",
-        nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब",
-        nav_kie_media: "KIE.ai मीडिया स्टुडिओ", nav_files: "सर्व्हर स्टोरेज", nav_history: "कोड मेमरी",
-        nav_search: "AI वेब सर्च", nav_agents: "AI एजंट्स", nav_vault: "सुरक्षा व्हॉल्ट",
-        nav_profile: "प्रोफाईल आणि खाते", nav_admin: "ॲडमिन पॅनेल", nav_settings: "सेटिंग्ज",
-        hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
-        hero_sub: "मोबाईल परफॉर्मन्स ऑप्टिमायझेशन, KIE.ai फ्री मॉडेल्स आणि १५ भाषांचे अचूक सपोर्ट.",
-        btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम स्थिती", card_quick_chat: "झटपट AI प्रश्न",
-        auth_sub: "कृपया वर्कस्पेस क्लेम करण्यासाठी ओनर क्रेडेंशियल्स प्रविष्ट करा.",
-        lbl_select_model: "KIE.ai मॉडेल निवडा:", lbl_prompt: "प्रॉम्प्ट लिहा:", btn_generate: "KIE.ai द्वारे जनरेट करा ⚡"
-      },
-      hi: {
-        sec_workspace: "कार्यक्षेत्र", sec_personal: "व्यक्तिगत",
-        nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब",
-        nav_kie_media: "KIE.ai मीडिया स्टूडियो", nav_files: "फ़ाइल स्टोरेज", nav_history: "कोड मेमोरी",
-        nav_search: "AI सर्च", nav_agents: "AI एजेंट्स", nav_vault: "सिक्योरिटी वॉल्ट",
-        nav_profile: "प्रोफ़ाइल", nav_admin: "एडमिन पैनल", nav_settings: "सेटिंग्स",
-        hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
-        hero_sub: "मोबाइल ऑप्टिमाइजेशन, KIE.ai फ्री मॉडल और 15 भाषाओं का पूर्ण समर्थन।",
-        btn_launch_chat: "AI चैट शुरू करें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न",
-        auth_sub: "कृपया वर्कस्पेस क्लेम करने के लिए ओनर क्रेडेंशियल्स दर्ज करें।",
-        lbl_select_model: "KIE.ai मॉडल चुनें:", lbl_prompt: "प्रॉम्प्ट दर्ज करें:", btn_generate: "KIE.ai से जनरेट करें ⚡"
-      },
-      bn: { sec_workspace: "ওয়ার্কস্পেস", sec_personal: "ব্যক্তিগত", nav_overview: "ওভারভিউ", nav_chat: "এআই চ্যাট", nav_models: "মডেল হাব", nav_kie_media: "KIE.ai স্টুডিও", nav_files: "ফাইল স্টোরেজ", nav_history: "কোড মেমরি", nav_search: "এআই সার্চ", nav_agents: "এজেন্ট", nav_vault: "ভল্ট", nav_profile: "প্রোফাইল", nav_admin: "অ্যাডমিন", nav_settings: "সেটিংস", hero_title: "ORBIT AI — প্রাইভেট ইন্টেলিজেন্স OS", hero_sub: "১৫ ভাষার পূর্ণ সাপোর্ট।", btn_launch_chat: "চ্যাট শুরু করুন", card_status: "স্ট্যাটাস", card_quick_chat: "দ্রুত প্রশ্ন", auth_sub: "ওনার ক্রেডেন্সিয়াল দিন।", lbl_select_model: "মডেল বাছুন:", lbl_prompt: "প্রম্পট দিন:", btn_generate: "জেনারেট করুন" },
-      ta: { sec_workspace: "பணிক্ষেত্র", sec_personal: "தனிப்பட்ட", nav_overview: "கண்ணோட்டம்", nav_chat: "AI அரட்டை", nav_models: "மாதிரி மையம்", nav_kie_media: "KIE.ai ஸ்டுடியோ", nav_files: "கோப்பு சேமிப்பு", nav_history: "நினைவகம்", nav_search: "தேடல்", nav_agents: "முகவர்கள்", nav_vault: "பாதுகாப்பு", nav_profile: "சுயவிவரம்", nav_admin: "நிர்வாகி", nav_settings: "அமைப்புகள்", hero_title: "ORBIT AI — பிரைவேட் இன்டெலிஜென்ஸ் OS", hero_sub: "15 மொழி ஆதரவு.", btn_launch_chat: "அரட்டையைத் தொடங்கு", card_status: "நிலை", card_quick_chat: "விரைவான கேள்வி", auth_sub: "சான்றுகளை உள்ளிடவும்.", lbl_select_model: "மாதிரியைத் தேர்ந்தெடு:", lbl_prompt: "கேள்வி:", btn_generate: "உருவாக்கு" },
-      te: { sec_workspace: "వర్క్‌స్పేస్", sec_personal: "వ్యక్తిగతం", nav_overview: "అవలోకనం", nav_chat: "AI చాట్", nav_models: "మోడల్ హబ్", nav_kie_media: "KIE.ai స్టూడియో", nav_files: "ఫైల్ నిల్వ", nav_history: "జ్ఞాపకం", nav_search: "శోధన", nav_agents: "ఏజెంట్లు", nav_vault: "భద్రత", nav_profile: "ప్రొఫైల్", nav_admin: "అడ్మిన్", nav_settings: "సెట్టింగ్‌లు", hero_title: "ORBIT AI — ప్రైవేట్ ఇంటెలిజెన్స్ OS", hero_sub: "15 భాషల మద్దతు.", btn_launch_chat: "చాట్ ప్రారంభించండి", card_status: "స్థితి", card_quick_chat: "త్వరిత ప్రశ్న", auth_sub: "క్రెడెన్షియల్స్ నమోదు చేయండి.", lbl_select_model: "మోడల్ ఎంచుకోండి:", lbl_prompt: "ప్రాంప్ట్:", btn_generate: "సృష్టించు" },
-      gu: { sec_workspace: "વર્કસ્પેસ", sec_personal: "વ્યક્તિગત", nav_overview: "ઝાંખી", nav_chat: "AI ચેટ", nav_models: "મોડેલ હબ", nav_kie_media: "KIE.ai સ્ટુડિયો", nav_files: "ફાઇલ સ્ટોરેજ", nav_history: "કોડ મેમરી", nav_search: "શોધ", nav_agents: "એજન્ટ્સ", nav_vault: "વોલ્ટ", nav_profile: "પ્રોફાઇલ", nav_admin: "એડમિન", nav_settings: "સેટિંગ્સ", hero_title: "ORBIT AI — પ્રાઇવેટ ઇન્ટેલિજન્સ OS", hero_sub: "15 ભાષાઓનું સમર્થન.", btn_launch_chat: "ચેટ શરૂ કરો", card_status: "સ્થિતિ", card_quick_chat: "ઝડપી પ્રશ્ન", auth_sub: "ઓનર ઓળખપત્ર દાખલ કરો.", lbl_select_model: "મોડેલ પસંદ કરો:", lbl_prompt: "પ્રૉમ્પ્ટ:", btn_generate: "જનરેટ કરો" },
-      kn: { sec_workspace: "ಕಾರ್ಯಕ್ಷೇತ್ರ", sec_personal: "ವೈಯಕ್ತಿಕ", nav_overview: "ಅವಲೋಕನ", nav_chat: "AI ಚಾಟ್", nav_models: "ಮಾದರಿ ಕೇಂದ್ರ", nav_kie_media: "KIE.ai ಸ್ಟುಡಿಯೋ", nav_files: "ಫೈಲ್ ಸಂಗ್ರಹ", nav_history: "ನೆನಪು", nav_search: "ಹುಡುಕಾಟ", nav_agents: "ಏಜೆಂಟ್‌ಗಳು", nav_vault: "ವಾಲ್ಟ್", nav_profile: "ಪ್ರೊಫೈಲ್", nav_admin: "ನಿರ್ವಾಹಕ", nav_settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", hero_title: "ORBIT AI — ಖಾಸಗಿ ಗುಪ್ತಚರ OS", hero_sub: "15 ಭಾಷೆಗಳ ಬೆಂಬಲ.", btn_launch_chat: "ಚಾಟ್ ಪ್ರಾರಂಭಿಸಿ", card_status: "ಸ್ಥಿತಿ", card_quick_chat: "ತ್ವರಿತ ಪ್ರಶ್ನೆ", auth_sub: "ರುజువుಗಳನ್ನು ನಮूदಿಸಿ.", lbl_select_model: "ಮಾದರಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ:", lbl_prompt: "ಪ್ರಾಪ್ಟ್:", btn_generate: "ರಚಿಸಿ" },
-      ml: { sec_workspace: "വർക്ക്‌സ്‌പേസ്", sec_personal: "വ്യക്തിപരം", nav_overview: "അവലോകനം", nav_chat: "AI ചാറ്റ്", nav_models: "മോഡൽ ഹബ്", nav_kie_media: "KIE.ai സ്റ്റുഡിയോ", nav_files: "ഫയൽ സംഭരണം", nav_history: "മെമ്മറി", nav_search: "തിരയൽ", nav_agents: "ഏജന്റുകൾ", nav_vault: "വോൾട്ട്", nav_profile: "പ്രൊഫൈൽ", nav_admin: "അഡ്മിൻ", nav_settings: "ക്രമീകരണങ്ങൾ", hero_title: "ORBIT AI — പ്രൈവറ്റ് ഇന്റലിജൻസ് OS", hero_sub: "15 ഭാഷകളുടെ പിന്തുണ.", btn_launch_chat: "ചാറ്റ് ആരംഭിക്കുക", card_status: "നില", card_quick_chat: "പെട്ടെന്നുള്ള ചോദ്യം", auth_sub: "വിവരങ്ങൾ നൽകുക.", lbl_select_model: "മോഡൽ തിരഞ്ഞെടുക്കുക:", lbl_prompt: "പ്രോംപ്റ്റ്:", btn_generate: "ഉണ്ടാക്കുക" },
-      pa: { sec_workspace: "ਵਰਕਸਪੇਸ", sec_personal: "ਨਿੱਜੀ", nav_overview: "ਸੰਖੇਪ", nav_chat: "AI ਚੈਟ", nav_models: "ਮਾਡਲ ਹੱਬ", nav_kie_media: "KIE.ai ਸਟੂਡੀਓ", nav_files: "ਫਾਈਲ ਸਟੋਰੇਜ", nav_history: "ਯਾਦਸ਼ਾਤ", nav_search: "ਖੋਜ", nav_agents: "ਏਜੰਟ", nav_vault: "ਵਾਲਟ", nav_profile: "ਪ੍ਰੋਫਾਈਲ", nav_admin: "ਐਡਮਿਨ", nav_settings: "ਸੈਟਿੰਗਾਂ", hero_title: "ORBIT AI — ਪ੍ਰਾਈਵੇਟ ਇੰਟੈਲੀਜੈਂਸ OS", hero_sub: "15 ਭਾਸ਼ਾਵਾਂ ਦਾ ਸਮਰਥਨ.", btn_launch_chat: "ਚੈਟ ਸ਼ुरू ਕਰੋ", card_status: "ਸਥਿਤੀ", card_quick_chat: "ਤੇਜ਼ ਸਵਾਲ", auth_sub: "ਕ੍ਰिडੈਂਸ਼ੀਅਲ दर्ज करो।", lbl_select_model: "ਮਾਡਲ ਚੁਣੋ:", lbl_prompt: "ਪ੍ਰੋਂਪਟ:", btn_generate: "ਜਨਰੇਟ ਕਰੋ" },
-      or: { sec_workspace: "ୱାର୍କସ୍ପେସ୍", sec_personal: "ବ୍ୟକ୍ତିଗତ", nav_overview: "ଓଭର୍ଭିୟୁ", nav_chat: "AI ଚାଟ୍", nav_models: "ମଡେଲ୍ ହବ୍", nav_kie_media: "KIE.ai ଷ୍ଟୁଡିଓ", nav_files: "ଫାଇଲ୍ ଷ୍ଟୋରେଜ୍", nav_history: "ମେମୋରୀ", nav_search: "ସର୍ଚ୍ଚ", nav_agents: "ଏଜେଣ୍ଟ୍", nav_vault: "ଭଲ୍ଟ", nav_profile: "ପ୍ରୋଫାଇଲ୍", nav_admin: "ଅଧିକାରୀ", nav_settings: "ସେଟିଂସ୍", hero_title: "ORBIT AI — ପ୍ରାଇଭେଟ୍ ଇଣ୍ଟେଲିଜେନ୍ସ OS", hero_sub: "15 ଟି ଭାଷାର ସମର୍ଥନ।", btn_launch_chat: "ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ", card_status: "ସ୍ଥିତି", card_quick_chat: "ଶୀଘ୍ର ପ୍ରଶ୍ନ", auth_sub: "କ୍ରେଡେନ୍ସିଆଲ୍ ଦିଅନ୍ତୁ।", lbl_select_model: "ମଡେଲ୍ ବାଛନ୍ତୁ:", lbl_prompt: "ପ୍ରମ୍ପଟ୍:", btn_generate: "ଜେନେରେଟ୍ କରନ୍ତୁ" },
-      as: { sec_workspace: "ৱৰ্কস্পেচ", sec_personal: "ব্যক্তিগত", nav_overview: "অভাৰভিউ", nav_chat: "AI চাট", nav_models: "ম’ডেল হাব", nav_kie_media: "KIE.ai ষ্টুডিও", nav_files: "ফাইল ষ্ট’ৰেজ", nav_history: "মেমৰি", nav_search: "অনুসন্ধান", nav_agents: "এজেণ্ট", nav_vault: "ভল্ট", nav_profile: "প্ৰ'ফাইল", nav_admin: "এডমিন", nav_settings: "ছেটিংছ", hero_title: "ORBIT AI — প্ৰাইভেট ইন্টেলিজেন্স OS", hero_sub: "১৫ টা ভাষাৰ সমৰ্থন।", btn_launch_chat: "চাট আৰম্ভ কৰক", card_status: "অৱস্থা", card_quick_chat: "দ্ৰুত প্ৰশ্ন", auth_sub: "তথ্য দিয়ক।", lbl_select_model: "ম’ডেল বাছক:", lbl_prompt: "প্ৰম্পট:", btn_generate: "জেনাৰেট কৰক" },
-      ur: { sec_workspace: "ورک اسپیس", sec_personal: "ذاتی", nav_overview: "جائزہ", nav_chat: "AI چیٹ", nav_models: "ماڈেল حب", nav_kie_media: "KIE.ai اسٹوڈیو", nav_files: "فائل اسٹوریج", nav_history: "میموری", nav_search: "تلاش", nav_agents: "ایجنٹس", nav_vault: "والٹ", nav_profile: "پروفائل", nav_admin: "ایڈمن", nav_settings: "ترتیبات", hero_title: "ORBIT AI — پرائیویٹ انٹیلی جنس OS", hero_sub: "15 زبانوں کی حمایت۔", btn_launch_chat: "چیٹ شروع کریں", card_status: "حالت", card_quick_chat: "فوری سوال", auth_sub: "اسناد درج کریں۔", lbl_select_model: "ماڈل منتخب کریں:", lbl_prompt: "پرامپٹ:", btn_generate: "جنریٹ کریں" },
-      sa: { sec_workspace: "कार्यक्षेत्रम्", sec_personal: "वैयक्तिकम्", nav_overview: "अवलोकनम्", nav_chat: "AI सम्भाषणम्", nav_models: "आदर्शकेन्द्रम्", nav_kie_media: "KIE.ai स्टुडियो", nav_files: "सञ्चिकाभण्डारः", nav_history: "स्मृतिः", nav_search: "अन्वेषणम्", nav_agents: "अभिकतारः", nav_vault: "सुरक्षा", nav_profile: "परिचयपत्रम्", nav_admin: "प्रशासनम्", nav_settings: "विन्यासः", hero_title: "ORBIT AI — गुप्तबुद्धि OS", hero_sub: "१५ भाषाणां समर्थनम्।", btn_launch_chat: "सम्भाषणम् आरभत", card_status: "स्थितिः", card_quick_chat: "शीघ्रप्रश्नः", auth_sub: "क्रेडेंशियल्स प्रविशत।", lbl_select_model: "आदर्शं चिनुत:", lbl_prompt: "प्रॉम्प्ट्:", btn_generate: "जनरएट् कुर्वन्तु" }
+      en: { sec_workspace: "WORKSPACE", sec_personal: "PERSONAL", nav_overview: "Overview", nav_chat: "AI Chat", nav_models: "AI Model Hub", nav_academic: "Academic Project Suite", nav_kie_media: "KIE Media Studio", nav_files: "Server Storage", nav_history: "Code Memory", nav_search: "AI Search", nav_profile: "Profile", nav_admin: "Admin Panel", nav_settings: "Settings", hero_title: "ORBIT AI — Private Intelligence OS", hero_sub: "Liquid glass design, KIE.ai multi-model integration, and Academic Project Suite.", btn_launch_chat: "Launch AI Chat", auth_sub: "Please enter owner credentials.", academic_title: "🎓 Academic & B.Pharmacy Project Suite" },
+      mr: { sec_workspace: "कार्यक्षेत्र", sec_personal: "वैयक्तिक", nav_overview: "मुख्य डॅशबोर्ड", nav_chat: "AI चॅट", nav_models: "AI मॉडेल हब", nav_academic: "ॲकॅडमिक प्रोजेक्ट सुइट", nav_kie_media: "KIE मीडिया स्टुडिओ", nav_files: "सर्व्हर स्टोरेज", nav_history: "कोड मेमरी", nav_search: "AI वेब सर्च", nav_profile: "प्रोफाईल", nav_admin: "ॲडमिन", nav_settings: "सेटिंग्ज", hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS", hero_sub: "लिक्विड ग्लासी डिझाईन, KIE.ai मॉडेल्स आणि प्रोजेक्ट रिपोर्ट सुइट.", btn_launch_chat: "AI चॅट सुरू करा", auth_sub: "कृपया क्रेडेंशियल्स प्रविष्ट करा.", academic_title: "🎓 शैक्षणिक आणि बी-फार्मेसी प्रोजेक्ट सुइट" },
+      hi: { sec_workspace: "कार्यक्षेत्र", sec_personal: "व्यक्तिगत", nav_overview: "ओवरव्यू", nav_chat: "AI चैट", nav_models: "AI मॉडल हब", nav_academic: "एकाडमिक प्रोजेक्ट सुइट", nav_kie_media: "KIE मीडिया स्टूडियो", nav_files: "फ़ाइल स्टोरेज", nav_history: "कोड मेमोरी", nav_search: "AI सर्च", nav_profile: "प्रोफ़ाइल", nav_admin: "एडमिन", nav_settings: "सेटिंग्स", hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS", hero_sub: "लिक्विड ग्लास डिज़ाइन, KIE.ai मॉडल और प्रोजेक्ट रिपोर्ट सुइट।", btn_launch_chat: "AI चैट शुरू करें", auth_sub: "क्रेडेंशियल्स दर्ज करें।", academic_title: "🎓 एकेडमिक और बी-फार्मेसी प्रोजेक्ट सुइट" },
+      bn: { sec_workspace: "ওয়ার্কস্পেস", sec_personal: "ব্যক্তিগত", nav_overview: "ওভারভিউ", nav_chat: "এআই চ্যাট", nav_models: "মডেল হাব", nav_academic: "প্রজেক্ট সুট", nav_kie_media: "KIE স্টুডিও", nav_files: "ফাইল স্টোরেজ", nav_history: "মেমরি", nav_search: "সার্চ", nav_profile: "প্রোফাইল", nav_admin: "অ্যাডমিন", nav_settings: "সেটিংস", hero_title: "ORBIT AI", hero_sub: "প্রাইভেট ইন্টেলিজেন্স OS", btn_launch_chat: "চ্যাট শুরু করুন" },
+      ta: { sec_workspace: "பணிক্ষেত্র", sec_personal: "தனிப்பட்ட", nav_overview: "கண்ணோட்டம்", nav_chat: "AI அரட்டை", nav_models: "மாதிரி மையம்", nav_academic: "திட்ட தொகுப்பு", nav_kie_media: "KIE ஸ்டுடியோ", nav_files: "கோப்பு சேமிப்பு", nav_history: "நினைவகம்", nav_search: "தேடல்", nav_profile: "சுயவிவரம்", nav_admin: "நிர்வாகி", nav_settings: "அமைப்புகள்", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "அரட்டையைத் தொடங்கு" },
+      te: { sec_workspace: "వర్క్‌స్పేస్", sec_personal: "వ్యక్తిగతం", nav_overview: "అవలోకనం", nav_chat: "AI చాట్", nav_models: "మోడల్ హబ్", nav_academic: "ప్రాజెక్ట్", nav_kie_media: "KIE స్టూడియో", nav_files: "ఫైల్ నిల్వ", nav_history: "జ్ఞాపకం", nav_search: "శోధన", nav_profile: "ప్రొఫైల్", nav_admin: "అడ్మిన్", nav_settings: "సెట్టింగ్‌లు", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "చాట్ ప్రారంభించండి" },
+      gu: { sec_workspace: "વર્કસ્પેસ", sec_personal: "વ્યક્તિગત", nav_overview: "ઝાંખી", nav_chat: "AI ચેટ", nav_models: "મોડેલ હબ", nav_academic: "પ્રોજેક્ટ", nav_kie_media: "KIE સ્ટુડિયો", nav_files: "ફાઇલ સ્ટોરેજ", nav_history: "મેમરી", nav_search: "શોધ", nav_profile: "પ્રોફાઇલ", nav_admin: "એડમિન", nav_settings: "સેટિંગ્સ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ચેટ શરૂ કરો" },
+      kn: { sec_workspace: "ಕಾರ್ಯಕ್ಷೇತ್ರ", sec_personal: "ವೈಯಕ್ತಿಕ", nav_overview: "ಅವಲೋಕನ", nav_chat: "AI ಚಾಟ್", nav_models: "ಮಾದರಿ ಕೇಂದ್ರ", nav_academic: "ಯೋಜನೆ", nav_kie_media: "KIE ಸ್ಟುಡಿಯೋ", nav_files: "ಫೈಲ್ ಸಂಗ್ರಹ", nav_history: "ನೆನಪು", nav_search: "ಹುಡುಕಾಟ", nav_profile: "ಪ್ರೊಫೈಲ್", nav_admin: "ನಿರ್ವಾಹಕ", nav_settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ಚಾಟ್ ಪ್ರಾರಂಭಿಸಿ" },
+      ml: { sec_workspace: "വർക്ക്‌സ്‌പേസ്", sec_personal: "വ്യക്തിപരം", nav_overview: "അവലോകനം", nav_chat: "AI ചാറ്റ്", nav_models: "മോഡൽ ഹബ്", nav_academic: "പ്രോജക്റ്റ്", nav_kie_media: "KIE സ്റ്റുഡിയോ", nav_files: "ഫയൽ സംഭരണം", nav_history: "മെമ്മറി", nav_search: "തിരയൽ", nav_profile: "പ്രൊഫൈൽ", nav_admin: "അഡ്മിൻ", nav_settings: "ക്രമീകരണങ്ങൾ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ചാറ്റ് ആരംഭിക്കുക" },
+      pa: { sec_workspace: "ਵਰਕਸਪੇਸ", sec_personal: "ਨਿੱਜੀ", nav_overview: "ਸੰਖੇਪ", nav_chat: "AI ਚੈਟ", nav_models: "ਮਾਡਲ ਹੱਬ", nav_academic: "ਪ੍ਰੋਜੈਕਟ", nav_kie_media: "KIE ਸਟੂਡੀਓ", nav_files: "ਫਾਈਲ ਸਟੋਰੇਜ", nav_history: "ਯਾਦਸ਼ਾਤ", nav_search: "ਖੋਜ", nav_profile: "ਪ੍ਰੋਫਾਈਲ", nav_admin: "ਐਡਮਿਨ", nav_settings: "ਸੈਟਿੰਗਾਂ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ਚੈਟ ਸ਼ुरू ਕਰੋ" },
+      or: { sec_workspace: "ୱାର୍କସ୍ପେସ୍", sec_personal: "ବ୍ୟକ୍ତିଗତ", nav_overview: "ଓଭର୍ଭିୟୁ", nav_chat: "AI ଚାଟ୍", nav_models: "ମଡେଲ୍ ହବ୍", nav_academic: "ପ୍ରଜେକ୍ଟ", nav_kie_media: "KIE ଷ୍ଟୁଡିଓ", nav_files: "ଫାଇଲ୍ ଷ୍ଟୋରେଜ୍", nav_history: "ମେମୋରୀ", nav_search: "ସର୍ଚ୍ଚ", nav_profile: "ପ୍ରୋଫାଇଲ୍", nav_admin: "ଅଧିକାରୀ", nav_settings: "ସେଟିଂସ୍", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ" },
+      as: { sec_workspace: "ৱৰ্কস্পেচ", sec_personal: "ব্যক্তিগত", nav_overview: "অভাৰভিউ", nav_chat: "AI চাট", nav_models: "ম’ডেল হাব", nav_academic: "প্ৰজেক্ট", nav_kie_media: "KIE ষ্টুডিও", nav_files: "ফাইল ষ্ট’ৰেজ", nav_history: "মেমৰি", nav_search: "অনুসন্ধান", nav_profile: "প্ৰ'ফাইল", nav_admin: "এডমিন", nav_settings: "ছেটিংছ", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "চাট আৰম্ভ কৰক" },
+      ur: { sec_workspace: "ورک اسپیس", sec_personal: "ذاتی", nav_overview: "جائزہ", nav_chat: "AI چیٹ", nav_models: "ماڈেল حب", nav_academic: "پروجیکٹ", nav_kie_media: "KIE اسٹوڈیو", nav_files: "فائل اسٹوریج", nav_history: "میموری", nav_search: "تلاش", nav_profile: "پروفائل", nav_admin: "ایڈمن", nav_settings: "ترتیبات", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "چیٹ شروع کریں" },
+      sa: { sec_workspace: "कार्यक्षेत्रम्", sec_personal: "वैयक्तिकम्", nav_overview: "अवलोकनम्", nav_chat: "AI सम्भाषणम्", nav_models: "आदर्शकेन्द्रम्", nav_academic: "प्रकल्पः", nav_kie_media: "KIE स्टुडियो", nav_files: "सञ्चिकाभण्डारः", nav_history: "स्मृतिः", nav_search: "अन्वेषणम्", nav_profile: "परिचयपत्रम्", nav_admin: "प्रशासनम्", nav_settings: "विन्यासः", hero_title: "ORBIT AI", hero_sub: "OS", btn_launch_chat: "सम्भाषणम् आरभत" }
     };
 
     function changeLanguage(lang) {
@@ -820,46 +425,48 @@
       });
     }
 
-    // मोबाईल हँगिंग प्रॉब्लेम फिक्स करण्यासाठी हलकी 3D ॲनिमेशन सिस्टीम
-    let coreRenderer, coreScene, coreCamera, redGlassSphere;
-    function init3DOrbitCore() {
-      const container = document.getElementById('orbitCoreContainer');
-      if (!container || !window.THREE) return;
-      container.innerHTML = '';
+    // 🎓 ॲकॅडमिक आणि बी-फार्मेसी प्रोजेक्ट जनरेटर
+    async function generateAcademicProject() {
+      const topic = document.getElementById('acadTopic').value.trim();
+      const stream = document.getElementById('acadStream').value;
+      const box = document.getElementById('acadResultBox');
+      if (!topic) return alert('Please enter project topic.');
 
-      coreScene = new THREE.Scene();
-      coreCamera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-      coreCamera.position.z = 4.2;
-
-      coreRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: false }); // मोबाईल ॲप हँग होऊ नये म्हणून antialias बंद केला आहे
-      coreRenderer.setSize(220, 220);
-      coreRenderer.setPixelRatio(1);
-      container.appendChild(coreRenderer.domElement);
-
-      const sphereGeo = new THREE.SphereGeometry(1.2, 32, 32); // पॉलीगान्स कमी करून मोबाईल ऑप्टिमायझेशन केले
-      const sphereMat = new THREE.MeshBasicMaterial({ color: 0xff3c14, wireframe: true });
-      redGlassSphere = new THREE.Mesh(sphereGeo, sphereMat);
-      coreScene.add(redGlassSphere);
-
-      function animateOrb() {
-        requestAnimationFrame(animateOrb);
-        redGlassSphere.rotation.y += 0.008;
-        redGlassSphere.rotation.x += 0.004;
-        coreRenderer.render(coreScene, coreCamera);
+      box.innerHTML = `<p style="color:var(--accent-blue);">Generating professional project report structure...</p>`;
+      try {
+        const res = await apiFetch('/api/chat', {
+          method: 'POST',
+          body: JSON.stringify({
+            model: currentModel,
+            messages: [{ role: 'user', content: `Create a professional academic project report structure for ${stream === 'bpharm' ? 'B.Pharmacy' : 'Engineering/Science'} on topic: "${topic}". Include sections: 1. Introduction & Objectives, 2. Literature Review, 3. Theory & Methodology / Experimental Work (Formulation, Evaluation for pharmacy), 4. Results & Discussion, 5. Practical Applications, 6. Conclusion & Future Scope.` }]
+          })
+        });
+        box.innerHTML = `<div class="card-3d" style="background:rgba(10,12,18,0.7);">${marked.parse(res.reply)}</div>`;
+      } catch (e) {
+        box.innerHTML = `<p style="color:#ff6b6b;">Error: ${e.message}</p>`;
       }
-      animateOrb();
+    }
+
+    function selectKieModel(modelId) {
+      switchView('media');
+      document.getElementById('kiePromptInput').value = `[Using KIE.ai model: ${modelId}] `;
+    }
+
+    function runKieGeneration() {
+      const prompt = document.getElementById('kiePromptInput').value;
+      const container = document.getElementById('kieResultContainer');
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true`;
+      container.innerHTML = `<img src="${url}" style="max-width:100%; border-radius:12px; border:1px solid var(--glass-border);" />`;
     }
 
     async function apiFetch(endpoint, options = {}) {
       const token = localStorage.getItem('orbit_token') || '';
       const headers = { ...(options.headers || {}) };
       if (token) headers['X-Orbit-Token'] = token;
-      if (!(options.body instanceof FormData) && !headers['Content-Type']) {
-        headers['Content-Type'] = 'application/json';
-      }
+      if (!(options.body instanceof FormData) && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
       const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers, credentials: 'include' });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+      if (!res.ok) throw new Error(data.error || `Request failed`);
       return data;
     }
 
@@ -868,17 +475,15 @@
       const target = document.getElementById(`view-${name}`);
       if (target) target.classList.add('active');
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick')?.includes(`'${name}'`));
-      if (activeBtn) activeBtn.classList.add('active');
+      const btn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick')?.includes(`'${name}'`));
+      if (btn) btn.classList.add('active');
       document.getElementById('sidebar').classList.remove('open');
-      if (name === 'files') loadWorkspaceFiles();
+      if (name === 'admin') loadAdminData();
     }
 
     function toggleTheme() {
       const html = document.documentElement;
-      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('orbit_theme', next);
+      html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     }
 
     async function checkAuthStatus() {
@@ -887,18 +492,9 @@
         currentUser = data.user;
         if (currentUser) {
           document.getElementById('forceAuthModal').style.display = 'none';
-          updateAuthUI();
+          document.getElementById('roleBadge').textContent = `${currentUser.name} (${currentUser.role})`;
         }
       } catch (e) {}
-    }
-
-    function updateAuthUI() {
-      const roleBadge = document.getElementById('roleBadge');
-      const isOwner = currentUser && currentUser.role === 'owner';
-      document.querySelectorAll('.owner-only').forEach(el => { el.style.display = isOwner ? 'flex' : 'none'; });
-      if (currentUser) roleBadge.textContent = `${currentUser.name} (${currentUser.role.toUpperCase()})`;
-      const prof = document.getElementById('profileDetails');
-      if (prof) prof.innerHTML = currentUser ? `<strong>Name:</strong> ${currentUser.name}<br><strong>Email:</strong> ${currentUser.email}<br><strong>Role:</strong> ${currentUser.role}` : `Not authenticated.`;
     }
 
     function showAuthTab(tab) {
@@ -917,7 +513,7 @@
           localStorage.setItem('orbit_token', res.token);
           currentUser = res.user;
           document.getElementById('forceAuthModal').style.display = 'none';
-          updateAuthUI();
+          checkAuthStatus();
         }
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
@@ -928,14 +524,14 @@
       const name = document.getElementById('reqName').value;
       const email = document.getElementById('reqEmail').value;
       const reason = document.getElementById('reqReason').value;
-      const res = await apiFetch('/api/auth/request', { method: 'POST', body: JSON.stringify({ name, email, reason }) });
-      document.getElementById('authStatusMsg').textContent = `Request status: ${res.status}`;
+      await apiFetch('/api/auth/request', { method: 'POST', body: JSON.stringify({ name, email, reason }) });
+      alert('Request sent successfully!');
     }
 
     async function issueOtp() {
       const email = document.getElementById('otpEmail').value;
       const res = await apiFetch('/api/auth/issue', { method: 'POST', body: JSON.stringify({ email }) });
-      document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent.';
+      alert(res.message || 'OTP sent to email.');
     }
 
     async function verifyOtpLogin() {
@@ -944,77 +540,54 @@
       const res = await apiFetch('/api/auth/verify', { method: 'POST', body: JSON.stringify({ email, otp }) });
       if (res.token) {
         localStorage.setItem('orbit_token', res.token);
-        currentUser = res.user;
         document.getElementById('forceAuthModal').style.display = 'none';
-        updateAuthUI();
+        checkAuthStatus();
       }
     }
 
     async function logoutUser() {
-      await apiFetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
       localStorage.removeItem('orbit_token');
-      currentUser = null;
-      document.getElementById('forceAuthModal').style.display = 'flex';
+      window.location.reload();
     }
 
-    // 🌟 KIE.AI MEDIA STUDIO EXECUTION (FREE & PRO MODELS)
-    function runKieGeneration() {
-      const model = document.getElementById('kieModelSelect').value;
-      const prompt = document.getElementById('kiePromptInput').value.trim();
-      const container = document.getElementById('kieResultContainer');
-      if (!prompt) {
-        container.innerHTML = `<p style="color:#ff6b6b;">Please enter a prompt.</p>`;
-        return;
-      }
-      container.innerHTML = `<p style="color:var(--powder-blue);">Generating via KIE.ai (${model})...</p>`;
-      
-      const encoded = encodeURIComponent(prompt);
-      const mediaUrl = `https://image.pollinations.ai/prompt/${encoded}?width=1024&height=1024&nologo=true`;
-
-      setTimeout(() => {
-        container.innerHTML = `
-          <div style="margin-top:10px;">
-            <img src="${mediaUrl}" alt="${prompt}" style="max-width:100%; border-radius:12px; border:2px solid var(--powder-blue);" />
-            <div style="margin-top:10px;">
-              <a href="${mediaUrl}" target="_blank" class="btn-3d btn-peach-blue" style="text-decoration:none; display:inline-block;">⬇ Download KIE Output</a>
-            </div>
+    async function loadAdminData() {
+      try {
+        const data = await apiFetch('/api/auth/requests');
+        document.getElementById('adminRequestsList').innerHTML = (data.requests || []).map(r => `
+          <div style="padding:10px; border-bottom:1px solid var(--glass-border); display:flex; justify-content:space-between; align-items:center;">
+            <span><strong>${r.name}</strong> (${r.email}) — <em>${r.status}</em></span>
+            <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Send OTP</button>
           </div>
-        `;
-      }, 2500);
+        `).join('');
+      } catch (e) {
+        document.getElementById('adminRequestsList').innerHTML = `<p style="color:#ff6b6b;">Owner access required.</p>`;
+      }
     }
 
-    function recallPreviousCode() {
-      const conv = conversations[0];
-      if (!conv || !conv.messages.length) return alert('No code history found.');
-      const last = conv.messages[conv.messages.length - 1].content;
-      document.getElementById('chatInput').value = `Previously stored code:\n${last}`;
+    async function approveReq(requestId) {
+      await apiFetch('/api/auth/approve', { method: 'POST', body: JSON.stringify({ requestId }) });
+      alert('Approved! OTP generated for user.');
+      loadAdminData();
     }
 
     function getActiveConversation() {
-      let conv = conversations.find(c => c.id === activeConvId);
+      let conv = conversations[0];
       if (!conv) {
-        conv = { id: 'conv_' + Date.now(), title: 'New Chat', messages: [], updatedAt: new Date().toISOString() };
+        conv = { id: 'conv_' + Date.now(), title: 'Chat', messages: [] };
         conversations.unshift(conv);
-        activeConvId = conv.id;
       }
       return conv;
     }
 
     function newConversation() {
-      const conv = { id: 'conv_' + Date.now(), title: 'New Chat', messages: [], updatedAt: new Date().toISOString() };
-      conversations.unshift(conv);
-      activeConvId = conv.id;
+      conversations.unshift({ id: 'conv_' + Date.now(), title: 'Chat', messages: [] });
       renderChatMessages();
     }
 
     function renderChatMessages() {
       const box = document.getElementById('chatMessages');
       const conv = getActiveConversation();
-      box.innerHTML = conv.messages.map(m => `
-        <div class="msg-bubble ${m.role === 'user' ? 'msg-user' : 'msg-ai'}">
-          <div>${marked.parse(m.content || '')}</div>
-        </div>
-      `).join('');
+      box.innerHTML = conv.messages.map(m => `<div class="msg-bubble ${m.role === 'user' ? 'msg-user' : 'msg-ai'}">${marked.parse(m.content || '')}</div>`).join('');
       box.scrollTop = box.scrollHeight;
     }
 
@@ -1026,7 +599,6 @@
       conv.messages.push({ role: 'user', content: text });
       input.value = '';
       renderChatMessages();
-
       try {
         const res = await apiFetch('/api/chat', { method: 'POST', body: JSON.stringify({ model: currentModel, messages: conv.messages }) });
         conv.messages.push({ role: 'assistant', content: res.reply });
@@ -1037,81 +609,18 @@
       }
     }
 
-    async function loadModels() {
-      try {
-        const data = await apiFetch('/api/models');
-        allModels = data.models || [];
-        document.getElementById('globalModelSelect').innerHTML = allModels.slice(0, 40).map(m => `<option value="${m.id}">${m.name}</option>`).join('');
-      } catch (e) {}
-    }
-
-    async function uploadWorkspaceFile() {
-      const input = document.getElementById('workspaceFileInput');
-      const file = input.files[0];
-      if (!file) return;
-      const fd = new FormData();
-      fd.append('file', file);
-      await apiFetch('/api/upload', { method: 'POST', body: fd });
-      loadWorkspaceFiles();
-    }
-
-    async function loadWorkspaceFiles() {
-      const data = await apiFetch('/api/files');
-      document.getElementById('filesGrid').innerHTML = (data.files || []).map(f => `
-        <div class="card-3d"><strong>${f.originalName}</strong><br><a href="${API_BASE}${f.url}" target="_blank" style="color:var(--powder-blue);">Download</a></div>
-      `).join('');
-    }
-
-    async function runAiWebSearch() {
-      const query = document.getElementById('aiSearchInput').value.trim();
-      if (!query) return;
-      const res = await apiFetch('/api/search', { method: 'POST', body: JSON.stringify({ query }) });
-      document.getElementById('aiSearchResults').innerHTML = `<div class="card-3d">${res.answer}</div>`;
-    }
-
-    async function createAgent() {
-      const name = document.getElementById('agentName').value;
-      const instructions = document.getElementById('agentInstructions').value;
-      await apiFetch('/api/agents', { method: 'POST', body: JSON.stringify({ name, instructions }) });
-      alert('Agent created!');
-    }
-
-    function saveVaultNote() {
-      const title = document.getElementById('vaultTitle').value;
-      const content = document.getElementById('vaultContent').value;
-      vaultNotes.unshift({ title, content });
-      localStorage.setItem('orbit_vault_notes', JSON.stringify(vaultNotes));
-      renderVaultNotes();
-    }
-
-    function renderVaultNotes() {
-      document.getElementById('vaultNotesGrid').innerHTML = vaultNotes.map(n => `
-        <div class="card-3d"><strong>🔒 ${n.title}</strong><p>${n.content}</p></div>
-      `).join('');
-    }
-
-    async function checkHealth() {
-      try {
-        const h = await apiFetch('/api/health');
-        document.getElementById('overviewStatusText').innerHTML = `Backend Online (v${h.version})<br>KIE.ai & 15-Lang Active`;
-      } catch (e) {
-        document.getElementById('overviewStatusText').innerHTML = `Server offline.`;
-      }
+    function recallPreviousCode() {
+      const conv = getActiveConversation();
+      if (!conv.messages.length) return alert('No memory found.');
+      document.getElementById('chatInput').value = `Last memory:\n` + conv.messages[conv.messages.length - 1].content;
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('orbit_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
       const savedLang = localStorage.getItem('orbit_lang') || 'en';
       document.getElementById('langSelect').value = savedLang;
       changeLanguage(savedLang);
-
-      init3DOrbitCore();
       checkAuthStatus();
-      checkHealth();
-      loadModels();
       renderChatMessages();
-      renderVaultNotes();
     });
   </script>
 </body>
