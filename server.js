@@ -189,7 +189,7 @@ function setSessionCookie(res, userObj) {
     id: userObj.id,
     role: userObj.role,
     tier: userObj.tier || (userObj.role === 'owner' ? 'pro' : 'free'),
-    email: userObj.email || userObj.phone,
+    phone: userObj.phone || userObj.email,
     iat: Date.now()
   });
   res.setHeader('Set-Cookie', `orbit_session=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 3600}; SameSite=Lax`);
@@ -254,7 +254,7 @@ async function sendOtpEmail(toEmail, otpCode, userName = 'User') {
 }
 
 // =========================================================
-// AUTHENTICATION & ADMIN ROUTES (UPDATED FOR DIRECT MOBILE OTP)
+// AUTHENTICATION & ADMIN ROUTES
 // =========================================================
 app.get('/api/auth/status', (req, res) => {
   const auth = loadAuthData();
@@ -277,9 +277,10 @@ app.get('/api/auth/status', (req, res) => {
 });
 
 app.post('/api/auth/owner/claim', (req, res) => {
-  const { name, email, claimCode } = req.body;
-  if (!email || !claimCode) {
-    return res.status(400).json({ error: 'Owner email and claim code are required.' });
+  const { name, phone, email, claimCode } = req.body;
+  const targetId = phone || email;
+  if (!targetId || !claimCode) {
+    return res.status(400).json({ error: 'Owner phone/email and claim code are required.' });
   }
   const auth = loadAuthData();
   const validClaimCode = String(auth.ownerClaimCode || process.env.OWNER_CLAIM_CODE || '411826').trim();
@@ -291,7 +292,8 @@ app.post('/api/auth/owner/claim', (req, res) => {
   const ownerUser = {
     id: auth.owner?.id || 'owner_' + crypto.randomBytes(6).toString('hex'),
     name: (name || auth.owner?.name || 'Mayur Sonawane (Owner)').trim(),
-    email: email.trim().toLowerCase(),
+    phone: targetId.includes('@') ? null : targetId,
+    email: targetId.includes('@') ? targetId.toLowerCase() : null,
     role: 'owner',
     tier: 'pro',
     createdAt: auth.owner?.createdAt || new Date().toISOString()
@@ -303,10 +305,10 @@ app.post('/api/auth/owner/claim', (req, res) => {
   res.json({ ok: true, user: ownerUser, token });
 });
 
-// डायरेक्ट मोबाईल नंबर किंवा इमेलवर OTP पाठवणे (विना ॲडमिन अप्रूवल)
+// मोबाईल नंबरवर थेट OTP पाठवणे (विना ॲडमिन अप्रूवल)
 app.post('/api/auth/issue-phone', async (req, res) => {
   const { phone } = req.body;
-  if (!phone) return res.status(400).json({ error: 'Mobile number required' });
+  if (!phone) return res.status(400).json({ error: 'Mobile number or email required' });
   const cleanId = phone.trim().toLowerCase();
   
   const auth = loadAuthData();
@@ -338,7 +340,7 @@ app.post('/api/auth/issue-phone', async (req, res) => {
   res.json({
     ok: true,
     devOtp: otp,
-    message: mailResult.sent ? `6-digit OTP sent to ${cleanId}` : `OTP Generated! (Dev OTP: ${otp})`
+    message: mailResult.sent ? `6-digit OTP sent to ${cleanId}` : `OTP Generated! (OTP: ${otp})`
   });
 });
 
@@ -374,7 +376,7 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 // =========================================================
-// PRO SUBSCRIPTION (₹799 MANUAL / QR CODE PAYMENT VERIFY)
+// RAZORPAY / MANUAL PRO SUBSCRIPTION (₹799)
 // =========================================================
 const PRO_PRICE_INR = 799;
 
@@ -593,6 +595,9 @@ app.get('/api/kie/status', requireAuth, (req, res) => {
 // SEARCH, FILES, WORKSPACE & AI CHAT
 // =========================================================
 app.post('/api/search', requireAuth, async (req, res) => {
+  if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
+    return res.status(403).json({ error: 'Pro Subscription required.' });
+  }
   const { query } = req.body;
   if (!query) return res.status(400).json({ error: 'Query required' });
   const tavilyKey = process.env.TAVILY_API_KEY;
