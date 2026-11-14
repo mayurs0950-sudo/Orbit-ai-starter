@@ -467,7 +467,7 @@ app.post('/api/auth/verify', (req, res) => {
     const token = setSessionCookie(res, ownerObj);
     return res.json({ ok: true, user: ownerObj, token });
   }
-  const user = auth.users.find(u => u.email.toLowerCase() === lower && !u.revoked);
+  const user = auth.users.find(u => u.email.toLowerCase() === lower && !user?.revoked);
   if (!user) return res.status(403).json({ error: 'User access revoked or not approved' });
 
   const guestObj = { ...user, role: 'guest', tier: user.tier || 'free' };
@@ -481,92 +481,19 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 // =========================================================
-// RAZORPAY PAYMENT GATEWAY FOR PRO SUBSCRIPTION
+// PRO SUBSCRIPTION (₹799 MANUAL / QR CODE PAYMENT VERIFY)
 // =========================================================
-function getRazorpayConfig() {
-  const ws = loadWorkspaceData();
-  const keyId = process.env.RAZORPAY_KEY_ID || ws.providers?.razorpayKeyId || '';
-  const keySecret = process.env.RAZORPAY_KEY_SECRET || ws.providers?.razorpayKeySecret || '';
-  const amountInr = Number(process.env.PRO_PRICE_INR || ws.providers?.proPriceInr || 499);
-  return { keyId, keySecret, amountInr };
-}
+const PRO_PRICE_INR = 799;
 
-app.get('/api/payment/config', requireAuth, (req, res) => {
-  const { keyId, keySecret, amountInr } = getRazorpayConfig();
-  res.json({
-    ok: true,
-    configured: Boolean(keyId && keySecret),
-    keyId,
-    amountInr,
-    currency: 'INR'
-  });
-});
-
-app.post('/api/payment/create-order', requireAuth, async (req, res) => {
-  const { keyId, keySecret, amountInr } = getRazorpayConfig();
-  if (!keyId || !keySecret) {
-    return res.status(400).json({ error: 'Razorpay keys are not configured on the server yet.' });
-  }
-
-  const amountPaise = Math.round(amountInr * 100);
-  const receiptId = 'rcpt_' + crypto.randomBytes(6).toString('hex');
-
-  try {
-    const authHeader = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
-    const resp = await fetch('https://api.razorpay.com/v1/orders', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${authHeader}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        amount: amountPaise,
-        currency: 'INR',
-        receipt: receiptId,
-        notes: {
-          userId: req.user.id,
-          email: req.user.email,
-          plan: 'ORBIT_AI_PRO'
-        }
-      })
-    });
-
-    const orderData = await resp.json();
-    if (!resp.ok || !orderData.id) {
-      throw new Error(orderData.error?.description || 'Failed to create Razorpay order');
-    }
-
-    res.json({
-      ok: true,
-      orderId: orderData.id,
-      amount: orderData.amount,
-      currency: orderData.currency,
-      keyId
-    });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.post('/api/payment/verify', requireAuth, (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-  const { keySecret, amountInr } = getRazorpayConfig();
-
-  if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-    return res.status(400).json({ error: 'Missing payment verification details.' });
-  }
-
-  const expectedSig = crypto
-    .createHmac('sha256', keySecret)
-    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-    .digest('hex');
-
-  if (expectedSig !== razorpay_signature) {
-    return res.status(400).json({ error: 'Payment signature verification failed.' });
+app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
+  const { paymentId, upiId } = req.body;
+  if (!paymentId) {
+    return res.status(400).json({ error: 'कृपया पेमेंट ट्रान्झॅक्शन आयडी (Transaction ID) टाका.' });
   }
 
   const auth = loadAuthData();
   const user = auth.users.find(u => u.id === req.user.id || u.email.toLowerCase() === req.user.email.toLowerCase());
+  
   if (user) {
     user.tier = 'pro';
     user.proActivatedAt = new Date().toISOString();
@@ -574,16 +501,15 @@ app.post('/api/payment/verify', requireAuth, (req, res) => {
 
   auth.payments = auth.payments || [];
   auth.payments.unshift({
-    id: razorpay_payment_id,
-    orderId: razorpay_order_id,
+    id: paymentId,
+    upiId: upiId || 'UPI / QR Payment',
     email: req.user.email,
     name: req.user.name,
-    amountInr,
+    amountInr: PRO_PRICE_INR,
     status: 'paid',
     paidAt: new Date().toISOString()
   });
 
-  auth.proRequests = (auth.proRequests || []).filter(r => r.email.toLowerCase() !== req.user.email.toLowerCase());
   saveAuthData(auth);
 
   const updatedUser = user ? { ...user, role: 'guest', tier: 'pro' } : { ...req.user, tier: 'pro' };
@@ -593,7 +519,7 @@ app.post('/api/payment/verify', requireAuth, (req, res) => {
     ok: true,
     user: updatedUser,
     token,
-    message: 'Payment verified successfully! ORBIT AI Pro Subscription is now active.'
+    message: 'पेमेंट यशस्वीरित्या व्हेरिफाय झाले! तुमचे ORBIT AI Pro सबस्क्रिप्शन आता ॲक्टिव्ह झाले आहे.'
   });
 });
 
@@ -628,13 +554,11 @@ app.post('/api/auth/pro-approve', requireOwner, (req, res) => {
 // HEALTH, MODELS, KIE.AI & CUSTOM API PROVIDERS
 // =========================================================
 app.get('/api/health', (req, res) => {
-  const { configured: razorpayConfigured } = getRazorpayConfig();
   res.json({
     ok: true,
     version: '3.0.0',
     openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY),
     kieConfigured: Boolean(process.env.KIE_API_KEY),
-    razorpayConfigured,
     parsers: { pdf: Boolean(pdfParse), docx: Boolean(mammoth) }
   });
 });
@@ -676,22 +600,19 @@ app.get('/api/models', requireAuth, async (req, res) => {
 });
 
 app.post('/api/providers/config', requireOwner, (req, res) => {
-  const { openrouterKey, tavilyKey, kieKey, razorpayKeyId, razorpayKeySecret, proPriceInr, smtpUser, smtpPass, customUrl } = req.body;
+  const { openrouterKey, tavilyKey, kieKey, smtpUser, smtpPass, customUrl } = req.body;
   const ws = loadWorkspaceData();
   ws.providers = ws.providers || {};
 
   if (openrouterKey) process.env.OPENROUTER_API_KEY = openrouterKey.trim();
   if (tavilyKey) process.env.TAVILY_API_KEY = tavilyKey.trim();
   if (kieKey) process.env.KIE_API_KEY = kieKey.trim();
-  if (razorpayKeyId) { process.env.RAZORPAY_KEY_ID = razorpayKeyId.trim(); ws.providers.razorpayKeyId = razorpayKeyId.trim(); }
-  if (razorpayKeySecret) { process.env.RAZORPAY_KEY_SECRET = razorpayKeySecret.trim(); ws.providers.razorpayKeySecret = razorpayKeySecret.trim(); }
-  if (proPriceInr) { process.env.PRO_PRICE_INR = String(proPriceInr).trim(); ws.providers.proPriceInr = Number(proPriceInr); }
   if (smtpUser) { process.env.SMTP_EMAIL = smtpUser.trim(); ws.providers.smtpUser = smtpUser.trim(); }
   if (smtpPass) { process.env.SMTP_PASSWORD = smtpPass.trim(); ws.providers.smtpPass = smtpPass.trim(); }
   if (customUrl) ws.providers.customUrl = customUrl.trim();
 
   saveWorkspaceData(ws);
-  res.json({ ok: true, message: 'All provider, Razorpay & SMTP keys securely saved on server!' });
+  res.json({ ok: true, message: 'All provider & SMTP keys securely saved on server!' });
 });
 
 app.post('/api/providers/custom', requireOwner, async (req, res) => {
