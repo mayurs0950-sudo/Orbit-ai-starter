@@ -795,40 +795,33 @@
 
   <canvas id="bg3dCanvas"></canvas>
 
+  <!-- 🔐 MOBILE LOGIN MODAL -->
   <div class="auth-overlay" id="authModal" style="display: flex;">
     <div class="auth-card">
       <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
-        <span>🔐 ORBIT AI Access</span>
+        <span>📱 ORBIT AI Mobile Login</span>
       </div>
-      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">
-        Please enter owner credentials to claim workspace.
+      <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;">
+        Enter your mobile number to get instant OTP access.
       </p>
 
       <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+        <button class="btn-3d btn-peach-blue" style="flex:1;" onclick="showAuthTab('phone')">Mobile Login</button>
         <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
       </div>
 
-      <div id="authTabOwner">
-        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
-        <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter owner claim code" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
-      </div>
-
-      <div id="authTabGuest" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
-        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
-        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
-      </div>
-
-      <div id="authTabOtp" style="display:none;">
-        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
-        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP to Email</button>
+      <div id="authTabPhone">
+        <div class="form-group"><label>Mobile Number</label><input id="loginPhone" type="tel" placeholder="Enter 10 digit mobile number" /></div>
+        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issuePhoneOtp()">Get OTP on Mobile</button>
         <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyPhoneOtp()">Verify & Login</button>
+      </div>
+
+      <div id="authTabOwner" style="display:none;">
+        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
+        <div class="form-group"><label>Owner Mobile</label><input id="ownPhone" placeholder="Enter owner mobile" /></div>
+        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" placeholder="411826" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
       </div>
 
       <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach); text-align:center;"></div>
@@ -853,13 +846,15 @@
         <button class="nav-btn" onclick="switchView('prompts')">✨ <span data-i18n="nav_prompts">Prompt Library</span></button>
         <button class="nav-btn" onclick="switchView('files')">📂 <span data-i18n="nav_files">Files & Tools</span></button>
         <button class="nav-btn" onclick="switchView('history')">🕒 <span data-i18n="nav_history">Chat History</span></button>
-        <button class="nav-btn" onclick="switchView('search')">🔍 <span data-i18n="nav_search">AI Search</span></button>
-        <button class="nav-btn" onclick="switchView('agents')">🤖 <span data-i18n="nav_agents">AI Agents</span></button>
-        <button class="nav-btn" onclick="switchView('projects')">📁 <span data-i18n="nav_projects">Projects</span></button>
-        <button class="nav-btn" onclick="switchView('knowledge')">📚 <span data-i18n="nav_knowledge">Knowledge Base</span></button>
-        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_media">Image & Video AI</span></button>
-        <button class="nav-btn" onclick="switchView('automation')">⚡ <span data-i18n="nav_automation">Automation</span></button>
-        <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic Project Suite</span></button>
+        
+        <!-- PRO FEATURES LOCKED FOR FREE USERS -->
+        <button class="nav-btn" onclick="switchView('search')">🔍 <span data-i18n="nav_search">AI Search</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('agents')">🤖 <span data-i18n="nav_agents">AI Agents</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('projects')">📁 <span data-i18n="nav_projects">Projects</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('knowledge')">📚 <span data-i18n="nav_knowledge">Knowledge Base</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('media')">🎨 <span data-i18n="nav_media">Image & Video AI</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('automation')">⚡ <span data-i18n="nav_automation">Automation</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
+        <button class="nav-btn" onclick="switchView('academic')">🎓 <span data-i18n="nav_academic">Academic Project Suite</span> <span style="margin-left:auto;" class="pro-lock-icon">🔒</span></button>
 
         <div class="nav-section-label" data-i18n="sec_personal">PERSONAL</div>
         <button class="nav-btn" onclick="switchView('profile')">👤 <span data-i18n="nav_profile">Profile & Account</span></button>
@@ -1030,144 +1025,14 @@
         <div class="grid-3d" id="historyGrid"></div>
       </section>
 
-      <section class="workspace-view" id="view-search">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">AI Live Web Search</div>
-          <div style="display: flex; gap: 10px;">
-            <input id="aiSearchInput" class="input-3d" style="flex:1;" placeholder="Search the live web with citations..." />
-            <button class="btn-3d btn-peach-blue" onclick="runAiWebSearch()">Search 🌐</button>
-          </div>
-          <div id="aiSearchResults" style="margin-top: 16px;"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-agents">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Create Custom AI Agent</div>
-          <div style="display: grid; gap: 10px;">
-            <input id="agentName" class="input-3d" placeholder="Agent Name" />
-            <textarea id="agentInstructions" class="input-3d" rows="2" placeholder="Agent role, instructions & behavior..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="createAgent()">Create Agent 🤖</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="agentsGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-projects">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Create Project Workspace</div>
-          <div style="display: grid; gap: 10px;">
-            <input id="projName" class="input-3d" placeholder="Project Name" />
-            <textarea id="projInstructions" class="input-3d" rows="2" placeholder="Project-specific context & rules..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="createProject()">Create Project 📁</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="projectsGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-knowledge">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">Add Document to Knowledge Base (Used automatically in AI Chat)</div>
-          <div style="display: grid; gap: 10px;">
-            <input id="kbTitle" class="input-3d" placeholder="Document Title" />
-            <textarea id="kbContent" class="input-3d" rows="4" placeholder="Paste knowledge text, notes, or extracted document content..."></textarea>
-            <button class="btn-3d btn-peach-blue" onclick="addKnowledgeDoc()">Add to Knowledge Base 📚</button>
-          </div>
-        </div>
-        <div class="grid-3d" id="knowledgeGrid"></div>
-      </section>
-
-      <section class="workspace-view" id="view-media">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">AI Image & Video Generation Studio (8K Ultra HD)</div>
-          <p style="color: var(--lavender-white); opacity:0.85; font-size: 0.9rem; margin-bottom: 12px;">
-            Generates 8K Ultra HD cinematic video prompts & photorealistic visual specs via KIE.ai market models.
-          </p>
-          <div style="display: flex; gap: 10px;">
-            <input id="mediaPrompt" class="input-3d" style="flex:1;" placeholder="Describe the 8K Ultra HD cinematic video or graphic..." />
-            <button class="btn-3d btn-peach-blue" onclick="generateMediaPrompt()">Generate Spec 🎨</button>
-          </div>
-          <div class="aca-grid" style="margin-top:14px;">
-            <select id="mediaKieModel" class="pill-select"></select>
-            <select id="mediaRatio" class="pill-select"><option value="9:16">9:16 Vertical</option><option value="16:9">16:9 Wide</option><option value="1:1">1:1 Square</option></select>
-            <select id="mediaQuality" class="pill-select"><option value="8K Ultra HD" selected>8K Ultra HD (Max Quality)</option><option value="4K UHD">4K UHD</option></select>
-            <input id="mediaCustomModel" class="input-3d" placeholder="Custom KIE model ID (optional)" />
-          </div>
-          <button class="btn-3d btn-peach-blue" onclick="generateKieMedia()">Generate in 8K Ultra HD via KIE.ai 🎬</button>
-          <div id="mediaKieOutput" class="media-result" style="margin-top:14px;"></div>
-          <div id="mediaOutput" style="margin-top: 14px;"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-academic">
-        <div class="card-3d tilt-glass">
-          <div class="card-title"><span data-i18n="nav_academic">Academic Project Suite</span> <span>🎓</span></div>
-          <p style="font-size:0.88rem;opacity:0.9;margin-bottom:12px;">Generate a fully structured academic project report. Select your exact degree, stream, academic year, semester, and project scope.</p>
-          
-          <div class="aca-grid">
-            <div class="form-group">
-              <label>Degree / Qualification:</label>
-              <select id="acaDegree" class="pill-select">
-                <option selected>B.Pharmacy</option><option>B.Tech / B.E.</option><option>M.Pharmacy</option><option>M.Tech / M.E.</option><option>B.Sc / M.Sc</option><option>Diploma</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Stream / Department:</label>
-              <select id="acaField" class="pill-select">
-                <option>Pharmaceutics</option><option>Pharmaceutical Chemistry</option><option>Pharmacology</option><option>Pharmacognosy</option><option>Computer Engineering</option><option>Information Technology</option><option>AI &amp; Data Science</option><option>Mechanical Engineering</option><option>Civil Engineering</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Academic Year:</label>
-              <select id="acaYear" class="pill-select">
-                <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option selected>Final Year (4th Year)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Semester:</label>
-              <select id="acaSem" class="pill-select">
-                <option>Semester I</option><option>Semester II</option><option>Semester III</option><option>Semester IV</option><option>Semester V</option><option>Semester VI</option><option>Semester VII</option><option selected>Semester VIII</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Project Scope / Length:</label>
-              <select id="acaLength" class="pill-select">
-                <option value="150">Short (~150 words per section)</option>
-                <option value="300" selected>Standard (~300 words per section)</option>
-                <option value="500">Comprehensive (~500 words per section)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Project Title / Topic:</label>
-            <input id="acaTitle" class="input-3d" placeholder="e.g., Formulation and Evaluation of Herbal Anti-Acne Gel..." />
-          </div>
-
-          <div class="chk-row" id="acaSections"></div>
-          <label style="display:flex;gap:8px;align-items:center;font-size:0.88rem;margin-bottom:14px;"><input type="checkbox" id="acaUseChat" checked /> Use current AI Chat context</label>
-          
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn-3d btn-peach-blue" id="acaGenBtn" onclick="generateAcademicReport()">Generate Project Report 🎓</button>
-            <button class="btn-3d" onclick="acaStop=true">⏹ Stop</button>
-            <button class="btn-3d" onclick="copyAcademicReport()">Copy Markdown</button>
-            <button class="btn-3d" onclick="downloadAcademicReport()">Download .md</button>
-          </div>
-          <div id="acaStatus" style="margin-top:10px;font-size:0.85rem;color:var(--sunset-peach);"></div>
-          <div id="acaOutput" class="doc-out"></div>
-        </div>
-      </section>
-
-      <section class="workspace-view" id="view-automation">
-        <div class="card-3d tilt-glass">
-          <div class="card-title">AI Task & Workflow Automation</div>
-          <div style="margin-top: 12px; display: flex; gap: 10px;">
-            <input id="autoTaskInput" class="input-3d" style="flex:1;" placeholder="Enter multi-step goal for autonomous execution..." />
-            <button class="btn-3d btn-peach-blue" onclick="runAutomationTask()">Run Pipeline ⚡</button>
-          </div>
-          <div id="autoTaskOutput" style="margin-top: 14px;"></div>
-        </div>
-      </section>
+      <!-- PRO LOCKED VIEWS -->
+      <section class="workspace-view" id="view-search"><div class="card-3d"><h2>🔒 Pro Feature</h2><p>Upgrade to Pro (₹799) to unlock AI Search.</p></div></section>
+      <section class="workspace-view" id="view-agents"><div class="card-3d"><h2>🔒 Pro Feature</h2><p>Upgrade to Pro (₹799) to unlock AI Agents.</p></div></section>
+      <section class="workspace-view" id="view-projects"><div class="card-3d"><h2>🔒 Pro Feature</h2><p>Upgrade to Pro (₹799) to unlock Projects.</p></div></section>
+      <section class="workspace-view" id="view-knowledge"><div class="card-3d"><h2>🔒 Pro Feature</h2><p>Upgrade to Pro (₹799) to unlock Knowledge Base.</p></div></section>
+      <section class="workspace-view" id="view-media"><div class="card-3d"><h2>🔒 Pro Feature</h2><p>Upgrade to Pro (₹799) to unlock Image & Video AI.</p></div></section>
+      <section class="workspace-view" id="view-automation"><div class="card-3d"><h2>🔒 Pro Feature</h2><p>Upgrade to Pro (₹799) to unlock Automation.</p></div></section>
+      <section class="workspace-view" id="view-academic"><div class="card-3d"><h2>🔒 Pro Feature</h2><p>Upgrade to Pro (₹799) to unlock Academic Project Suite.</p></div></section>
 
       <section class="workspace-view" id="view-profile">
         <div class="card-3d tilt-glass">
@@ -1177,8 +1042,8 @@
           <div style="margin: 16px 0; padding: 14px; border-radius: 14px; background: rgba(141,185,240,0.1); border: 1px solid var(--powder-blue);">
             <strong>Subscription Tier View:</strong>
             <div style="display:flex; gap:10px; margin-top:8px;">
-              <button class="btn-3d" id="btnTierFree" onclick="switchUserTier('free')">Free Tier View (Limited Models)</button>
-              <button class="btn-3d btn-peach-blue" id="btnTierPro" onclick="switchUserTier('pro')">Pro Tier View (All Models & Features)</button>
+              <button class="btn-3d" id="btnTierFree" onclick="switchUserTier('free')">Free Tier View</button>
+              <button class="btn-3d btn-peach-blue" id="btnTierPro" onclick="switchUserTier('pro')">Pro Tier View</button>
             </div>
           </div>
 
@@ -1227,11 +1092,11 @@
         <h2 style="margin-bottom: 14px;" data-i18n="nav_settings">Complete 3D Workspace Settings</h2>
         <div class="grid-3d">
           <div class="card-3d tilt-glass"><div class="card-title">1. Appearance & 3D Glass</div><button class="btn-3d" onclick="toggleTheme()">Switch Dark / Light Glass Theme</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">2. Language & Region</div><p>Use the top-bar selector for all 15 languages (मराठी, हिंदी, English, বাংলা, தமிழ், اردو…).</p></div>
+          <div class="card-3d tilt-glass"><div class="card-title">2. Language & Region</div><p>Use the top-bar selector for all 15 languages.</p></div>
           <div class="card-3d tilt-glass"><div class="card-title">3. Voice & Speech</div><button class="btn-3d" onclick="speakText('ORBIT AI Private Intelligence OS is online.')">Test Voice Output 🔊</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">4. Data Export & Control</div><button class="btn-3d" onclick="exportAllWorkspaceData()">Export Full Local Data 📦</button></div>
           <div class="card-3d tilt-glass"><div class="card-title">5. Diagnostics & Health</div><button class="btn-3d btn-peach-blue" onclick="checkHealth()">Run System Check 🩺</button></div>
-          <div class="card-3d tilt-glass"><div class="card-title">6. Owner Tools 👑</div><button class="btn-3d btn-peach-blue owner-only" style="display:none;" onclick="switchView('admin')">Open Admin Panel</button><p style="font-size:0.85rem;">Guest requests, auto-OTP approval and pro subscription requests (owner only).</p></div>
+          <div class="card-3d tilt-glass"><div class="card-title">6. Owner Tools 👑</div><button class="btn-3d btn-peach-blue owner-only" style="display:none;" onclick="switchView('admin')">Open Admin Panel</button></div>
         </div>
       </section>
 
@@ -1239,12 +1104,12 @@
         <div class="grid-3d">
           <div class="card-3d tilt-glass">
             <div class="card-title">Free Personal Tier</div>
-            <p>Access to standard models (OpenRouter Auto & basic chat). Upgrade to Pro for 128+ KIE.ai market models and advanced features.</p>
+            <p>Access to Overview, AI Chat, Prompts, Files, and History. Upgrade to Pro (₹799) to unlock AI Search, Agents, Knowledge Base, Academic Suite, and more.</p>
             <div style="margin-top:16px;" id="subFreeStatus"></div>
           </div>
           <div class="card-3d tilt-glass" style="border-bottom-color: var(--sunset-peach);">
-            <div class="card-title">ORBIT AI PRO (Ultimate Edition) 💠</div>
-            <p style="line-height: 1.7; margin-bottom:14px;">128+ KIE.ai models, Unlimited Multi-Model Routing, Real PDF/DOCX Parsing, Academic Project Suite & 8K Ultra HD Media.</p>
+            <div class="card-title">ORBIT AI PRO (₹799) 💠</div>
+            <p style="line-height: 1.7; margin-bottom:14px;">Unlock all advanced features instantly via QR code payment.</p>
             <div id="subProStatus">
               <button class="btn-3d btn-peach-blue" onclick="redirectToRazorpay()">Upgrade to Pro (₹799 - Pay via QR / UPI)</button>
             </div>
@@ -1254,16 +1119,8 @@
 
       <section class="workspace-view" id="view-admin">
         <div class="card-3d tilt-glass">
-          <div class="card-title">👑 Owner Admin Panel — Guest Requests, Pro Upgrades & Users</div>
+          <div class="card-title">👑 Owner Admin Panel — Registered Users & Payments</div>
           <button class="btn-3d btn-peach-blue" onclick="loadAdminData()" style="margin-bottom: 14px;">Refresh Admin Data</button>
-          
-          <h4 style="margin-top:10px; color:var(--sunset-peach);">Pro Subscription Upgrade Requests</h4>
-          <div id="adminProRequestsList" style="margin-bottom:18px;"></div>
-
-          <h4 style="margin-top:10px;">Guest Access Requests</h4>
-          <div id="adminRequestsList"></div>
-
-          <hr style="border-color: rgba(233,232,248,0.22); margin: 18px 0;" />
           <div id="adminUsersList"></div>
         </div>
       </section>
@@ -1327,14 +1184,14 @@
     const I18N_KEYS = ["sec_workspace","sec_personal","nav_overview","nav_chat","nav_models","nav_prompts","nav_files","nav_history","nav_search","nav_agents","nav_projects","nav_knowledge","nav_media","nav_automation","nav_profile","nav_apiconn","nav_security","nav_settings","nav_pro","nav_admin","nav_academic","btn_launch_chat"];
     const I18N_PACK = {
       bn: ["কর্মক্ষেত্র","ব্যক্তিগত","ওভারভিউ","AI চ্যাট","AI মডেল হাব প্রো","প্রম্পট লাইব্রেরি","ফাইল ও টুলস","চ্যাট ইতিহাস","AI সার্চ","AI এজেন্ট","প্রজেক্ট","নলেজ বেস","ইমেজ ও ভিডিও AI","অটোমেশন","প্রোফাইল ও অ্যাকাউন্ট","API সংযোগ","অনুমতি ও নিরাপত্তা","সেটিংস","প্রো সাবস্ক্রিপশন","অ্যাডমিন প্যানেল","একাডেমিক প্রজেক্ট স্যুট","AI চ্যাট শুরু করুন"],
-      ta: ["பணியிடம்","தனிப்பட்டவை","மேலோட்டம்","AI அரட்டை","AI மாடல் ஹப் ப்ரோ","ப்ராம்ப்ட் நூலகம்","கோப்புகள் & கருவிகள்","அரட்டை வரலாறு","AI தேடல்","AI முகவர்கள்","திட்டங்கள்","அறிவுத் தளம்","படம் & வீடியோ AI","தானியக்கம்","சுயவிவரம் & கணக்கு","API இணைப்புகள்","அனுமதிகள் & பாதுகாப்பு","அமைப்புகள்","ப்ரோ சந்தா","நிர்வாக பேனல்","கல்வித் திட்டத் தொகுப்பு","AI அரட்டையைத் தொடங்கு"],
+      ta: ["பணியிடம்","தனிப்பட்டவை","மேலோட்டம்","AI அரட்டை","AI மாடல் ஹப் ப்ரோ","ப்ராம்ப்ட் நூலகம்","கோப்புகள் & கருவிகள்","அரட்டை வரலாறு","AI தேடல்","AI முகவர்கள்","திட்டங்கள்","அறிவுத் தளம்","படம் & வீடியோ AI","தானியக்கம்","சுயவிவரம் & கணக்கு","API இணைப்புகள்","அனுமதிகள் & பாதுகாப்பு","மைப்புகள்","ப்ரோ சந்தா","நிர்வாக பேனல்","கல்வித் திட்டத் தொகுப்பு","AI அரட்டையைத் தொடங்கு"],
       te: ["వర్క్‌స్పేస్","వ్యక్తిగతం","అవలోకనం","AI చాట్","AI మోడల్ హబ్ ప్రో","ప్రాంప్ట్ లైబ్రరీ","ఫైళ్లు & టూల్స్","చాట్ చరిత్ర","AI సెర్చ్","AI ఏజెంట్లు","ప్రాజెక్టులు","నాలెడ్జ్ బేస్","ఇమేజ్ & వీడియో AI","ఆటోమేషన్","ప్రొఫైల్ & ఖాతా","API కనెక్షన్లు","అనుమతులు & భద్రత","సెట్టింగ్స్","ప్రో సబ్‌స్క్రిప్షన్","అడ్మిన్ ప్యానెల్","అకడమిక్ ప్రాజెక్ట్ సూట్","AI చాట్ ప్రారంభించండి"],
       gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ પ્રો","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
       kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
       ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ এবং ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈनল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇरी","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ and ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈনল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
       or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
-      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব୍ରেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
+      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
       ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","AI چیٹ شروع کریں"],
       sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","AI संवादम् आरभस्व"],
       ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","AI च्याट सुरु गर्नुहोस्"]
@@ -1618,15 +1475,15 @@
       return data;
     }
 
-    // फ्री युजर्ससाठी प्रो फीचर्स लॉक आणि प्रो/ॲडमिनसाठी अनलॅक करणारी सुरक्षा (Academic, Automation, Knowledge, Agents, Search)
+    // फ्री युजर्ससाठी प्रो फीचर्स लॉक करणारी सिस्टीम
     function switchView(name) {
-      const proViews = ['academic', 'automation', 'knowledge', 'agents', 'search'];
+      const proViews = ['search', 'agents', 'projects', 'knowledge', 'media', 'automation', 'academic'];
       const isOwner = currentUser && currentUser.role === 'owner';
       const isPro = isOwner || (currentUser && currentUser.tier === 'pro');
 
       if (proViews.includes(name) && !isPro) {
-        alert('🔒 हे फिचर वापरण्यासाठी तुम्हाला ORBIT AI Pro सबस्क्रिप्शन (₹799) घ्यावे लागेल.');
-        name = 'subscription'; // थेट सबस्क्रिप्शन पेजवर पाठवा
+        alert('🔒 हे फिचर लॉक आहे! हे फिचर वापरण्यासाठी तुम्हाला ORBIT AI Pro सबस्क्रिप्शन (₹799) घ्यावे लागेल.');
+        name = 'subscription';
       }
 
       document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
@@ -1655,9 +1512,8 @@
     function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
 
     function showAuthTab(tab) {
+      document.getElementById('authTabPhone').style.display = tab === 'phone' ? 'block' : 'none';
       document.getElementById('authTabOwner').style.display = tab === 'owner' ? 'block' : 'none';
-      document.getElementById('authTabGuest').style.display = tab === 'guest' ? 'block' : 'none';
-      document.getElementById('authTabOtp').style.display = tab === 'otp' ? 'block' : 'none';
     }
 
     async function checkAuthStatus() {
@@ -1698,35 +1554,76 @@
       const prof = document.getElementById('profileDetails');
       if (prof) {
         prof.innerHTML = currentUser
-          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Active Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
-          : `Not logged in. Click "Login / Setup" in the top bar.`;
+          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Phone:</strong> ${esc(currentUser.phone || currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
+          : `Not logged in.`;
       }
       
       const subFree = document.getElementById('subFreeStatus');
       if (subFree) {
         if (activeUserTier === 'free' && !isOwner) {
-          subFree.innerHTML = '<span style="color:var(--powder-blue);">✓ सध्या फ्री प्लॅन चालू आहे (Overview आणि AI Chat उपलब्ध)</span>';
+          subFree.innerHTML = '<span style="color:var(--powder-blue);">✓ फ्री प्लॅन चालू आहे (Overview आणि AI Chat उपलब्ध)</span>';
         } else {
-          subFree.innerHTML = '<span style="color:#2ecc71;">✓ तुमचे Pro सबस्क्रिप्शन ॲक्टिव्ह आहे! (सर्व फिचर्स अनलॅक)</span>';
+          subFree.innerHTML = '<span style="color:#2ecc71;">✓ Pro सबस्क्रिप्शन ॲक्टिव्ह आहे! (सर्व फिचर्स अनलॅक)</span>';
         }
       }
+    }
 
-      // फ्री युजर्ससाठी लॉक असलेले नॅव्हिगेट बटने विजुअली अस्पष्ट करणे
-      const isProOrOwner = isOwner || activeUserTier === 'pro';
-      const proViews = ['academic', 'automation', 'knowledge', 'agents', 'search'];
-      
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        const onclickAttr = btn.getAttribute('onclick') || '';
-        const viewName = proViews.find(v => onclickAttr.includes(v));
-        
-        if (viewName && !isProOrOwner) {
-          btn.style.opacity = '0.5';
-          btn.title = '🔒 Pro Subscription Required (₹799)';
-        } else {
-          btn.style.opacity = '1';
-          btn.title = '';
-        }
-      });
+    async function issuePhoneOtp() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      if (!phone || phone.length < 10) {
+        alert('कृपया योग्य १० अंकी मोबाईल नंबर प्रविष्ट करा.');
+        return;
+      }
+      try {
+        const res = await apiFetch('/api/auth/issue-phone', {
+          method: 'POST',
+          body: JSON.stringify({ phone })
+        });
+        document.getElementById('authStatusMsg').innerHTML = `<span style="color:#2ecc71;">${res.message}</span>`;
+      } catch (e) {
+        document.getElementById('authStatusMsg').textContent = e.message;
+      }
+    }
+
+    async function verifyPhoneOtp() {
+      const phone = document.getElementById('loginPhone').value.trim();
+      const otp = document.getElementById('otpCode').value.trim();
+      if (!phone || !otp) {
+        alert('कृपया मोबाईल नंबर आणि OTP दोन्ही टाका.');
+        return;
+      }
+      try {
+        const res = await apiFetch('/api/auth/verify-phone', {
+          method: 'POST',
+          body: JSON.stringify({ phone, otp })
+        });
+        if (res.token) localStorage.setItem('orbit_token', res.token);
+        currentUser = res.user;
+        updateAuthUI();
+        closeAuthModal();
+        switchView('overview');
+      } catch (e) {
+        document.getElementById('authStatusMsg').textContent = e.message;
+      }
+    }
+
+    async function claimOwner() {
+      try {
+        const name = document.getElementById('ownName').value;
+        const phone = document.getElementById('ownPhone').value;
+        const claimCode = document.getElementById('ownCode').value;
+        const res = await apiFetch('/api/auth/owner/claim', {
+          method: 'POST',
+          body: JSON.stringify({ name, phone, claimCode })
+        });
+        if (res.token) localStorage.setItem('orbit_token', res.token);
+        currentUser = res.user;
+        updateAuthUI();
+        closeAuthModal();
+        switchView('overview');
+      } catch (e) {
+        document.getElementById('authStatusMsg').textContent = e.message;
+      }
     }
 
     // QR Code आणि ₹799 पेमेंट विंडो
@@ -1738,7 +1635,7 @@
       }
       
       if (currentUser.role === 'owner' || activeUserTier === 'pro') {
-        alert('तुम्ही आधीपासूनच Pro किंवा ॲडमिन आहात! तुम्हाला पेमेंट करण्याची गरज नाही.');
+        alert('तुम्ही आधीपासूनच Pro किंवा ॲडमिन आहात!');
         return;
       }
 
@@ -1780,13 +1677,11 @@
         alert('कृपया ट्रान्झॅक्शन आयडी (Transaction ID) प्रविष्ट करा.');
         return;
       }
-
       try {
         const res = await apiFetch('/api/payment/verify-manual', {
           method: 'POST',
           body: JSON.stringify({ paymentId: txnId, upiId: 'UPI / QR Payment' })
         });
-
         if (res.ok) {
           currentUser = res.user;
           if (res.token) localStorage.setItem('orbit_token', res.token);
@@ -1797,89 +1692,6 @@
         }
       } catch (e) {
         alert('एरर: ' + e.message);
-      }
-    }
-
-    function switchUserTier(tier) {
-      if (!currentUser && tier === 'pro') {
-        alert('Please login first.');
-        openAuthModal();
-        return;
-      }
-      activeUserTier = tier;
-      document.getElementById('btnTierFree').classList.remove('btn-peach-blue');
-      document.getElementById('btnTierPro').classList.remove('btn-peach-blue');
-      if (tier === 'pro') {
-        document.getElementById('btnTierPro').classList.add('btn-peach-blue');
-        alert('Switched to Pro Tier View (All 128+ models & Academic Suite unlocked).');
-      } else {
-        document.getElementById('btnTierFree').classList.add('btn-peach-blue');
-        alert('Switched to Free Tier View (Restricted to OpenRouter Auto & basic models).');
-      }
-      loadModels();
-      updateAuthUI();
-    }
-
-    async function claimOwner() {
-      try {
-        const name = document.getElementById('ownName').value;
-        const email = document.getElementById('ownEmail').value;
-        const claimCode = document.getElementById('ownCode').value;
-        const res = await apiFetch('/api/auth/owner/claim', {
-          method: 'POST',
-          body: JSON.stringify({ name, email, claimCode })
-        });
-        if (res.token) localStorage.setItem('orbit_token', res.token);
-        currentUser = res.user;
-        updateAuthUI();
-        closeAuthModal();
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function submitGuestRequest() {
-      try {
-        const name = document.getElementById('reqName').value;
-        const email = document.getElementById('reqEmail').value;
-        const reason = document.getElementById('reqReason').value;
-        const res = await apiFetch('/api/auth/request', {
-          method: 'POST',
-          body: JSON.stringify({ name, email, reason })
-        });
-        document.getElementById('authStatusMsg').textContent = `Request sent successfully! Once admin approves, an OTP will be sent directly to your Gmail (${email}).`;
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function issueOtp() {
-      try {
-        const email = document.getElementById('otpEmail').value;
-        const res = await apiFetch('/api/auth/issue', {
-          method: 'POST',
-          body: JSON.stringify({ email })
-        });
-        document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent successfully to email.';
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
-      }
-    }
-
-    async function verifyOtpLogin() {
-      try {
-        const email = document.getElementById('otpEmail').value;
-        const otp = document.getElementById('otpCode').value;
-        const res = await apiFetch('/api/auth/verify', {
-          method: 'POST',
-          body: JSON.stringify({ email, otp })
-        });
-        if (res.token) localStorage.setItem('orbit_token', res.token);
-        currentUser = res.user;
-        updateAuthUI();
-        closeAuthModal();
-      } catch (e) {
-        document.getElementById('authStatusMsg').textContent = e.message;
       }
     }
 
@@ -2358,58 +2170,17 @@
 
     async function loadAdminData() {
       try {
-        const reqs = await apiFetch('/api/auth/requests');
         const usrs = await apiFetch('/api/auth/users');
-        const proReqs = await apiFetch('/api/auth/pro-requests').catch(() => ({ requests: [] }));
-
-        document.getElementById('adminProRequestsList').innerHTML = (proReqs.requests || []).length ? (proReqs.requests || []).map(r => `
-          <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-            <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>Pro Upgrade Requested</em></span>
-            <button class="btn-3d btn-peach-blue" onclick="approveProReq('${esc(r.email)}')">Approve Pro Upgrade 💠</button>
-          </div>
-        `).join('') : '<p style="font-size:0.85rem; opacity:0.8;">No pending pro upgrade requests.</p>';
-
-        document.getElementById('adminRequestsList').innerHTML = (reqs.requests || []).map(r => `
-          <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-            <span><strong>${esc(r.name)}</strong> (${esc(r.email)}) — <em>${esc(r.status)}</em></span>
-            <div>
-              <button class="btn-3d btn-peach-blue" onclick="approveReq('${r.id}')">Approve & Send OTP</button>
-              <button class="btn-3d" onclick="rejectReq('${r.id}')">Reject</button>
-            </div>
-          </div>
-        `).join('');
-
         document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users</h4>` +
           (usrs.users || []).map(u => `
             <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span>${esc(u.name)} (${esc(u.email)}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span>
+              <span>${esc(u.phone || u.email)} — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span>
               <button class="btn-3d" onclick="toggleRevokeUser('${u.id}', ${!u.revoked})">${u.revoked ? 'Restore' : 'Revoke'}</button>
             </div>
           `).join('');
       } catch (e) {
-        document.getElementById('adminRequestsList').innerHTML = `<p style="color:#ff8888;">Owner permission required to view Admin Panel.</p>`;
+        document.getElementById('adminUsersList').innerHTML = `<p style="color:#ff8888;">Owner permission required to view Admin Panel.</p>`;
       }
-    }
-
-    async function approveProReq(email) {
-      try {
-        await apiFetch('/api/auth/pro-approve', { method: 'POST', body: JSON.stringify({ email }) });
-        alert(`Pro subscription approved for ${email}!`);
-        loadAdminData();
-      } catch (e) {
-        alert('Error: ' + e.message);
-      }
-    }
-
-    async function approveReq(requestId) {
-      const res = await apiFetch('/api/auth/approve', { method: 'POST', body: JSON.stringify({ requestId }) });
-      alert(`Approved! OTP sent directly to user's Gmail.`);
-      loadAdminData();
-    }
-
-    async function rejectReq(requestId) {
-      await apiFetch('/api/auth/reject', { method: 'POST', body: JSON.stringify({ requestId }) });
-      loadAdminData();
     }
 
     async function toggleRevokeUser(userId, revoked) {
