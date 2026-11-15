@@ -851,43 +851,54 @@
 
   <canvas id="bg3dCanvas"></canvas>
 
+  <!-- 🔐 FORCE AUTH MODAL (फक्त Sign Up आणि OTP Login + खाली कोपऱ्यात छोटा Owner Claim) -->
   <div class="auth-overlay" id="authModal" style="display: flex;">
-    <div class="auth-card">
+    <div class="auth-card" style="position: relative; padding-bottom: 36px;">
       <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
         <span>🔐 ORBIT AI Access</span>
       </div>
       <p style="text-align: center; font-size: 0.85rem; color: var(--sunset-peach); margin-bottom: 16px;" data-i18n="auth_sub">
-        Please enter owner credentials to claim workspace.
+        Sign up or login instantly with OTP to access workspace.
       </p>
 
-      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('owner')">Owner Claim</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('guest')">Guest Request</button>
-        <button class="btn-3d" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
+      <!-- वरती फक्त २ मुख्य पर्याय: Sign Up आणि OTP Login -->
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button class="btn-3d btn-peach-blue" id="tabBtnSignup" style="flex:1;" onclick="showAuthTab('guest')">Sign Up</button>
+        <button class="btn-3d" id="tabBtnOtp" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
       </div>
 
-      <div id="authTabOwner">
-        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
-        <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" type="password" value="" placeholder="Enter owner claim code" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
+      <!-- 1. SIGN UP TAB -->
+      <div id="authTabGuest" style="display:block;">
+        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Enter your full name" /></div>
+        <div class="form-group"><label>Mobile Number or Email</label><input id="reqEmail" placeholder="10-digit mobile or email" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Sign Up &amp; Get Instant OTP</button>
       </div>
 
-      <div id="authTabGuest" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="reqName" placeholder="Guest Name" /></div>
-        <div class="form-group"><label>Your Email</label><input id="reqEmail" placeholder="guest@example.com" /></div>
-        <div class="form-group"><label>Reason</label><input id="reqReason" placeholder="Workspace collaboration" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="submitGuestRequest()">Request Access</button>
-      </div>
-
+      <!-- 2. OTP LOGIN TAB (OTP इनपुटच्या खालीच लगेच जनरेट झालेला OTP दिसेल) -->
       <div id="authTabOtp" style="display:none;">
-        <div class="form-group"><label>Approved Email</label><input id="otpEmail" placeholder="email@example.com" /></div>
-        <button class="btn-3d" style="width:100%; margin-bottom:10px;" onclick="issueOtp()">Get OTP to Email</button>
-        <div class="form-group"><label>6-Digit OTP</label><input id="otpCode" placeholder="123456" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify & Login</button>
+        <div class="form-group"><label>Mobile Number or Email</label><input id="otpEmail" placeholder="Enter mobile number or email" /></div>
+        <button class="btn-3d" style="width:100%; margin-bottom:12px;" onclick="issueOtp()">Get Instant OTP</button>
+        <div class="form-group">
+          <label>6-Digit OTP</label>
+          <input id="otpCode" placeholder="Enter 6-digit OTP" />
+          <div id="instantOtpUnderBox" style="display:none; margin-top:8px; padding:10px 12px; border-radius:12px; background:rgba(46, 204, 113, 0.16); border:1px solid rgba(46, 204, 113, 0.55); color:#2ecc71; font-weight:800; font-size:0.9rem; text-align:center; letter-spacing:1px;"></div>
+        </div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify &amp; Login</button>
+      </div>
+
+      <!-- 3. OWNER CLAIM TAB (फक्त नाव आणि सेटअप कोड - कोपऱ्यातल्या लिंकवर क्लिक केल्यावरच उघडेल) -->
+      <div id="authTabOwner" style="display:none;">
+        <div class="form-group"><label>Your Name</label><input id="ownName" placeholder="Enter owner name" /></div>
+        <div class="form-group"><label>Owner Setup Code</label><input id="ownCode" type="password" placeholder="Enter secret setup code" onkeydown="if(event.key==='Enter')claimOwner()" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Unlock Owner Access</button>
       </div>
 
       <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach); text-align:center;"></div>
+
+      <!-- खाली उजव्या कोपऱ्यात एकदम छोटा Owner Claim पर्याय -->
+      <div style="position: absolute; bottom: 10px; right: 18px;">
+        <span onclick="showAuthTab('owner')" style="font-size: 0.68rem; color: var(--lavender-muted); opacity: 0.55; cursor: pointer; text-decoration: underline;" title="Owner Claim">Owner Claim</span>
+      </div>
     </div>
   </div>
 
@@ -1373,7 +1384,7 @@
         hero_title: "ORBIT AI — Private Intelligence OS",
         hero_sub: "Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, and private execution.",
         btn_launch_chat: "Launch AI Chat", card_status: "System & Model Status", card_quick_chat: "Quick AI Ask", card_stats: "Workspace Statistics",
-        auth_sub: "Please enter owner credentials to claim workspace."
+        auth_sub: "Sign up or login instantly with OTP to access workspace."
       },
       mr: {
         sec_workspace: "कार्यक्षेत्र (WORKSPACE)", sec_personal: "वैयक्तिक (PERSONAL)",
@@ -1386,7 +1397,7 @@
         hero_title: "ORBIT AI — प्रायव्हेट इंटेलिजन्स OS",
         hero_sub: "अत्याधुनिक मल्टी-मॉडेल AI वर्कस्पेस, डॉक्युमेंट विश्लेषण आणि स्मार्ट एजंट्ससह तुमची स्वतःची प्रायव्हेट सिस्टीम.",
         btn_launch_chat: "AI चॅट सुरू करा", card_status: "सिस्टीम स्थिती", card_quick_chat: "झटपट AI प्रश्न", card_stats: "वर्कस्पेस आकडेवारी",
-        auth_sub: "कृपया वर्कस्पेस क्लेम करण्यासाठी ओनर क्रेडेंशियल्स प्रविष्ट करा."
+        auth_sub: "कृपया साइन अप करा किंवा ओटीपी द्वारे लॉगिन करा."
       },
       hi: {
         sec_workspace: "वर्कस्पेस", sec_personal: "व्यक्तिगत",
@@ -1399,7 +1410,7 @@
         hero_title: "ORBIT AI — प्राइवेट इंटेलिजेंस OS",
         hero_sub: "मल्टी-मॉडल AI, डॉक्यूमेंट एनालिसिस और स्मार्ट एजेंट्स के साथ आपका निजी ऑपरेटिंग सिस्टम।",
         btn_launch_chat: "AI चैट खोलें", card_status: "सिस्टम स्थिति", card_quick_chat: "त्वरित AI प्रश्न", card_stats: "आंकड़े",
-        auth_sub: "कृपया ओनर क्रेडेंशियल्स दर्ज करें।"
+        auth_sub: "कृपया साइन अप करें या ओटीपी से लॉगिन करें।"
       }
     };
 
@@ -1442,7 +1453,6 @@
     const ORBIT_LITE = window.matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.hardwareConcurrency || 8) <= 4;
 
     function attach3DGlassTilt() {
-      // Mobile Anti-Hang Fix: Skip binding heavy mousemove 3D perspective calculations on touch/mobile devices
       if (ORBIT_LITE) return;
       document.querySelectorAll('.card-3d, .orbit-core-hero').forEach(card => {
         if (card.dataset.tiltBound) return;
@@ -1652,7 +1662,6 @@
     }
 
     function initBgParticles() {
-      // Mobile Anti-Hang Fix: Do not run a second full-screen WebGL context on mobile devices
       if (ORBIT_LITE) return;
       const canvas = document.getElementById('bg3dCanvas');
       if (!canvas || !window.THREE) return;
@@ -1708,7 +1717,7 @@
 
       if (proViews.includes(name) && !isPro) {
         alert('🔒 हे फिचर वापरण्यासाठी तुम्हाला ORBIT AI Pro सबस्क्रिप्शन (₹799) घ्यावे लागेल.');
-        name = 'subscription'; // थेट सबस्क्रिप्शन पेजवर पाठवा
+        name = 'subscription';
       }
 
       document.querySelectorAll('.workspace-view').forEach(v => v.classList.remove('active'));
@@ -1740,6 +1749,14 @@
       document.getElementById('authTabOwner').style.display = tab === 'owner' ? 'block' : 'none';
       document.getElementById('authTabGuest').style.display = tab === 'guest' ? 'block' : 'none';
       document.getElementById('authTabOtp').style.display = tab === 'otp' ? 'block' : 'none';
+
+      const btnSignup = document.getElementById('tabBtnSignup');
+      const btnOtp = document.getElementById('tabBtnOtp');
+      if (btnSignup && btnOtp) {
+        btnSignup.classList.toggle('btn-peach-blue', tab === 'guest');
+        btnOtp.classList.toggle('btn-peach-blue', tab === 'otp');
+      }
+      document.getElementById('authStatusMsg').textContent = '';
     }
 
     async function checkAuthStatus() {
@@ -1780,7 +1797,7 @@
       const prof = document.getElementById('profileDetails');
       if (prof) {
         prof.innerHTML = currentUser
-          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email || currentUser.phone || '')}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Active Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
+          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Account:</strong> ${esc(currentUser.phone || currentUser.email || '')}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Active Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
           : `Not logged in. Click "Login / Setup" in the top bar.`;
       }
       
@@ -1793,7 +1810,6 @@
         }
       }
 
-      // फ्री युजर्ससाठी लॉक असलेले नॅव्हिगेट बटने विजुअली अस्पष्ट करणे
       const isProOrOwner = isOwner || activeUserTier === 'pro';
       const proViews = ['academic', 'automation', 'knowledge', 'agents', 'search'];
       
@@ -1833,10 +1849,10 @@
             <p style="font-size:0.85rem; margin-bottom:10px; opacity:0.85;">खालील QR कोड स्कॅन करा (PhonePe, GPay, Paytm) किंवा UPI ने पैसे पाठवा:</p>
             
             <div style="background:#fff; padding:10px; border-radius:12px; display:inline-block; margin-bottom:15px;">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=mayurmanoharsonawane@okaxis&pn=Mayur%20Sonawane&am=799&cu=INR" alt="Payment QR Code" style="width:180px; height:180px; object-fit:contain;" />
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=mayur0797@axl&pn=Mayur%20Sonawane&am=799&cu=INR" alt="Payment QR Code" style="width:180px; height:180px; object-fit:contain;" />
             </div>
             
-            <p style="font-size:0.8rem; margin-bottom:12px; color:var(--powder-blue);">UPI ID: <strong>mayurmanoharsonawane@okaxis</strong></p>
+            <p style="font-size:0.8rem; margin-bottom:12px; color:var(--powder-blue);">UPI ID: <strong>mayur0797@axl</strong></p>
 
             <div class="form-group" style="text-align:left;">
               <label style="font-size:0.8rem;">पेमेंट केल्यावर मिळणारा UPI Transaction ID (UTR) इथे टाका:</label>
@@ -1866,7 +1882,7 @@
       try {
         const res = await apiFetch('/api/payment/verify-manual', {
           method: 'POST',
-          body: JSON.stringify({ paymentId: txnId, upiId: 'UPI / QR Payment' })
+          body: JSON.stringify({ paymentId: txnId, upiId: 'mayur0797@axl' })
         });
 
         if (res.ok) {
@@ -1902,14 +1918,18 @@
       updateAuthUI();
     }
 
+    // OWNER CLAIM (फक्त नाव आणि सेटअप कोड -> थेट ओनर प्रो ॲक्सेस)
     async function claimOwner() {
       try {
-        const name = document.getElementById('ownName').value;
-        const email = document.getElementById('ownEmail').value;
-        const claimCode = document.getElementById('ownCode').value;
+        const name = (document.getElementById('ownName').value || 'Mayur Sonawane').trim();
+        const claimCode = document.getElementById('ownCode').value.trim();
+        if (!claimCode) {
+          document.getElementById('authStatusMsg').textContent = 'Please enter Owner Setup Code.';
+          return;
+        }
         const res = await apiFetch('/api/auth/owner/claim', {
           method: 'POST',
-          body: JSON.stringify({ name, email, phone: email, claimCode })
+          body: JSON.stringify({ name, phone: name, email: name, claimCode })
         });
         if (res.token) localStorage.setItem('orbit_token', res.token);
         currentUser = res.user;
@@ -1920,32 +1940,43 @@
       }
     }
 
+    // SIGN UP (४०४ एरर फिक्स: थेट OTP जनरेट करून OTP Login टॅबमध्ये खालीच दाखवतो)
     async function submitGuestRequest() {
       try {
-        const name = document.getElementById('reqName').value;
-        const email = document.getElementById('reqEmail').value;
-        const reason = document.getElementById('reqReason').value;
-        const res = await apiFetch('/api/auth/request', {
-          method: 'POST',
-          body: JSON.stringify({ name, email, reason })
-        });
-        document.getElementById('authStatusMsg').textContent = `Request sent successfully! Once admin approves, an OTP will be sent directly to your Gmail (${email}).`;
+        const name = document.getElementById('reqName').value.trim();
+        const identifier = document.getElementById('reqEmail').value.trim();
+        if (!identifier) {
+          document.getElementById('authStatusMsg').textContent = 'Please enter your Mobile Number or Email.';
+          return;
+        }
+        if (name) localStorage.setItem('orbit_signup_name', name);
+        document.getElementById('otpEmail').value = identifier;
+        showAuthTab('otp');
+        await issueOtp();
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
     }
 
+    // OTP GENERATION (OTP बॉक्सच्या खालीच लगेच OTP दाखवतो आणि ऑटो-फिल करतो)
     async function issueOtp() {
       try {
-        const email = document.getElementById('otpEmail').value;
-        const res = await apiFetch('/api/auth/issue', {
+        const identifier = (document.getElementById('otpEmail').value || document.getElementById('reqEmail').value || '').trim();
+        if (!identifier) {
+          document.getElementById('authStatusMsg').textContent = 'Please enter Mobile Number or Email first.';
+          return;
+        }
+        const res = await apiFetch('/api/auth/issue-phone', {
           method: 'POST',
-          body: JSON.stringify({ email, phone: email })
-        }).catch(() => apiFetch('/api/auth/issue-phone', {
-          method: 'POST',
-          body: JSON.stringify({ phone: email, email })
-        }));
-        document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent successfully.';
+          body: JSON.stringify({ phone: identifier, email: identifier })
+        });
+        const otpBox = document.getElementById('instantOtpUnderBox');
+        if (res.devOtp) {
+          otpBox.style.display = 'block';
+          otpBox.innerHTML = `🔑 Your Instant OTP: <span style="font-size:1.15rem; color:#fff; text-decoration:underline;">${esc(res.devOtp)}</span>`;
+          document.getElementById('otpCode').value = res.devOtp;
+        }
+        document.getElementById('authStatusMsg').textContent = 'OTP generated below! Click Verify & Login.';
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
@@ -1953,16 +1984,21 @@
 
     async function verifyOtpLogin() {
       try {
-        const email = document.getElementById('otpEmail').value;
-        const otp = document.getElementById('otpCode').value;
-        const res = await apiFetch('/api/auth/verify', {
+        const identifier = document.getElementById('otpEmail').value.trim();
+        const otp = document.getElementById('otpCode').value.trim();
+        if (!identifier || !otp) {
+          document.getElementById('authStatusMsg').textContent = 'Please enter Mobile/Email and 6-Digit OTP.';
+          return;
+        }
+        const res = await apiFetch('/api/auth/verify-phone', {
           method: 'POST',
-          body: JSON.stringify({ email, phone: email, otp })
-        }).catch(() => apiFetch('/api/auth/verify-phone', {
-          method: 'POST',
-          body: JSON.stringify({ phone: email, email, otp })
-        }));
+          body: JSON.stringify({ phone: identifier, email: identifier, otp })
+        });
         if (res.token) localStorage.setItem('orbit_token', res.token);
+        const savedName = localStorage.getItem('orbit_signup_name');
+        if (savedName && res.user && res.user.role !== 'owner') {
+          res.user.name = savedName;
+        }
         currentUser = res.user;
         updateAuthUI();
         closeAuthModal();
