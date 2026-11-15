@@ -210,7 +210,9 @@ function requireOwner(req, res, next) {
   next();
 }
 
-// Mobile OTP Auth Routes
+// =========================================================
+// AUTHENTICATION & MOBILE OTP ROUTES
+// =========================================================
 app.get('/api/auth/status', (req, res) => {
   const auth = loadAuthData();
   const cookies = parseCookies(req);
@@ -245,7 +247,7 @@ app.post('/api/auth/owner/claim', (req, res) => {
 
   const ownerUser = {
     id: auth.owner?.id || 'owner_' + crypto.randomBytes(6).toString('hex'),
-    name: (name || auth.owner?.name || 'Mayur Sonawane').trim(),
+    name: (name || auth.owner?.name || 'Mayur Sonawane (Owner)').trim(),
     phone: phone.trim(),
     role: 'owner',
     tier: 'pro',
@@ -323,7 +325,9 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ ok: true });
 });
 
-// Pro Subscription Manual Verification
+// =========================================================
+// PRO SUBSCRIPTION (₹799 MANUAL / QR CODE PAYMENT VERIFY)
+// =========================================================
 const PRO_PRICE_INR = 799;
 
 app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
@@ -379,8 +383,16 @@ app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
   res.json({ ok: true, user });
 });
 
+// =========================================================
+// HEALTH, MODELS & CHAT
+// =========================================================
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, version: '3.0.0', openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY) });
+  res.json({
+    ok: true,
+    version: '3.0.0',
+    openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY),
+    kieConfigured: Boolean(process.env.KIE_API_KEY)
+  });
 });
 
 app.get('/api/models', requireAuth, async (req, res) => {
@@ -388,8 +400,11 @@ app.get('/api/models', requireAuth, async (req, res) => {
   const defaults = [
     { id: 'openrouter/auto', name: 'OpenRouter Auto (Smart Router)', free: true },
     { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1 8B (Free)', free: true },
-    { id: 'google/gemma-2-9b-it:free', name: 'Google Gemma 2 9B (Free)', free: true }
+    { id: 'google/gemma-2-9b-it:free', name: 'Google Gemma 2 9B (Free)', free: true },
+    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
+    { id: 'openai/gpt-4o', name: 'OpenAI GPT-4o' }
   ];
+
   let openrouterModels = defaults;
   if (apiKey) {
     try {
@@ -402,6 +417,7 @@ app.get('/api/models', requireAuth, async (req, res) => {
       }
     } catch (e) {}
   }
+
   res.json({ ok: true, models: openrouterModels });
 });
 
@@ -416,6 +432,7 @@ app.post('/api/upload', requireAuth, upload.single('file'), async (req, res) => 
   const ws = loadWorkspaceData();
   let extractedText = '';
   const ext = path.extname(req.file.originalname).toLowerCase();
+
   try {
     if (pdfParse && (req.file.mimetype === 'application/pdf' || ext === '.pdf')) {
       const buffer = fs.readFileSync(req.file.path);
@@ -438,6 +455,7 @@ app.post('/api/upload', requireAuth, upload.single('file'), async (req, res) => 
     extractedText: extractedText.slice(0, 25000),
     uploadedAt: new Date().toISOString()
   };
+
   ws.files.unshift(fileMeta);
   saveWorkspaceData(ws);
   res.json({ ok: true, file: fileMeta });
@@ -456,6 +474,7 @@ app.get('/api/workspace', requireAuth, (req, res) => {
 app.post('/api/chat', requireAuth, async (req, res) => {
   const { messages = [], model = 'openrouter/auto', attachments = [], projectId = null } = req.body;
   const ws = loadWorkspaceData();
+
   let systemContext = [];
   if (projectId) {
     const proj = (ws.projects || []).find(p => p.id === projectId);
@@ -469,14 +488,23 @@ app.post('/api/chat', requireAuth, async (req, res) => {
     const attText = attachments.map(a => `Attached File (${a.originalName}):\n${a.extractedText || ''}`).join('\n\n');
     systemContext.push(attText);
   }
-  const finalMessages = systemContext.length ? [{ role: 'system', content: systemContext.join('\n\n') }, ...messages] : messages;
+
+  const finalMessages = systemContext.length
+    ? [{ role: 'system', content: systemContext.join('\n\n') }, ...messages]
+    : messages;
+
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) return res.status(503).json({ error: 'OPENROUTER_API_KEY missing in .env' });
 
   try {
     const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'http://localhost:3000',
+        'X-Title': 'ORBIT AI Private OS'
+      },
       body: JSON.stringify({ model, messages: finalMessages })
     });
     const data = await resp.json();
