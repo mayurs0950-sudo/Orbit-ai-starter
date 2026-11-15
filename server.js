@@ -1,9 +1,3 @@
-/**
- * ============================================================================
- * ORBIT AI — Private Intelligence OS (Production Node.js Backend: server.js)
- * Chief Architect & Owner: Mayur Sonawane (Claim Code: 411826 | UPI: mayur0797@axl)
- * ============================================================================
- */
 require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
@@ -13,8 +7,10 @@ const multer = require('multer');
 
 let pdfParse = null;
 let mammoth = null;
+let nodemailer = null;
 try { pdfParse = require('pdf-parse'); } catch (e) {}
 try { mammoth = require('mammoth'); } catch (e) {}
+try { nodemailer = require('nodemailer'); } catch (e) {}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -67,13 +63,7 @@ app.use(rateLimiter);
 function loadAuthData() {
   if (!fs.existsSync(AUTH_FILE)) {
     const initial = {
-      owner: {
-        id: 'owner_mayur_01',
-        name: 'Mayur Sonawane',
-        phone: '9876543210',
-        role: 'owner',
-        tier: 'pro'
-      },
+      owner: null,
       ownerClaimCode: process.env.OWNER_CLAIM_CODE || '411826',
       users: [],
       requests: [],
@@ -199,7 +189,7 @@ function setSessionCookie(res, userObj) {
     id: userObj.id,
     role: userObj.role,
     tier: userObj.tier || (userObj.role === 'owner' ? 'pro' : 'free'),
-    phone: userObj.phone || userObj.email,
+    email: userObj.email || userObj.phone,
     iat: Date.now()
   });
   res.setHeader('Set-Cookie', `orbit_session=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 3600}; SameSite=Lax`);
@@ -220,7 +210,52 @@ function requireOwner(req, res, next) {
   next();
 }
 
-// Auth Status Route
+// =========================================================
+// EMAIL OTP HELPER (NODEMAILER)
+// =========================================================
+async function sendOtpEmail(toEmail, otpCode, userName = 'User') {
+  const ws = loadWorkspaceData();
+  const smtpUser = process.env.SMTP_EMAIL || ws.providers?.smtpUser || '';
+  const smtpPass = process.env.SMTP_PASSWORD || ws.providers?.smtpPass || '';
+
+  console.log(`[ORBIT AI OTP] Email/Phone: ${toEmail} | OTP: ${otpCode}`);
+
+  if (!nodemailer || !smtpUser || !smtpPass) {
+    return { sent: false, reason: 'SMTP credentials not configured in .env or API Connections' };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: smtpUser, pass: smtpPass }
+    });
+
+    await transporter.sendMail({
+      from: `"ORBIT AI Security" <${smtpUser}>`,
+      to: toEmail,
+      subject: 'Your ORBIT AI Login OTP Code',
+      html: `
+        <div style="font-family:Segoe UI,sans-serif;padding:20px;background:#14161D;color:#E9E8F8;border-radius:16px;">
+          <h2 style="color:#8DB9F0;">ORBIT AI — Access Verification</h2>
+          <p>Hello <strong>${userName}</strong>,</p>
+          <p>Your 6-digit One-Time Password (OTP) to access ORBIT AI is:</p>
+          <div style="font-size:28px;font-weight:900;letter-spacing:6px;padding:14px 20px;background:#1E222D;color:#F5B69E;border-radius:12px;display:inline-block;margin:12px 0;">
+            ${otpCode}
+          </div>
+          <p style="font-size:12px;color:#B8B7CC;">This code is valid for 10 minutes. Do not share it with anyone.</p>
+        </div>
+      `
+    });
+    return { sent: true };
+  } catch (err) {
+    console.error('[ORBIT AI EMAIL ERROR]:', err.message);
+    return { sent: false, reason: err.message };
+  }
+}
+
+// =========================================================
+// AUTHENTICATION & ADMIN ROUTES (UPDATED FOR DIRECT MOBILE OTP)
+// =========================================================
 app.get('/api/auth/status', (req, res) => {
   const auth = loadAuthData();
   const cookies = parseCookies(req);
@@ -241,23 +276,22 @@ app.get('/api/auth/status', (req, res) => {
   res.json({ ok: true, hasOwner: Boolean(auth.owner), authenticated: Boolean(user), user: user || null });
 });
 
-// Owner Claim Route (Code: 411826)
 app.post('/api/auth/owner/claim', (req, res) => {
-  const { name, phone, claimCode } = req.body;
-  if (!phone || !claimCode) {
-    return res.status(400).json({ error: 'Owner phone and claim code are required.' });
+  const { name, email, claimCode } = req.body;
+  if (!email || !claimCode) {
+    return res.status(400).json({ error: 'Owner email and claim code are required.' });
   }
   const auth = loadAuthData();
   const validClaimCode = String(auth.ownerClaimCode || process.env.OWNER_CLAIM_CODE || '411826').trim();
 
   if (String(claimCode).trim() !== validClaimCode) {
-    return res.status(403).json({ error: 'Invalid Owner Setup Code.' });
+    return res.status(403).json({ error: 'Invalid Owner Claim Code.' });
   }
 
   const ownerUser = {
-    id: auth.owner?.id || 'owner_mayur_01',
-    name: (name || 'Mayur Sonawane').trim(),
-    phone: phone.trim(),
+    id: auth.owner?.id || 'owner_' + crypto.randomBytes(6).toString('hex'),
+    name: (name || auth.owner?.name || 'Mayur Sonawane (Owner)').trim(),
+    email: email.trim().toLowerCase(),
     role: 'owner',
     tier: 'pro',
     createdAt: auth.owner?.createdAt || new Date().toISOString()
@@ -269,19 +303,20 @@ app.post('/api/auth/owner/claim', (req, res) => {
   res.json({ ok: true, user: ownerUser, token });
 });
 
-// Mobile OTP Issue Route
+// डायरेक्ट मोबाईल नंबर किंवा इमेलवर OTP पाठवणे (विना ॲडमिन अप्रूवल)
 app.post('/api/auth/issue-phone', async (req, res) => {
   const { phone } = req.body;
   if (!phone) return res.status(400).json({ error: 'Mobile number required' });
-  const cleanPhone = phone.trim();
+  const cleanId = phone.trim().toLowerCase();
   
   const auth = loadAuthData();
-  let user = auth.users.find(u => u.phone === cleanPhone);
+  let user = auth.users.find(u => u.email?.toLowerCase() === cleanId || u.phone === cleanId);
   if (!user) {
     user = {
       id: 'usr_' + crypto.randomBytes(6).toString('hex'),
-      name: 'User ' + cleanPhone.slice(-4),
-      phone: cleanPhone,
+      name: 'User ' + cleanId.slice(-4),
+      email: cleanId.includes('@') ? cleanId : null,
+      phone: !cleanId.includes('@') ? cleanId : null,
       role: 'guest',
       tier: 'free',
       revoked: false,
@@ -292,36 +327,40 @@ app.post('/api/auth/issue-phone', async (req, res) => {
 
   const otp = String(Math.floor(100000 + Math.random() * 900000));
   auth.otps = auth.otps || {};
-  auth.otps[cleanPhone] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
+  auth.otps[cleanId] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
   saveAuthData(auth);
+
+  let mailResult = { sent: false };
+  if (cleanId.includes('@')) {
+    mailResult = await sendOtpEmail(cleanId, otp, user?.name || 'User');
+  }
 
   res.json({
     ok: true,
     devOtp: otp,
-    message: `OTP generated successfully! (Dev OTP: ${otp})`
+    message: mailResult.sent ? `6-digit OTP sent to ${cleanId}` : `OTP Generated! (Dev OTP: ${otp})`
   });
 });
 
-// Mobile OTP Verify Route
 app.post('/api/auth/verify-phone', (req, res) => {
   const { phone, otp } = req.body;
   if (!phone || !otp) return res.status(400).json({ error: 'Phone and OTP required' });
-  const cleanPhone = phone.trim();
+  const cleanId = phone.trim().toLowerCase();
 
   const auth = loadAuthData();
-  const record = auth.otps ? auth.otps[cleanPhone] : null;
+  const record = auth.otps ? auth.otps[cleanId] : null;
   if (!record || record.otp !== String(otp).trim() || (record.expiresAt && Date.now() > record.expiresAt)) {
     return res.status(401).json({ error: 'Invalid or expired OTP.' });
   }
-  delete auth.otps[cleanPhone];
+  delete auth.otps[cleanId];
   saveAuthData(auth);
 
-  if (auth.owner && auth.owner.phone === cleanPhone) {
+  if (auth.owner && (auth.owner.email?.toLowerCase() === cleanId || auth.owner.phone === cleanId)) {
     const ownerObj = { ...auth.owner, role: 'owner', tier: 'pro' };
     const token = setSessionCookie(res, ownerObj);
     return res.json({ ok: true, user: ownerObj, token });
   }
-  const user = auth.users.find(u => u.phone === cleanPhone && !u.revoked);
+  const user = auth.users.find(u => (u.email?.toLowerCase() === cleanId || u.phone === cleanId) && !u.revoked);
   if (!user) return res.status(403).json({ error: 'User access revoked or not found' });
 
   const guestObj = { ...user, role: 'guest', tier: user.tier || 'free' };
@@ -334,17 +373,19 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ ok: true });
 });
 
-// Pro Subscription Payment Verification (₹799 • mayur0797@axl)
+// =========================================================
+// PRO SUBSCRIPTION (₹799 MANUAL / QR CODE PAYMENT VERIFY)
+// =========================================================
 const PRO_PRICE_INR = 799;
 
 app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
   const { paymentId, upiId } = req.body;
   if (!paymentId) {
-    return res.status(400).json({ error: 'Please enter the UPI Transaction ID (UTR).' });
+    return res.status(400).json({ error: 'कृपया पेमेंट ट्रान्झॅक्शन आयडी (Transaction ID) टाका.' });
   }
 
   const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === req.user.id || u.phone === req.user.phone);
+  const user = auth.users.find(u => u.id === req.user.id || u.email?.toLowerCase() === req.user.email?.toLowerCase() || u.phone === req.user.phone);
   
   if (user) {
     user.tier = 'pro';
@@ -354,8 +395,8 @@ app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
   auth.payments = auth.payments || [];
   auth.payments.unshift({
     id: paymentId,
-    upiId: upiId || 'mayur0797@axl',
-    phone: req.user.phone,
+    upiId: upiId || 'UPI / QR Payment',
+    email: req.user.email || req.user.phone,
     name: req.user.name,
     amountInr: PRO_PRICE_INR,
     status: 'paid',
@@ -371,24 +412,47 @@ app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
     ok: true,
     user: updatedUser,
     token,
-    message: 'Payment verified successfully! ORBIT AI Pro Subscription is now active.'
+    message: 'पेमेंट यशस्वीरित्या व्हेरिफाय झाले! तुमचे ORBIT AI Pro सबस्क्रिप्शन आता ॲक्टिव्ह झाले आहे.'
   });
 });
 
+app.get('/api/auth/users', requireOwner, (req, res) => {
+  const auth = loadAuthData();
+  res.json({ ok: true, users: auth.users || [], payments: auth.payments || [] });
+});
+
+app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
+  const { userId, revoked } = req.body;
+  const auth = loadAuthData();
+  const user = auth.users.find(u => u.id === userId);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  user.revoked = Boolean(revoked);
+  saveAuthData(auth);
+  res.json({ ok: true, user });
+});
+
+// =========================================================
+// HEALTH, MODELS, KIE.AI & CUSTOM API PROVIDERS
+// =========================================================
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    version: '4.2.0',
-    openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY)
+    version: '3.0.0',
+    openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY),
+    kieConfigured: Boolean(process.env.KIE_API_KEY),
+    parsers: { pdf: Boolean(pdfParse), docx: Boolean(mammoth) }
   });
 });
 
 app.get('/api/models', requireAuth, async (req, res) => {
   const apiKey = process.env.OPENROUTER_API_KEY;
+  const ws = loadWorkspaceData();
   const defaults = [
     { id: 'openrouter/auto', name: 'OpenRouter Auto (Smart Router)', free: true },
     { id: 'meta-llama/llama-3.1-8b-instruct:free', name: 'Llama 3.1 8B (Free)', free: true },
-    { id: 'google/gemma-2-9b-it:free', name: 'Google Gemma 2 9B (Free)', free: true }
+    { id: 'google/gemma-2-9b-it:free', name: 'Google Gemma 2 9B (Free)', free: true },
+    { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
+    { id: 'openai/gpt-4o', name: 'OpenAI GPT-4o' }
   ];
 
   let openrouterModels = defaults;
@@ -404,10 +468,159 @@ app.get('/api/models', requireAuth, async (req, res) => {
     } catch (e) {}
   }
 
-  res.json({ ok: true, models: openrouterModels });
+  res.json({
+    ok: true,
+    models: openrouterModels,
+    customProviders: (ws.customProviders || []).map(p => ({
+      id: p.id,
+      name: p.name,
+      endpoint: p.endpoint,
+      models: p.models || []
+    }))
+  });
 });
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
+app.post('/api/providers/config', requireOwner, (req, res) => {
+  const { openrouterKey, tavilyKey, kieKey, smtpUser, smtpPass, customUrl } = req.body;
+  const ws = loadWorkspaceData();
+  ws.providers = ws.providers || {};
+
+  if (openrouterKey) process.env.OPENROUTER_API_KEY = openrouterKey.trim();
+  if (tavilyKey) process.env.TAVILY_API_KEY = tavilyKey.trim();
+  if (kieKey) process.env.KIE_API_KEY = kieKey.trim();
+  if (smtpUser) { process.env.SMTP_EMAIL = smtpUser.trim(); ws.providers.smtpUser = smtpUser.trim(); }
+  if (smtpPass) { process.env.SMTP_PASSWORD = smtpPass.trim(); ws.providers.smtpPass = smtpPass.trim(); }
+  if (customUrl) ws.providers.customUrl = customUrl.trim();
+
+  saveWorkspaceData(ws);
+  res.json({ ok: true, message: 'All provider & SMTP keys securely saved on server!' });
+});
+
+app.post('/api/providers/custom', requireOwner, async (req, res) => {
+  const { name, apiKey, endpoint } = req.body;
+  if (!name || !apiKey || !endpoint) {
+    return res.status(400).json({ error: 'Provider name, API key, and Endpoint URL are required.' });
+  }
+
+  const cleanEndpoint = endpoint.trim().replace(/\/$/, '');
+  let fetchedModels = [];
+
+  try {
+    const resp = await fetch(`${cleanEndpoint}/models`, {
+      headers: { 'Authorization': `Bearer ${apiKey.trim()}` }
+    });
+    const data = await resp.json().catch(() => ({}));
+    const rawList = data.data || data.models || [];
+    if (Array.isArray(rawList) && rawList.length) {
+      fetchedModels = rawList.slice(0, 100).map(m => ({
+        id: m.id || m.name,
+        name: m.name || m.id
+      }));
+    }
+  } catch (e) {}
+
+  if (!fetchedModels.length) {
+    fetchedModels = [{ id: `${name.toLowerCase().replace(/\s+/g, '-')}-default`, name: `${name} Default Model` }];
+  }
+
+  const ws = loadWorkspaceData();
+  ws.customProviders = ws.customProviders || [];
+  const provId = 'cust_' + crypto.randomBytes(4).toString('hex');
+  const newProvider = {
+    id: provId,
+    name: name.trim(),
+    apiKey: apiKey.trim(),
+    endpoint: cleanEndpoint,
+    models: fetchedModels,
+    createdAt: new Date().toISOString()
+  };
+
+  ws.customProviders = ws.customProviders.filter(p => p.name.toLowerCase() !== name.trim().toLowerCase());
+  ws.customProviders.push(newProvider);
+  saveWorkspaceData(ws);
+
+  res.json({
+    ok: true,
+    provider: { id: newProvider.id, name: newProvider.name, endpoint: newProvider.endpoint, models: newProvider.models }
+  });
+});
+
+app.post('/api/kie/generate', requireAuth, async (req, res) => {
+  if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
+    return res.status(403).json({ error: 'Pro Subscription required for 8K KIE.ai Media Studio.' });
+  }
+  const { model, prompt, aspectRatio, quality } = req.body;
+  const kieApiKey = process.env.KIE_API_KEY || '';
+  if (!prompt) return res.status(400).json({ error: 'Prompt required' });
+
+  const taskId = 'task_' + crypto.randomBytes(6).toString('hex');
+  const enhancedPrompt = `${prompt}, ${quality || '8K Ultra HD'}, hyper-detailed, photorealistic, masterpiece`;
+  const fallbackUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(enhancedPrompt)}?width=1920&height=1920&nologo=true`;
+
+  global.kieTasks = global.kieTasks || {};
+  global.kieTasks[taskId] = { status: 'processing', urls: [] };
+
+  (async () => {
+    if (kieApiKey) {
+      try {
+        const resp = await fetch('https://api.kie.ai/v1/images/generations', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${kieApiKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: model || 'flux/3', prompt: enhancedPrompt, aspect_ratio: aspectRatio || '1:1', quality: '8k' })
+        });
+        const data = await resp.json();
+        const outUrl = data?.data?.[0]?.url || data?.url || data?.output_url || fallbackUrl;
+        global.kieTasks[taskId] = { status: 'completed', urls: [outUrl] };
+        return;
+      } catch (e) {}
+    }
+    setTimeout(() => {
+      global.kieTasks[taskId] = { status: 'completed', urls: [fallbackUrl] };
+    }, 2500);
+  })();
+
+  res.json({ ok: true, taskId, message: '8K Ultra HD generation started.' });
+});
+
+app.get('/api/kie/status', requireAuth, (req, res) => {
+  const { taskId } = req.query;
+  global.kieTasks = global.kieTasks || {};
+  const task = global.kieTasks[taskId] || { status: 'processing' };
+  res.json({ ok: true, ...task });
+});
+
+// =========================================================
+// SEARCH, FILES, WORKSPACE & AI CHAT
+// =========================================================
+app.post('/api/search', requireAuth, async (req, res) => {
+  const { query } = req.body;
+  if (!query) return res.status(400).json({ error: 'Query required' });
+  const tavilyKey = process.env.TAVILY_API_KEY;
+
+  if (tavilyKey) {
+    try {
+      const resp = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: tavilyKey, query, include_answer: true, max_results: 5 })
+      });
+      const data = await resp.json();
+      return res.json({ ok: true, answer: data.answer, results: data.results || [] });
+    } catch (e) {}
+  }
+
+  res.json({
+    ok: true,
+    answer: `Live search summary for: "${query}"`,
+    results: [{ title: query, url: `https://duckduckgo.com/?q=${encodeURIComponent(query)}`, content: 'Configure TAVILY_API_KEY in API Connections for deep live web citations.' }]
+  });
+});
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+  filename: (req, file, cb) => cb(null, `${Date.now()}_${file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_')}`)
+});
+const upload = multer({ storage, limits: { fileSize: 18 * 1024 * 1024 } });
 
 app.post('/api/upload', requireAuth, upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -417,20 +630,23 @@ app.post('/api/upload', requireAuth, upload.single('file'), async (req, res) => 
 
   try {
     if (pdfParse && (req.file.mimetype === 'application/pdf' || ext === '.pdf')) {
-      const parsed = await pdfParse(req.file.buffer);
+      const buffer = fs.readFileSync(req.file.path);
+      const parsed = await pdfParse(buffer);
       extractedText = parsed.text || '';
     } else if (mammoth && (ext === '.docx' || req.file.mimetype.includes('wordprocessingml'))) {
-      const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+      const result = await mammoth.extractRawText({ path: req.file.path });
       extractedText = result.value || '';
-    } else {
-      extractedText = req.file.buffer.toString('utf8');
+    } else if (['.txt', '.md', '.csv', '.json', '.js', '.py', '.html', '.css'].includes(ext)) {
+      extractedText = fs.readFileSync(req.file.path, 'utf8');
     }
   } catch (e) {}
 
   const fileMeta = {
     id: 'file_' + crypto.randomBytes(6).toString('hex'),
     originalName: req.file.originalname,
+    filename: req.file.filename,
     size: req.file.size,
+    url: `/api/files/download/${req.file.filename}`,
     extractedText: extractedText.slice(0, 25000),
     uploadedAt: new Date().toISOString()
   };
@@ -445,9 +661,58 @@ app.get('/api/files', requireAuth, (req, res) => {
   res.json({ ok: true, files: ws.files || [] });
 });
 
+app.get('/api/files/download/:filename', requireAuth, (req, res) => {
+  const filePath = path.join(UPLOADS_DIR, path.basename(req.params.filename));
+  if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
+  res.sendFile(filePath);
+});
+
+app.delete('/api/files/:id', requireAuth, (req, res) => {
+  const ws = loadWorkspaceData();
+  ws.files = (ws.files || []).filter(f => f.id !== req.params.id);
+  saveWorkspaceData(ws);
+  res.json({ ok: true });
+});
+
 app.get('/api/workspace', requireAuth, (req, res) => {
   const ws = loadWorkspaceData();
   res.json({ ok: true, agents: ws.agents, projects: ws.projects, knowledge: ws.knowledge });
+});
+
+app.post('/api/agents', requireAuth, (req, res) => {
+  if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
+    return res.status(403).json({ error: 'Pro Subscription required.' });
+  }
+  const { name, instructions } = req.body;
+  const ws = loadWorkspaceData();
+  const agent = { id: 'agent_' + crypto.randomBytes(4).toString('hex'), name, instructions };
+  ws.agents.push(agent);
+  saveWorkspaceData(ws);
+  res.json({ ok: true, agent });
+});
+
+app.post('/api/projects', requireAuth, (req, res) => {
+  if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
+    return res.status(403).json({ error: 'Pro Subscription required.' });
+  }
+  const { name, instructions } = req.body;
+  const ws = loadWorkspaceData();
+  const proj = { id: 'proj_' + crypto.randomBytes(4).toString('hex'), name, instructions };
+  ws.projects.push(proj);
+  saveWorkspaceData(ws);
+  res.json({ ok: true, project: proj });
+});
+
+app.post('/api/knowledge', requireAuth, (req, res) => {
+  if (req.user.role !== 'owner' && req.user.tier !== 'pro') {
+    return res.status(403).json({ error: 'Pro Subscription required.' });
+  }
+  const { title, content } = req.body;
+  const ws = loadWorkspaceData();
+  const doc = { id: 'kb_' + crypto.randomBytes(4).toString('hex'), title, content };
+  ws.knowledge.push(doc);
+  saveWorkspaceData(ws);
+  res.json({ ok: true, doc });
 });
 
 app.post('/api/chat', requireAuth, async (req, res) => {
@@ -458,6 +723,10 @@ app.post('/api/chat', requireAuth, async (req, res) => {
   if (projectId) {
     const proj = (ws.projects || []).find(p => p.id === projectId);
     if (proj) systemContext.push(`Project Context (${proj.name}): ${proj.instructions}`);
+  }
+  if (ws.knowledge && ws.knowledge.length) {
+    const kbSnippet = ws.knowledge.slice(0, 5).map(k => `[${k.title}]: ${k.content.slice(0, 1000)}`).join('\n');
+    systemContext.push(`Knowledge Base:\n${kbSnippet}`);
   }
   if (Array.isArray(attachments) && attachments.length) {
     const attText = attachments.map(a => `Attached File (${a.originalName}):\n${a.extractedText || ''}`).join('\n\n');
@@ -476,7 +745,9 @@ app.post('/api/chat', requireAuth, async (req, res) => {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'http://localhost:3000',
+        'X-Title': 'ORBIT AI Private OS'
       },
       body: JSON.stringify({ model, messages: finalMessages })
     });
