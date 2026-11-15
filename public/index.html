@@ -27,9 +27,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
   <style>
-    /* ==========================================================================
-       1. 3D & 4D LIQUID GLASSMORPHISM DESIGN TOKENS & VARIABLES
-       ========================================================================== */
     :root {
       --charcoal-deep: #14161D;
       --charcoal-surface: #1E222D;
@@ -40,10 +37,7 @@
       --lavender-muted: rgba(233, 232, 248, 0.65);
       --sunset-peach: #F5B69E;
       --sunset-peach-glow: rgba(245, 182, 158, 0.35);
-      --magma-crimson: #FF3B30;
-      --magma-amber: #FF9500;
 
-      /* Multi-layered 3D & 4D Liquid Glass Shadows & Borders */
       --glass-3d-shadow: 
         0 24px 60px -12px rgba(5, 7, 12, 0.78),
         0 8px 24px -4px rgba(0, 0, 0, 0.5),
@@ -62,47 +56,10 @@
       --glass-card-bg: linear-gradient(145deg, rgba(36, 41, 56, 0.65) 0%, rgba(22, 25, 34, 0.48) 100%);
     }
 
-    /* Light Glass Theme Override */
-    html.light-glass {
-      --charcoal-deep: #EEF2F9;
-      --charcoal-surface: #FFFFFF;
-      --charcoal-elevated: rgba(255, 255, 255, 0.72);
-      --powder-blue: #2B6CB0;
-      --powder-blue-glow: rgba(43, 108, 176, 0.25);
-      --lavender-white: #1A202C;
-      --lavender-muted: rgba(26, 32, 44, 0.68);
-      --sunset-peach: #DD6B20;
-      --sunset-peach-glow: rgba(221, 107, 32, 0.25);
-      --glass-3d-shadow:
-        0 20px 50px -12px rgba(30, 41, 59, 0.14),
-        0 6px 18px -4px rgba(30, 41, 59, 0.08),
-        inset 0 2px 2px 0 rgba(255, 255, 255, 0.9),
-        inset 0 -1px 2px 0 rgba(43, 108, 176, 0.12);
-      --glass-border: rgba(43, 108, 176, 0.18);
-      --glass-border-highlight: rgba(43, 108, 176, 0.45);
-      --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(240, 245, 255, 0.68) 100%);
-      --glass-card-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(237, 242, 247, 0.68) 100%);
-    }
-
     * {
       box-sizing: border-box;
       scrollbar-width: thin;
       scrollbar-color: rgba(141, 185, 240, 0.3) transparent;
-    }
-
-    *::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    *::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    *::-webkit-scrollbar-thumb {
-      background: rgba(141, 185, 240, 0.28);
-      border-radius: 9999px;
-    }
-    *::-webkit-scrollbar-thumb:hover {
-      background: rgba(141, 185, 240, 0.55);
     }
 
     body {
@@ -110,21 +67,10 @@
       padding: 0;
       background-color: var(--charcoal-deep);
       color: var(--lavender-white);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', sans-serif;
       overflow-x: hidden;
-      transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
     }
 
-    .font-display {
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    .font-mono-code {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* ==========================================================================
-       2. LIQUID 3D & 4D GLASSMORPHISM UTILITIES
-       ========================================================================== */
     .liquid-glass {
       background: var(--glass-bg);
       backdrop-filter: blur(30px) saturate(200%);
@@ -144,43 +90,12 @@
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .liquid-glass-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.05),
-        transparent
-      );
-      transform: skewX(-20deg);
-      transition: left 0.7s ease;
-      pointer-events: none;
-    }
-
-    .liquid-glass-card:hover::before {
-      left: 160%;
-    }
-
     .liquid-glass-card:hover {
       border-color: var(--glass-border-highlight);
       box-shadow: var(--glass-4d-hover-shadow);
       transform: translateY(-3px);
     }
 
-    /* Glowing Gradient Border Pill */
-    .glow-border-pill {
-      position: relative;
-      background: rgba(30, 34, 45, 0.65);
-      border: 1px solid rgba(141, 185, 240, 0.3);
-      box-shadow: 0 0 25px rgba(141, 185, 240, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-    }
-
-    /* Ambient Floating Stage Orbs */
     .ambient-stage {
       position: fixed;
       inset: 0;
@@ -197,34 +112,9 @@
       animation: floatOrb 22s infinite alternate ease-in-out;
     }
 
-    .orb-1 {
-      width: 520px;
-      height: 520px;
-      background: radial-gradient(circle, #8DB9F0 0%, rgba(141, 185, 240, 0) 70%);
-      top: -12%;
-      left: -8%;
-      animation-duration: 24s;
-    }
-
-    .orb-2 {
-      width: 480px;
-      height: 480px;
-      background: radial-gradient(circle, #F5B69E 0%, rgba(245, 182, 158, 0) 70%);
-      bottom: -15%;
-      right: -5%;
-      animation-duration: 28s;
-      animation-delay: -7s;
-    }
-
-    .orb-3 {
-      width: 420px;
-      height: 420px;
-      background: radial-gradient(circle, rgba(255, 69, 58, 0.45) 0%, rgba(141, 185, 240, 0) 70%);
-      top: 28%;
-      left: 42%;
-      animation-duration: 19s;
-      animation-delay: -4s;
-    }
+    .orb-1 { width: 520px; height: 520px; background: radial-gradient(circle, #8DB9F0 0%, transparent 70%); top: -12%; left: -8%; }
+    .orb-2 { width: 480px; height: 480px; background: radial-gradient(circle, #F5B69E 0%, transparent 70%); bottom: -15%; right: -5%; }
+    .orb-3 { width: 420px; height: 420px; background: radial-gradient(circle, rgba(255, 69, 58, 0.45) 0%, transparent 70%); top: 28%; left: 42%; }
 
     @keyframes floatOrb {
       0% { transform: translate(0, 0) scale(1); }
@@ -232,7 +122,6 @@
       100% { transform: translate(-35px, 40px) scale(0.95); }
     }
 
-    /* Sidebar Navigation Button Animations */
     .nav-item {
       display: flex;
       align-items: center;
@@ -244,27 +133,12 @@
       font-weight: 500;
       color: var(--lavender-muted);
       border: 1px solid transparent;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s ease;
       cursor: pointer;
-      user-select: none;
     }
+    .nav-item:hover { color: var(--lavender-white); background: rgba(141, 185, 240, 0.09); }
+    .nav-item.active { color: var(--lavender-white); background: linear-gradient(135deg, rgba(141, 185, 240, 0.22) 0%, rgba(245, 182, 158, 0.14) 100%); border-color: rgba(141, 185, 240, 0.48); }
 
-    .nav-item:hover {
-      color: var(--lavender-white);
-      background: rgba(141, 185, 240, 0.09);
-      border-color: rgba(141, 185, 240, 0.2);
-      transform: translateX(6px);
-    }
-
-    .nav-item.active {
-      color: var(--lavender-white);
-      background: linear-gradient(135deg, rgba(141, 185, 240, 0.22) 0%, rgba(245, 182, 158, 0.14) 100%);
-      border-color: rgba(141, 185, 240, 0.48);
-      box-shadow: 0 8px 20px -4px rgba(141, 185, 240, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.25);
-      font-weight: 600;
-    }
-
-    /* Caustic Floor Fire Reflection Underneath the 3D/4D Magma Orb */
     .caustic-floor {
       position: absolute;
       bottom: 8px;
@@ -275,3007 +149,382 @@
       border-radius: 50%;
       background: radial-gradient(ellipse at center, rgba(255, 94, 58, 0.68) 0%, rgba(245, 182, 158, 0.32) 45%, transparent 75%);
       filter: blur(16px);
-      animation: causticPulse 3.2s infinite ease-in-out;
       pointer-events: none;
     }
 
-    @keyframes causticPulse {
-      0%, 100% { transform: translateX(-50%) scaleX(1) scaleY(1); opacity: 0.72; }
-      50% { transform: translateX(-50%) scaleX(1.18) scaleY(1.25); opacity: 0.96; }
-    }
-
-    /* Prism Mini Logo Animation */
     .prism-logo {
       background: conic-gradient(from 180deg at 50% 50%, #8DB9F0 0deg, #F5B69E 120deg, #FF453A 240deg, #8DB9F0 360deg);
-      animation: spinSlow 12s linear infinite;
-    }
-
-    @keyframes spinSlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    /* Markdown Content Styling in Chat & Academic Reports */
-    .markdown-body h1, .markdown-body h2, .markdown-body h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      margin-top: 1.1rem;
-      margin-bottom: 0.5rem;
-      color: var(--powder-blue);
-    }
-    .markdown-body h1 { font-size: 1.35rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.35rem; }
-    .markdown-body h2 { font-size: 1.15rem; }
-    .markdown-body h3 { font-size: 1.02rem; color: var(--sunset-peach); }
-    .markdown-body p { margin-bottom: 0.75rem; line-height: 1.65; }
-    .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 0.75rem; list-style-type: disc; }
-    .markdown-body li { margin-bottom: 0.25rem; }
-    .markdown-body pre {
-      background: rgba(12, 14, 20, 0.88);
-      border: 1px solid rgba(141, 185, 240, 0.25);
-      border-radius: 0.75rem;
-      padding: 0.9rem;
-      overflow-x: auto;
-      margin: 0.75rem 0;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      color: #E9E8F8;
-    }
-    .markdown-body code {
-      font-family: 'JetBrains Mono', monospace;
-      background: rgba(141, 185, 240, 0.15);
-      padding: 0.15rem 0.4rem;
-      border-radius: 0.35rem;
-      font-size: 0.84em;
-    }
-    .markdown-body pre code {
-      background: transparent;
-      padding: 0;
-    }
-    .markdown-body table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 0.85rem 0;
-      font-size: 0.85rem;
-    }
-    .markdown-body th, .markdown-body td {
-      border: 1px solid var(--glass-border);
-      padding: 0.55rem 0.75rem;
-      text-align: left;
-    }
-    .markdown-body th {
-      background: rgba(141, 185, 240, 0.14);
-      color: var(--powder-blue);
-    }
-
-    /* Button 3D Press Feel */
-    .btn-3d {
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-    }
-    .btn-3d:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 26px -4px rgba(141, 185, 240, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.45);
-    }
-    .btn-3d:active {
-      transform: translateY(1px);
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-[#8DB9F0]/30 selection:text-[#E9E8F8]">
+<body class="min-h-screen flex flex-col">
 
-  <!-- ==========================================================================
-       AMBIENT 3D/4D FLOATING GLASS BACKGROUND STAGE
-       ========================================================================== -->
   <div class="ambient-stage">
     <div class="ambient-orb orb-1"></div>
     <div class="ambient-orb orb-2"></div>
     <div class="ambient-orb orb-3"></div>
   </div>
 
-  <!-- ==========================================================================
-       GLOBAL NOTIFICATION TOAST CONTAINER (NO ALERT/CONFIRM USED)
-       ========================================================================== -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
-
-  <!-- ==========================================================================
-       MAIN APPLICATION SHELL (SIDEBAR + TOPBAR + WORKSPACE STAGE)
-       ========================================================================== -->
-  <div class="relative z-10 flex h-screen w-screen overflow-hidden">
-
-    <!-- Mobile Sidebar Backdrop -->
-    <div id="sidebarBackdrop" onclick="toggleMobileSidebar(false)" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden lg:hidden"></div>
-
-    <!-- ========================================================================
-         FIXED COLLAPSIBLE SIDEBAR
-         ======================================================================== -->
-    <aside id="appSidebar" class="liquid-glass fixed lg:static inset-y-0 left-0 z-40 w-72 flex flex-col justify-between transition-all duration-300 ease-out -translate-x-full lg:translate-x-0 border-r border-[var(--glass-border)]">
-      
-      <!-- Brand Header with Prism Mini-Logo -->
-      <div class="p-4 border-b border-[var(--glass-border)] flex items-center justify-between">
-        <div class="flex items-center gap-3 cursor-pointer" onclick="switchModule('overview')">
-          <div class="relative w-10 h-10 rounded-xl flex items-center justify-center p-[2px] shadow-lg overflow-hidden">
-            <div class="prism-logo absolute inset-0"></div>
-            <div class="relative w-full h-full bg-[#14161D] rounded-[10px] flex items-center justify-center">
-              <i class="fa-solid fa-atom text-[#8DB9F0] text-lg animate-pulse"></i>
-            </div>
-          </div>
-          <div class="sidebar-text">
-            <div class="flex items-center gap-1.5">
-              <span class="font-display font-bold text-base tracking-wider bg-gradient-to-r from-[#8DB9F0] via-[#E9E8F8] to-[#F5B69E] bg-clip-text text-transparent">ORBIT AI</span>
-              <span id="sidebarTierChip" class="text-[10px] font-mono-code uppercase px-1.5 py-0.5 rounded bg-[#8DB9F0]/15 text-[#8DB9F0] border border-[#8DB9F0]/30">FREE</span>
-            </div>
-            <p class="text-[11px] opacity-65 tracking-tight">Private Intelligence OS v4.2</p>
-          </div>
-        </div>
-        <button onclick="toggleSidebarCollapse()" class="hidden lg:flex w-8 h-8 rounded-lg items-center justify-center hover:bg-white/10 text-xs opacity-75 hover:opacity-100 transition" title="Collapse/Expand Sidebar">
-          <i id="sidebarCollapseIcon" class="fa-solid fa-angles-left"></i>
-        </button>
-        <button onclick="toggleMobileSidebar(false)" class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/10">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <!-- Navigation List -->
-      <div class="flex-1 overflow-y-auto px-3 py-3 space-y-5">
-        
-        <!-- SECTION: WORKSPACE -->
-        <div>
-          <div class="px-3 mb-2 flex items-center justify-between">
-            <span class="sidebar-text text-[10px] font-mono-code uppercase tracking-[0.2em] text-[#8DB9F0] font-semibold" data-i18n="sec_workspace">WORKSPACE</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-[#8DB9F0] shadow-[0_0_8px_#8DB9F0]"></span>
-          </div>
-          <nav class="space-y-1" id="navWorkspace">
-            <button onclick="switchModule('overview')" data-mod="overview" class="nav-item active">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-globe w-5 text-center text-[#8DB9F0]"></i>
-                <span class="sidebar-text" data-i18n="nav_overview">Overview & 4D Core</span>
-              </span>
-            </button>
-
-            <button onclick="switchModule('chat')" data-mod="chat" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-comments w-5 text-center text-[#F5B69E]"></i>
-                <span class="sidebar-text" data-i18n="nav_chat">AI Chat Workspace</span>
-              </span>
-              <span class="sidebar-text text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">LIVE</span>
-            </button>
-
-            <button onclick="switchModule('search')" data-mod="search" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-compass w-5 text-center text-sky-400"></i>
-                <span class="sidebar-text" data-i18n="nav_search">AI Live Search</span>
-              </span>
-              <span class="pro-lock-badge text-xs" data-lock="true">🔒</span>
-            </button>
-
-            <button onclick="switchModule('agents')" data-mod="agents" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-robot w-5 text-center text-purple-400"></i>
-                <span class="sidebar-text" data-i18n="nav_agents">Autonomous Agents</span>
-              </span>
-              <span class="pro-lock-badge text-xs" data-lock="true">🔒</span>
-            </button>
-
-            <button onclick="switchModule('academic')" data-mod="academic" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-graduation-cap w-5 text-center text-amber-400"></i>
-                <span class="sidebar-text" data-i18n="nav_academic">Academic Project Suite</span>
-              </span>
-              <span class="pro-lock-badge text-xs" data-lock="true">🔒</span>
-            </button>
-
-            <button onclick="switchModule('modelhub')" data-mod="modelhub" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-microchip w-5 text-center text-cyan-400"></i>
-                <span class="sidebar-text" data-i18n="nav_modelhub">AI Model Hub Pro</span>
-              </span>
-              <span class="sidebar-text text-[10px] px-1.5 py-0.5 rounded bg-[#8DB9F0]/20 text-[#8DB9F0]">128+</span>
-            </button>
-
-            <button onclick="switchModule('media')" data-mod="media" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-wand-magic-sparkles w-5 text-center text-pink-400"></i>
-                <span class="sidebar-text" data-i18n="nav_media">Image & Video AI 8K</span>
-              </span>
-              <span class="pro-lock-badge text-xs" data-lock="true">🔒</span>
-            </button>
-
-            <button onclick="switchModule('automation')" data-mod="automation" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-diagram-project w-5 text-center text-orange-400"></i>
-                <span class="sidebar-text" data-i18n="nav_automation">Task Automation</span>
-              </span>
-              <span class="pro-lock-badge text-xs" data-lock="true">🔒</span>
-            </button>
-          </nav>
-        </div>
-
-        <!-- SECTION: PERSONAL -->
-        <div>
-          <div class="px-3 mb-2 flex items-center justify-between">
-            <span class="sidebar-text text-[10px] font-mono-code uppercase tracking-[0.2em] text-[#F5B69E] font-semibold" data-i18n="sec_personal">PERSONAL</span>
-            <span class="w-1.5 h-1.5 rounded-full bg-[#F5B69E] shadow-[0_0_8px_#F5B69E]"></span>
-          </div>
-          <nav class="space-y-1" id="navPersonal">
-            <button onclick="switchModule('projects')" data-mod="projects" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-folder-tree w-5 text-center text-indigo-400"></i>
-                <span class="sidebar-text" data-i18n="nav_projects">Projects Context</span>
-              </span>
-              <span class="pro-lock-badge text-xs" data-lock="true">🔒</span>
-            </button>
-
-            <button onclick="switchModule('knowledge')" data-mod="knowledge" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-database w-5 text-center text-teal-400"></i>
-                <span class="sidebar-text" data-i18n="nav_knowledge">Knowledge Base RAG</span>
-              </span>
-              <span class="pro-lock-badge text-xs" data-lock="true">🔒</span>
-            </button>
-
-            <button onclick="switchModule('prompts')" data-mod="prompts" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-bolt-lightning w-5 text-center text-yellow-400"></i>
-                <span class="sidebar-text" data-i18n="nav_prompts">Prompt Library</span>
-              </span>
-            </button>
-
-            <button onclick="switchModule('files')" data-mod="files" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-file-shield w-5 text-center text-emerald-400"></i>
-                <span class="sidebar-text" data-i18n="nav_files">Files & Doc Tools</span>
-              </span>
-            </button>
-
-            <button onclick="switchModule('history')" data-mod="history" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-solid fa-clock-rotate-left w-5 text-center text-blue-300"></i>
-                <span class="sidebar-text" data-i18n="nav_history">Chat History</span>
-              </span>
-              <span id="historyCountBadge" class="sidebar-text text-[10px] font-mono-code px-1.5 py-0.5 rounded bg-white/10">0</span>
-            </button>
-
-            <button onclick="switchModule('backend')" data-mod="backend" class="nav-item">
-              <span class="flex items-center gap-3">
-                <i class="fa-brands fa-node-js w-5 text-center text-lime-400"></i>
-                <span class="sidebar-text">server.js Backend Code</span>
-              </span>
-              <span class="sidebar-text text-[10px] font-mono-code px-1.5 py-0.5 rounded bg-lime-500/20 text-lime-300">NODE</span>
-            </button>
-          </nav>
-        </div>
-      </div>
-
-      <!-- Sidebar Footer: Pro Upgrade / Owner Card -->
-      <div class="p-3 border-t border-[var(--glass-border)]">
-        <div id="sidebarUpgradeCard" class="liquid-glass-card rounded-xl p-3">
-          <div class="flex items-center justify-between mb-1.5">
-            <span id="footerCardTitle" class="text-xs font-semibold text-[#F5B69E] flex items-center gap-1.5">
-              <i class="fa-solid fa-crown"></i> ORBIT PRO OS
-            </span>
-            <span id="footerCardPrice" class="text-xs font-mono-code font-bold text-[#8DB9F0]">₹799</span>
-          </div>
-          <p id="footerCardDesc" class="sidebar-text text-[11px] opacity-75 mb-2.5 leading-snug">
-            Unlock Academic Suite, 128+ Models, 8K Studio & Autonomous Agents.
-          </p>
-          <button id="footerCardActionBtn" onclick="openPaymentModal()" class="w-full py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] btn-3d flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-bolt"></i>
-            <span class="sidebar-text" data-i18n="btn_upgrade">Upgrade to Pro</span>
-          </button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- ========================================================================
-         MAIN CONTENT COLUMN (TOPBAR + SCROLLABLE MODULE VIEWPORT)
-         ======================================================================== -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden">
-
-      <!-- ======================================================================
-           TOPBAR
-           ====================================================================== -->
-      <header class="liquid-glass h-16 px-4 lg:px-6 flex items-center justify-between gap-3 border-b border-[var(--glass-border)] z-20 shrink-0">
-        
-        <!-- Left: Mobile Hamburger + Active Module Breadcrumb -->
-        <div class="flex items-center gap-3 min-w-0">
-          <button onclick="toggleMobileSidebar(true)" class="lg:hidden w-9 h-9 rounded-xl liquid-glass flex items-center justify-center text-[#8DB9F0]">
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <div class="hidden sm:flex items-center gap-2 text-xs font-mono-code opacity-75 truncate">
-            <span>ORBIT://OS</span>
-            <i class="fa-solid fa-chevron-right text-[9px] text-[#8DB9F0]"></i>
-            <span id="topbarActiveBreadcrumb" class="text-[#8DB9F0] font-semibold uppercase">OVERVIEW</span>
-          </div>
-        </div>
-
-        <!-- Center/Right Controls: Global AI Model Dropdown, 15-Language Selector, Theme Toggle, Login/Owner -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          
-          <!-- Global AI Model Selector Dropdown -->
-          <div class="relative flex items-center">
-            <i class="fa-solid fa-microchip text-[#8DB9F0] text-xs absolute left-3 pointer-events-none"></i>
-            <select id="globalModelSelector" onchange="handleGlobalModelChange(this.value)" class="liquid-glass pl-8 pr-7 py-1.5 rounded-xl text-xs font-medium bg-transparent text-[var(--lavender-white)] border border-[var(--glass-border)] focus:outline-none focus:border-[#8DB9F0] cursor-pointer max-w-[165px] sm:max-w-[230px] truncate">
-              <optgroup label="⚡ Core Native Intelligence" class="bg-[#1E222D] text-[#E9E8F8]">
-                <option value="gemini-3-flash-preview" selected>Gemini 3 Flash (Live Native)</option>
-              </optgroup>
-              <optgroup label="🌐 OpenRouter Market Suite" class="bg-[#1E222D] text-[#E9E8F8]">
-                <option value="openrouter/anthropic/claude-3.7-sonnet">Claude 3.7 Sonnet (OpenRouter)</option>
-                <option value="openrouter/openai/gpt-4o">GPT-4o Omni (OpenRouter)</option>
-                <option value="openrouter/deepseek/deepseek-r1">DeepSeek R1 671B (OpenRouter)</option>
-                <option value="openrouter/meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B Instruct</option>
-                <option value="openrouter/qwen/qwen-2.5-coder-32b-instruct">Qwen 2.5 Coder 32B</option>
-              </optgroup>
-              <optgroup label="🚀 KIE.ai 128+ Market Models" class="bg-[#1E222D] text-[#E9E8F8]">
-                <option value="kie/kie-nexus-ultra-128k">KIE.ai Nexus Ultra 128K</option>
-                <option value="kie/Flux-1.1-Pro-Ultra-8K">KIE.ai Flux 1.1 Pro Ultra 8K</option>
-                <option value="kie/kling-v1.6-pro-video">KIE.ai Kling 1.6 Pro Video</option>
-                <option value="kie/mistral-large-2411">KIE.ai Mistral Large 2411</option>
-              </optgroup>
-            </select>
-          </div>
-
-          <!-- 15-Language Translation Selector -->
-          <div class="relative flex items-center" title="15-Language Neural Translation Engine">
-            <i class="fa-solid fa-language text-[#F5B69E] text-xs absolute left-3 pointer-events-none"></i>
-            <select id="globalLanguageSelector" onchange="handleLanguageChange(this.value)" class="liquid-glass pl-8 pr-6 py-1.5 rounded-xl text-xs font-medium bg-transparent text-[var(--lavender-white)] border border-[var(--glass-border)] focus:outline-none focus:border-[#F5B69E] cursor-pointer">
-              <option value="English" class="bg-[#1E222D] text-white">English (EN)</option>
-              <option value="Marathi" class="bg-[#1E222D] text-white">मराठी (Marathi)</option>
-              <option value="Hindi" class="bg-[#1E222D] text-white">हिन्दी (Hindi)</option>
-              <option value="Bengali" class="bg-[#1E222D] text-white">বাংলা (Bengali)</option>
-              <option value="Tamil" class="bg-[#1E222D] text-white">தமிழ் (Tamil)</option>
-              <option value="Telugu" class="bg-[#1E222D] text-white">తెలుగు (Telugu)</option>
-              <option value="Gujarati" class="bg-[#1E222D] text-white">ગુજરાતી (Gujarati)</option>
-              <option value="Kannada" class="bg-[#1E222D] text-white">ಕನ್ನಡ (Kannada)</option>
-              <option value="Malayalam" class="bg-[#1E222D] text-white">മലയാളം (Malayalam)</option>
-              <option value="Punjabi" class="bg-[#1E222D] text-white">ਪੰਜਾਬੀ (Punjabi)</option>
-              <option value="Odia" class="bg-[#1E222D] text-white">ଓଡ଼ିଆ (Odia)</option>
-              <option value="Assamese" class="bg-[#1E222D] text-white">অসমীয়া (Assamese)</option>
-              <option value="Urdu" class="bg-[#1E222D] text-white">اردو (Urdu)</option>
-              <option value="Sanskrit" class="bg-[#1E222D] text-white">संस्कृतम् (Sanskrit)</option>
-              <option value="Nepali" class="bg-[#1E222D] text-white">नेपाली (Nepali)</option>
-            </select>
-          </div>
-
-          <!-- Dark / Light Glass Theme Toggle -->
-          <button onclick="toggleTheme()" id="themeToggleBtn" class="w-9 h-9 rounded-xl liquid-glass flex items-center justify-center text-[#F5B69E] hover:border-[#F5B69E] transition" title="Toggle Dark/Light Liquid Glass Theme">
-            <i id="themeToggleIcon" class="fa-solid fa-moon text-xs"></i>
-          </button>
-
-          <!-- Dynamic User Login / Setup Button -->
-          <button onclick="openAuthModal()" id="topbarAuthBtn" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#8DB9F0]/25 to-[#F5B69E]/25 border border-[#8DB9F0]/45 hover:border-[#8DB9F0] flex items-center gap-2 btn-3d">
-            <i class="fa-solid fa-fingerprint text-[#8DB9F0]"></i>
-            <span id="topbarAuthLabel" data-i18n="btn_login">Login / Setup</span>
-          </button>
-
-        </div>
-      </header>
-
-      <!-- ======================================================================
-           PRO UPGRADE STICKY NOTIFICATION BANNER (HIDDEN UNLESS LOCKED CLICKED)
-           ====================================================================== -->
-      <div id="proLockBanner" class="hidden bg-gradient-to-r from-[#FF3B30]/20 via-[#F5B69E]/20 to-[#8DB9F0]/20 border-b border-[#F5B69E]/40 px-4 py-2.5 flex items-center justify-between text-xs backdrop-blur-xl">
-        <div class="flex items-center gap-2.5">
-          <span class="px-2 py-0.5 rounded bg-[#F5B69E] text-[#14161D] font-bold font-mono-code">PRO LOCK 🔒</span>
-          <span id="proLockBannerText">This module requires ORBIT AI Pro (₹799) or Owner Setup Code privileges.</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button onclick="openPaymentModal()" class="px-3 py-1 rounded-lg bg-[#8DB9F0] text-[#14161D] font-semibold hover:opacity-90">Unlock ₹799</button>
-          <button onclick="openAuthModal(true)" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20">Owner Code</button>
-        </div>
-      </div>
-
-      <!-- ======================================================================
-           DYNAMIC VIEWPORT STAGE (ALL 14 MODULES)
-           ====================================================================== -->
-      <main id="mainViewport" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-
-        <!-- ====================================================================
-             MODULE 1: OVERVIEW & INTERACTIVE 3D/4D ORBIT CORE ("RED MAGMA GLASS ORB")
-             ==================================================================== -->
-        <section id="mod-overview" class="module-view space-y-6">
-          
-          <!-- Hero Section with Real-Time Three.js Custom GLSL 3D/4D Red Magma Glass Orb -->
-          <div class="liquid-glass-card rounded-3xl p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
-            <!-- Left 7 Cols: OS Telemetry & Controls -->
-            <div class="lg:col-span-7 space-y-5">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glow-border-pill text-xs">
-                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                <span class="font-mono-code text-[#F5B69E]">4D LIQUID GLASS KERNEL • GLSL SHADER CORE ACTIVE</span>
-              </div>
-
-              <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.12]">
-                <span data-i18n="hero_title_1">Private Intelligence</span>
-                <span class="block bg-gradient-to-r from-[#8DB9F0] via-[#E9E8F8] to-[#F5B69E] bg-clip-text text-transparent" data-i18n="hero_title_2">
-                  Multi-Model AI OS
-                </span>
-              </h1>
-
-              <p class="text-sm sm:text-base opacity-80 max-w-2xl leading-relaxed" data-i18n="hero_subtitle">
-                Experience zero-trust execution across 128+ OpenRouter & KIE.ai models, deep PDF/DOCX neural parsing, autonomous agent swarms, and structured Academic Project synthesis—wrapped in 3D/4D liquid glass.
-              </p>
-
-              <!-- Interactive Orb State Switcher -->
-              <div class="space-y-2">
-                <div class="text-[11px] font-mono-code uppercase tracking-wider opacity-70 flex items-center gap-2">
-                  <i class="fa-solid fa-Sliders text-[#8DB9F0]"></i>
-                  <span>4D Red Magma Glass Orb State Resonance:</span>
-                  <span id="orbStateStatusText" class="text-[#F5B69E] font-bold">IDLE (HARMONIC)</span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  <button onclick="setOrbState('idle')" id="orbBtn-idle" class="px-3.5 py-1.5 rounded-xl text-xs font-mono-code bg-[#8DB9F0]/25 border border-[#8DB9F0] text-white btn-3d">
-                    <i class="fa-solid fa-water mr-1"></i> Idle Pulse
-                  </button>
-                  <button onclick="setOrbState('thinking')" id="orbBtn-thinking" class="px-3.5 py-1.5 rounded-xl text-xs font-mono-code bg-white/5 border border-white/15 hover:border-[#F5B69E] transition">
-                    <i class="fa-solid fa-brain mr-1 text-[#F5B69E]"></i> Thinking Vortex
-                  </button>
-                  <button onclick="setOrbState('responding')" id="orbBtn-responding" class="px-3.5 py-1.5 rounded-xl text-xs font-mono-code bg-white/5 border border-white/15 hover:border-red-400 transition">
-                    <i class="fa-solid fa-fire-flame-curved mr-1 text-red-400"></i> Magma Responding
-                  </button>
-                  <button onclick="switchModule('chat')" class="px-4 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] btn-3d ml-auto">
-                    Launch AI Chat <i class="fa-solid fa-arrow-right ml-1"></i>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Live Telemetry Metrics Row -->
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                <div class="liquid-glass rounded-2xl p-3 border border-white/10">
-                  <div class="text-[11px] opacity-65">Active Models</div>
-                  <div class="font-display text-xl font-bold text-[#8DB9F0]">128+ Suite</div>
-                  <div class="text-[10px] font-mono-code text-emerald-400">OpenRouter + KIE.ai</div>
-                </div>
-                <div class="liquid-glass rounded-2xl p-3 border border-white/10">
-                  <div class="text-[11px] opacity-65">Languages</div>
-                  <div class="font-display text-xl font-bold text-[#F5B69E]">15 Indic+</div>
-                  <div class="text-[10px] font-mono-code opacity-75" id="metricActiveLang">English Active</div>
-                </div>
-                <div class="liquid-glass rounded-2xl p-3 border border-white/10">
-                  <div class="text-[11px] opacity-65">Doc Parser</div>
-                  <div class="font-display text-xl font-bold text-purple-300">PDF / DOCX</div>
-                  <div class="text-[10px] font-mono-code opacity-75">Zero-Retention RAG</div>
-                </div>
-                <div class="liquid-glass rounded-2xl p-3 border border-white/10">
-                  <div class="text-[11px] opacity-65">Clearance Level</div>
-                  <div class="font-display text-xl font-bold text-amber-300" id="metricClearance">FREE TIER</div>
-                  <div class="text-[10px] font-mono-code opacity-75" id="metricUserIdentity">Guest Session</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right 5 Cols: Interactive 3D & 4D Red Magma Crystal Sphere Stage -->
-            <div class="lg:col-span-5 flex flex-col items-center justify-center relative min-h-[340px]">
-              <div id="orbitCoreContainer" class="w-full h-[330px] relative flex items-center justify-center cursor-grab active:cursor-grabbing">
-                <!-- Three.js WebGL Canvas mounts here -->
-                <div class="caustic-floor" id="causticFloorReflection"></div>
-              </div>
-              <div class="text-[11px] font-mono-code opacity-65 text-center mt-1 flex items-center gap-2">
-                <i class="fa-solid fa-hand-pointer text-[#F5B69E]"></i>
-                <span>Drag or move cursor over the 4D Red Magma Glass Orb to warp shaders</span>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Quick Launch Module Matrix Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-            <div onclick="switchModule('chat')" class="liquid-glass-card rounded-2xl p-5 cursor-pointer">
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-[#8DB9F0]/15 border border-[#8DB9F0]/35 flex items-center justify-center text-[#8DB9F0]">
-                  <i class="fa-solid fa-comments text-lg"></i>
-                </div>
-                <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">UNLOCKED</span>
-              </div>
-              <h3 class="font-display font-bold text-base mb-1">Multi-Model AI Chat</h3>
-              <p class="text-xs opacity-70 leading-relaxed">Voice recognition, TTS playback, Marked.js code blocks, and PDF/DOCX deep document attachment parsing.</p>
-            </div>
-
-            <div onclick="switchModule('academic')" class="liquid-glass-card rounded-2xl p-5 cursor-pointer">
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-[#F5B69E]/15 border border-[#F5B69E]/35 flex items-center justify-center text-[#F5B69E]">
-                  <i class="fa-solid fa-graduation-cap text-lg"></i>
-                </div>
-                <span class="pro-chip text-[10px] font-mono-code px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">PRO 🔒</span>
-              </div>
-              <h3 class="font-display font-bold text-base mb-1">Academic Project Suite</h3>
-              <p class="text-xs opacity-70 leading-relaxed">Generate full B.Pharmacy, B.Tech, MBA & M.Tech reports by semester, stream, and structured chapters.</p>
-            </div>
-
-            <div onclick="switchModule('modelhub')" class="liquid-glass-card rounded-2xl p-5 cursor-pointer">
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-cyan-400/15 border border-cyan-400/35 flex items-center justify-center text-cyan-300">
-                  <i class="fa-solid fa-network-wired text-lg"></i>
-                </div>
-                <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">128+ MODELS</span>
-              </div>
-              <h3 class="font-display font-bold text-base mb-1">OpenRouter + KIE.ai Hub</h3>
-              <p class="text-xs opacity-70 leading-relaxed">Dual-market model switcher with dynamic Custom API Key & Endpoint adapter for instant model loading.</p>
-            </div>
-
-            <div onclick="switchModule('backend')" class="liquid-glass-card rounded-2xl p-5 cursor-pointer">
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-lime-400/15 border border-lime-400/35 flex items-center justify-center text-lime-300">
-                  <i class="fa-brands fa-node-js text-lg"></i>
-                </div>
-                <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-lime-500/20 text-lime-300">SERVER.JS</span>
-              </div>
-              <h3 class="font-display font-bold text-base mb-1">Node.js Backend Code</h3>
-              <p class="text-xs opacity-70 leading-relaxed">Inspect, copy, or download the complete production `server.js` & `package.json` backend specification.</p>
-            </div>
-          </div>
-
-        </section>
-
-        <!-- ====================================================================
-             MODULE 2: AI CHAT WORKSPACE (MULTI-CONVERSATION, PDF/DOCX, VOICE, TTS)
-             ==================================================================== -->
-        <section id="mod-chat" class="module-view hidden h-[calc(100vh-7.5rem)] flex flex-col lg:flex-row gap-4">
-          
-          <!-- Left Thread List Panel -->
-          <div class="w-full lg:w-64 liquid-glass-card rounded-2xl p-3.5 flex flex-col justify-between shrink-0 max-h-48 lg:max-h-full">
-            <div>
-              <button onclick="createNewConversation()" class="w-full py-2.5 px-3 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] btn-3d flex items-center justify-center gap-2 mb-3">
-                <i class="fa-solid fa-plus"></i> New Intelligence Thread
-              </button>
-              <div class="text-[10px] font-mono-code uppercase tracking-wider opacity-60 px-1 mb-2">Active Conversations</div>
-              <div id="chatThreadList" class="space-y-1.5 overflow-y-auto max-h-24 lg:max-h-[calc(100vh-18rem)] pr-1"></div>
-            </div>
-
-            <div class="pt-2 border-t border-[var(--glass-border)] flex items-center justify-between text-[11px] opacity-75">
-              <span>Attachment RAG:</span>
-              <span id="attachedDocIndicator" class="font-mono-code text-[#8DB9F0] truncate max-w-[120px]">None</span>
-            </div>
-          </div>
-
-          <!-- Main Chat Stream & Input Console -->
-          <div class="flex-1 liquid-glass-card rounded-2xl flex flex-col overflow-hidden">
-            
-            <!-- Chat Header Bar -->
-            <div class="px-4 py-3 border-b border-[var(--glass-border)] flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]"></span>
-                <h2 id="activeChatTitle" class="font-display font-bold text-sm sm:text-base truncate">ORBIT Quantum Session #1</h2>
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="toggleAutoTTS()" id="autoTtsBtn" class="px-2.5 py-1 rounded-lg text-xs liquid-glass hover:border-[#8DB9F0] flex items-center gap-1.5" title="Toggle Text-to-Speech Output">
-                  <i class="fa-solid fa-volume-xmark" id="autoTtsIcon"></i>
-                  <span class="hidden sm:inline">TTS: Off</span>
-                </button>
-                <button onclick="exportActiveChatMarkdown()" class="px-2.5 py-1 rounded-lg text-xs liquid-glass hover:border-[#F5B69E] flex items-center gap-1.5" title="Download Conversation Markdown">
-                  <i class="fa-solid fa-download"></i>
-                  <span class="hidden sm:inline">Export</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Messages Scroll Viewport -->
-            <div id="chatMessagesContainer" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4"></div>
-
-            <!-- Attached Document Preview Bar -->
-            <div id="chatAttachmentBanner" class="hidden px-4 py-2 bg-[#8DB9F0]/15 border-t border-[#8DB9F0]/35 flex items-center justify-between text-xs">
-              <div class="flex items-center gap-2 truncate">
-                <i class="fa-solid fa-file-lines text-[#8DB9F0]"></i>
-                <span id="chatAttachmentName" class="font-semibold truncate">document.pdf</span>
-                <span id="chatAttachmentChars" class="font-mono-code text-[10px] opacity-75">(0 chars extracted)</span>
-              </div>
-              <button onclick="clearChatAttachment()" class="text-red-300 hover:text-red-400 ml-2">
-                <i class="fa-solid fa-trash-can"></i> Remove
-              </button>
-            </div>
-
-            <!-- Chat Composer Box -->
-            <div class="p-3 sm:p-4 border-t border-[var(--glass-border)] bg-black/20">
-              <div class="flex items-end gap-2">
-                <!-- File Upload Trigger (PDF, DOCX, TXT, CSV, MD) -->
-                <label class="w-10 h-10 rounded-xl liquid-glass flex items-center justify-center cursor-pointer hover:border-[#8DB9F0] text-[#8DB9F0] shrink-0 transition" title="Attach PDF, DOCX, TXT for Deep Document Intelligence">
-                  <i class="fa-solid fa-paperclip"></i>
-                  <input type="file" id="chatFileInput" accept=".pdf,.docx,.txt,.md,.csv,.json" class="hidden" onchange="handleChatFileAttachment(event)" />
-                </label>
-
-                <!-- Voice Input (SpeechRecognition) Button -->
-                <button onclick="toggleVoiceRecognition()" id="voiceInputBtn" class="w-10 h-10 rounded-xl liquid-glass flex items-center justify-center hover:border-[#F5B69E] text-[#F5B69E] shrink-0 transition" title="Voice Input (SpeechRecognition)">
-                  <i class="fa-solid fa-microphone"></i>
-                </button>
-
-                <!-- Multiline Prompt Input -->
-                <textarea id="chatPromptInput" rows="2" placeholder="Ask ORBIT AI anything, analyze attached PDFs/DOCX, or write production code..." class="flex-1 liquid-glass rounded-xl px-3.5 py-2.5 text-sm bg-transparent text-[var(--lavender-white)] placeholder:opacity-50 focus:outline-none focus:border-[#8DB9F0] resize-none" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendChatMessage();}"></textarea>
-
-                <!-- Send Button -->
-                <button onclick="sendChatMessage()" id="sendChatBtn" class="h-10 px-4 rounded-xl bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] font-semibold text-xs btn-3d flex items-center gap-2 shrink-0">
-                  <span>Send</span>
-                  <i class="fa-solid fa-paper-plane"></i>
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 3: AI LIVE WEB SEARCH (PRO)
-             ==================================================================== -->
-        <section id="mod-search" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2.5">
-                  <i class="fa-solid fa-compass text-sky-400"></i>
-                  <span>ORBIT Grounded AI Live Web Search</span>
-                </h2>
-                <p class="text-xs opacity-75">Real-time Google Search grounding with verified web citations and multi-source synthesis.</p>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-mono-code bg-sky-500/20 text-sky-300 border border-sky-400/30">REAL-TIME GROUNDING</span>
-            </div>
-
-            <div class="flex gap-2">
-              <input id="aiSearchQueryInput" type="text" placeholder="Search breaking scientific papers, market telemetry, or global tech events..." class="flex-1 liquid-glass rounded-xl px-4 py-3 text-sm bg-transparent focus:outline-none focus:border-sky-400" onkeydown="if(event.key==='Enter') executeLiveAiSearch()" />
-              <button onclick="executeLiveAiSearch()" id="aiSearchBtn" class="px-5 py-3 rounded-xl bg-gradient-to-r from-sky-400 to-[#8DB9F0] text-[#14161D] font-semibold text-xs btn-3d flex items-center gap-2">
-                <i class="fa-solid fa-magnifying-glass"></i> Deep Search
-              </button>
-            </div>
-
-            <!-- Preset Search Chips -->
-            <div class="flex flex-wrap gap-2 text-xs">
-              <button onclick="setSearchPreset('Latest breakthroughs in Solid-State Lithium-Sulfur Batteries 2026')" class="px-3 py-1 rounded-lg liquid-glass hover:border-sky-400">🔋 Solid-State Batteries</button>
-              <button onclick="setSearchPreset('Current regulatory guidelines for AI in Pharmaceutical Drug Discovery CDSCO & FDA')" class="px-3 py-1 rounded-lg liquid-glass hover:border-sky-400">💊 AI in Pharma Discovery</button>
-              <button onclick="setSearchPreset('Quantum-resistant cryptography NIST standards post-quantum algorithms')" class="px-3 py-1 rounded-lg liquid-glass hover:border-sky-400">🔐 Post-Quantum Crypto</button>
-            </div>
-
-            <div id="aiSearchResultsContainer" class="space-y-4 pt-2"></div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 4: AUTONOMOUS AI AGENTS (PRO)
-             ==================================================================== -->
-        <section id="mod-agents" class="module-view hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- Left 5 Cols: Custom Agent Creator -->
-            <div class="lg:col-span-5 liquid-glass-card rounded-3xl p-6 space-y-4">
-              <h2 class="font-display text-xl font-bold flex items-center gap-2">
-                <i class="fa-solid fa-robot text-purple-400"></i> Deploy Autonomous Agent
-              </h2>
-              <p class="text-xs opacity-75">Configure specialized cognitive agents with custom system directives and tools.</p>
-
-              <div class="space-y-3 text-xs">
-                <div>
-                  <label class="block mb-1 opacity-75">Agent Callsign / Name</label>
-                  <input id="agentNameInput" type="text" placeholder="e.g., Nexus Pharma Formulator" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent focus:outline-none focus:border-purple-400" />
-                </div>
-                <div>
-                  <label class="block mb-1 opacity-75">Domain Specialization</label>
-                  <select id="agentRoleInput" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-[#1E222D] text-white focus:outline-none">
-                    <option value="Full-Stack Principal Architect">Full-Stack Principal Architect</option>
-                    <option value="Pharmaceutical R&D Formulation Scientist">Pharmaceutical R&D Formulation Scientist</option>
-                    <option value="Cybersecurity & Zero-Trust Auditor">Cybersecurity & Zero-Trust Auditor</option>
-                    <option value="Quantitative Financial & Market Strategist">Quantitative Financial & Market Strategist</option>
-                    <option value="Academic Research & Thesis Director">Academic Research & Thesis Director</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block mb-1 opacity-75">Core Directive / System Prompt</label>
-                  <textarea id="agentSystemInput" rows="3" placeholder="Define autonomous reasoning rules, output format, and verification steps..." class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent focus:outline-none focus:border-purple-400"></textarea>
-                </div>
-                <button onclick="createCustomAgent()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-400 to-[#8DB9F0] text-[#14161D] font-semibold btn-3d">
-                  <i class="fa-solid fa-plus-circle mr-1"></i> Instantiate Agent Node
-                </button>
-              </div>
-            </div>
-
-            <!-- Right 7 Cols: Active Agent Swarm & Execution Console -->
-            <div class="lg:col-span-7 space-y-4">
-              <div id="agentsGridContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-
-              <div class="liquid-glass-card rounded-3xl p-5 space-y-3">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-mono-code uppercase text-purple-300" id="activeAgentConsoleLabel">AGENT EXECUTION CONSOLE</span>
-                  <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">AUTONOMOUS LOOP</span>
-                </div>
-                <div class="flex gap-2">
-                  <input id="agentTaskInput" type="text" placeholder="Assign mission objective to the selected agent..." class="flex-1 liquid-glass rounded-xl px-3.5 py-2.5 text-xs bg-transparent focus:outline-none" onkeydown="if(event.key==='Enter') runSelectedAgentTask()" />
-                  <button onclick="runSelectedAgentTask()" id="runAgentBtn" class="px-4 py-2.5 rounded-xl bg-purple-400 text-[#14161D] font-semibold text-xs btn-3d">
-                    Execute Mission
-                  </button>
-                </div>
-                <div id="agentExecutionOutput" class="liquid-glass rounded-2xl p-4 text-xs markdown-body max-h-72 overflow-y-auto">
-                  Select an agent above and assign a mission objective to begin autonomous multi-step execution.
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 5: ACADEMIC PROJECT SUITE (PRO)
-             ==================================================================== -->
-        <section id="mod-academic" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-6">
-            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--glass-border)] pb-4">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2.5">
-                  <i class="fa-solid fa-graduation-cap text-[#F5B69E]"></i>
-                  <span>Academic Project & Thesis Report Suite Pro</span>
-                </h2>
-                <p class="text-xs opacity-75">Configure your exact Degree, Stream, Academic Year, Semester, Scope, and Chapters for publication-grade documentation.</p>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-mono-code bg-[#F5B69E]/20 text-[#F5B69E] border border-[#F5B69E]/40">UNIVERSITY STANDARD</span>
-            </div>
-
-            <!-- Configuration Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-              <div>
-                <label class="block mb-1.5 font-semibold text-[#8DB9F0]">1. Select Degree Program</label>
-                <select id="acadDegree" onchange="updateAcademicStreams()" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-[#1E222D] text-white focus:outline-none">
-                  <option value="B.Pharmacy">B.Pharmacy (Bachelor of Pharmacy)</option>
-                  <option value="M.Pharmacy">M.Pharmacy (Master of Pharmacy)</option>
-                  <option value="B.Tech / B.E.">B.Tech / B.E. (Engineering & Technology)</option>
-                  <option value="M.Tech / M.E.">M.Tech / M.E. (Master of Technology)</option>
-                  <option value="MBA">MBA (Master of Business Administration)</option>
-                  <option value="B.Sc / M.Sc">B.Sc / M.Sc (Pure & Applied Sciences)</option>
-                  <option value="BCA / MCA">BCA / MCA (Computer Applications)</option>
-                  <option value="MBBS / MD">MBBS / MD (Medical & Clinical Sciences)</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block mb-1.5 font-semibold text-[#8DB9F0]">2. Stream / Specialization</label>
-                <select id="acadStream" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-[#1E222D] text-white focus:outline-none"></select>
-              </div>
-
-              <div>
-                <label class="block mb-1.5 font-semibold text-[#8DB9F0]">3. Academic Year</label>
-                <select id="acadYear" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-[#1E222D] text-white focus:outline-none">
-                  <option value="Final Year (4th Year)">Final Year (4th Year)</option>
-                  <option value="Third Year (3rd Year)">Third Year (3rd Year)</option>
-                  <option value="Second Year (2nd Year)">Second Year (2nd Year)</option>
-                  <option value="First Year (1st Year)">First Year (1st Year)</option>
-                  <option value="Post-Graduate Final Year">Post-Graduate Research Year</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block mb-1.5 font-semibold text-[#8DB9F0]">4. Semester</label>
-                <select id="acadSemester" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-[#1E222D] text-white focus:outline-none">
-                  <option value="Semester VIII">Semester VIII (Final Major Project)</option>
-                  <option value="Semester VII">Semester VII (Pre-Final Synopsis)</option>
-                  <option value="Semester VI">Semester VI</option>
-                  <option value="Semester V">Semester V</option>
-                  <option value="Semester IV">Semester IV</option>
-                  <option value="Semester III">Semester III</option>
-                  <option value="Semester II">Semester II</option>
-                  <option value="Semester I">Semester I</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block mb-1.5 font-semibold text-[#8DB9F0]">5. Project Scope / Length</label>
-                <select id="acadScope" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-[#1E222D] text-white focus:outline-none">
-                  <option value="Comprehensive Major Project Report (Full Technical Depth)">Comprehensive Major Project Report (Full Depth)</option>
-                  <option value="Dissertation & Experimental Thesis (Publication Grade)">Dissertation & Experimental Thesis (IEEE / PCI Format)</option>
-                  <option value="Mini Project & Executive Synopsis (Concise)">Mini Project & Executive Synopsis</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block mb-1.5 font-semibold text-[#F5B69E]">6. Project Title / Research Topic</label>
-                <input id="acadTopic" type="text" value="Formulation and Evaluation of Sustained Release Mucoadhesive Microspheres of Metformin HCl" placeholder="Enter exact project or research title..." class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent focus:outline-none focus:border-[#F5B69E]" />
-              </div>
-            </div>
-
-            <!-- Selectable Chapters Checkboxes -->
-            <div class="space-y-2">
-              <label class="block text-xs font-semibold text-[#8DB9F0]">7. Select Chapters to Generate:</label>
-              <div class="flex flex-wrap gap-2.5 text-xs" id="acadChaptersList">
-                <label class="liquid-glass px-3 py-1.5 rounded-xl flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" value="Abstract & Keywords" checked class="accent-[#8DB9F0]" /> Abstract & Keywords
-                </label>
-                <label class="liquid-glass px-3 py-1.5 rounded-xl flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" value="Introduction & Objectives" checked class="accent-[#8DB9F0]" /> Introduction & Objectives
-                </label>
-                <label class="liquid-glass px-3 py-1.5 rounded-xl flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" value="Literature Review" checked class="accent-[#8DB9F0]" /> Literature Review
-                </label>
-                <label class="liquid-glass px-3 py-1.5 rounded-xl flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" value="Methodology, Materials & Experimental Design" checked class="accent-[#8DB9F0]" /> Methodology & Design
-                </label>
-                <label class="liquid-glass px-3 py-1.5 rounded-xl flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" value="Results, Evaluation Tables & Discussion" checked class="accent-[#8DB9F0]" /> Results & Discussion
-                </label>
-                <label class="liquid-glass px-3 py-1.5 rounded-xl flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" value="Conclusion, Future Scope & Standard References" checked class="accent-[#8DB9F0]" /> Conclusion & References
-                </label>
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap items-center gap-3">
-              <button onclick="generateAcademicReport()" id="acadGenerateBtn" class="px-6 py-3 rounded-xl bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] font-bold text-xs btn-3d flex items-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Complete Academic Report
-              </button>
-              <button onclick="copyAcademicReport()" class="px-4 py-3 rounded-xl liquid-glass text-xs font-semibold hover:border-[#8DB9F0] flex items-center gap-2">
-                <i class="fa-solid fa-copy"></i> Copy Markdown
-              </button>
-              <button onclick="downloadAcademicReport()" class="px-4 py-3 rounded-xl liquid-glass text-xs font-semibold hover:border-[#F5B69E] flex items-center gap-2">
-                <i class="fa-solid fa-file-arrow-down"></i> Download (.md)
-              </button>
-            </div>
-
-            <!-- Output Preview Container -->
-            <div id="academicReportOutput" class="liquid-glass rounded-2xl p-6 markdown-body text-sm max-h-[540px] overflow-y-auto border border-white/10">
-              <p class="opacity-65 text-xs">Configure your Degree, Stream, Semester, and Topic above, then click <strong>Generate Complete Academic Report</strong> to synthesize structured academic documentation.</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 6: AI MODEL HUB PRO (OPENROUTER + KIE.AI 128+ MODELS + CUSTOM ADAPTER)
-             ==================================================================== -->
-        <section id="mod-modelhub" class="module-view hidden space-y-6">
-          
-          <!-- Dynamic Custom API Key & Endpoint Adapter -->
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2.5">
-                  <i class="fa-solid fa-plug-circle-bolt text-[#8DB9F0]"></i>
-                  <span>Dynamic Custom API Key & Endpoint Adapter</span>
-                </h2>
-                <p class="text-xs opacity-75">Plug in your OpenRouter, KIE.ai, or any OpenAI-compatible API endpoint to dynamically fetch and mount models into ORBIT OS.</p>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-mono-code bg-emerald-500/20 text-emerald-300">ZERO-TRUST LOCAL VAULT</span>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-              <div>
-                <label class="block mb-1 opacity-75">Provider / Endpoint Base URL</label>
-                <input id="customApiEndpoint" type="text" value="https://openrouter.ai/api/v1/models" placeholder="https://openrouter.ai/api/v1/models" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent font-mono-code focus:outline-none focus:border-[#8DB9F0]" />
-              </div>
-              <div>
-                <label class="block mb-1 opacity-75">API Bearer Key (Optional for Public Catalog)</label>
-                <input id="customApiKey" type="password" placeholder="sk-or-v1-... or kie-live-..." class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent font-mono-code focus:outline-none focus:border-[#F5B69E]" />
-              </div>
-              <div class="flex items-end gap-2">
-                <button onclick="loadCustomEndpointModels()" id="fetchCustomModelsBtn" class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] font-bold btn-3d">
-                  <i class="fa-solid fa-rotate mr-1"></i> Connect & Load Models
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Dual-Section Market Suite: OpenRouter & KIE.ai 128+ Models -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            <!-- Section A: OpenRouter Market Suite -->
-            <div class="liquid-glass-card rounded-3xl p-6 space-y-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-display text-lg font-bold text-[#8DB9F0] flex items-center gap-2">
-                    <i class="fa-solid fa-route"></i> OpenRouter Market Models
-                  </h3>
-                  <p class="text-[11px] opacity-70">Unified routing across Anthropic, OpenAI, DeepSeek, Meta & Qwen</p>
-                </div>
-                <span class="text-xs font-mono-code px-2.5 py-1 rounded-lg bg-[#8DB9F0]/20 text-[#8DB9F0]" id="openRouterCountBadge">64 Models</span>
-              </div>
-              <input type="text" placeholder="Filter OpenRouter models..." oninput="renderModelHubLists(this.value, 'openrouter')" class="w-full liquid-glass rounded-xl px-3.5 py-2 text-xs bg-transparent focus:outline-none" />
-              <div id="openRouterModelList" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
-            </div>
-
-            <!-- Section B: KIE.ai 128+ Market Suite -->
-            <div class="liquid-glass-card rounded-3xl p-6 space-y-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-display text-lg font-bold text-[#F5B69E] flex items-center gap-2">
-                    <i class="fa-solid fa-cubes-stacked"></i> KIE.ai Market Suite (128+ Models)
-                  </h3>
-                  <p class="text-[11px] opacity-70">High-speed Multimodal, Flux 8K, Kling Video, Reasoning & Coding Cluster</p>
-                </div>
-                <span class="text-xs font-mono-code px-2.5 py-1 rounded-lg bg-[#F5B69E]/20 text-[#F5B69E]" id="kieModelCountBadge">68 Models</span>
-              </div>
-              <input type="text" placeholder="Filter KIE.ai models..." oninput="renderModelHubLists(this.value, 'kie')" class="w-full liquid-glass rounded-xl px-3.5 py-2 text-xs bg-transparent focus:outline-none" />
-              <div id="kieModelList" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 7: 8K ULTRA HD IMAGE & VIDEO AI STUDIO (PRO)
-             ==================================================================== -->
-        <section id="mod-media" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2.5">
-                  <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i>
-                  <span>8K Ultra HD Image & Video AI Studio</span>
-                </h2>
-                <p class="text-xs opacity-75">Synthesize photorealistic 8K renders and procedural motion sequences powered by Gemini Flash Image & KIE.ai Flux shaders.</p>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-mono-code bg-pink-500/20 text-pink-300 border border-pink-400/30">8K NEURAL RENDERER</span>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div class="lg:col-span-5 space-y-4 text-xs">
-                <div>
-                  <label class="block mb-1 opacity-75">Visual Prompt Specification</label>
-                  <textarea id="mediaPromptInput" rows="4" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent focus:outline-none focus:border-pink-400">Futuristic bio-luminescent glass laboratory inside an orbital station, liquid magma core reactor glowing in powder blue and sunset peach, 8k octane render, cinematic volumetric lighting</textarea>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block mb-1 opacity-75">Modality</label>
-                    <select id="mediaModality" class="w-full liquid-glass rounded-xl px-3 py-2 bg-[#1E222D] text-white">
-                      <option value="image">8K Still Image (Gemini / Flux)</option>
-                      <option value="video">4D Motion Loop (Procedural WebGL/Canvas)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block mb-1 opacity-75">Aspect Ratio</label>
-                    <select id="mediaAspect" class="w-full liquid-glass rounded-xl px-3 py-2 bg-[#1E222D] text-white">
-                      <option value="16:9">16:9 Cinema Widescreen</option>
-                      <option value="1:1">1:1 Square Master</option>
-                      <option value="9:16">9:16 Vertical Reel</option>
-                    </select>
-                  </div>
-                </div>
-                <button onclick="generateMediaStudioAsset()" id="generateMediaBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-pink-400 via-[#F5B69E] to-[#8DB9F0] text-[#14161D] font-bold btn-3d">
-                  <i class="fa-solid fa-camera-movie mr-1"></i> Render 8K Masterpiece
-                </button>
-              </div>
-
-              <div class="lg:col-span-7 liquid-glass rounded-2xl p-4 flex flex-col items-center justify-center min-h-[320px] relative overflow-hidden" id="mediaOutputStage">
-                <p class="text-xs opacity-65 text-center">Click <strong>Render 8K Masterpiece</strong> to synthesize ultra-high-definition visual output.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 8: MULTI-STEP TASK AUTOMATION PIPELINES (PRO)
-             ==================================================================== -->
-        <section id="mod-automation" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2.5">
-                  <i class="fa-solid fa-diagram-project text-orange-400"></i>
-                  <span>Multi-Step Autonomous Task Automation</span>
-                </h2>
-                <p class="text-xs opacity-75">Chain document ingestion, multi-model LLM reasoning, translation, and webhook/export actions into deterministic pipelines.</p>
-              </div>
-              <button onclick="executeAutomationPipeline()" id="runPipelineBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-400 to-[#F5B69E] text-[#14161D] font-bold text-xs btn-3d">
-                <i class="fa-solid fa-play mr-1"></i> Trigger Pipeline Now
-              </button>
-            </div>
-
-            <!-- Visual Pipeline Nodes -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-              <div class="liquid-glass rounded-2xl p-4 border-l-4 border-[#8DB9F0]">
-                <div class="font-mono-code text-[10px] text-[#8DB9F0]">STEP 01 • TRIGGER</div>
-                <div class="font-display font-bold text-sm mt-1">Ingest Input Payload</div>
-                <input id="autoStep1Input" type="text" value="Synthesize quarterly AI cloud infrastructure security audit and translate executive summary" class="mt-2 w-full liquid-glass rounded-lg px-2.5 py-1.5 bg-transparent text-xs" />
-              </div>
-              <div class="liquid-glass rounded-2xl p-4 border-l-4 border-purple-400">
-                <div class="font-mono-code text-[10px] text-purple-300">STEP 02 • COGNITION</div>
-                <div class="font-display font-bold text-sm mt-1">DeepSeek R1 + Gemini Audit</div>
-                <p class="opacity-70 mt-1">Extracts key risks, compliance metrics, and action items.</p>
-              </div>
-              <div class="liquid-glass rounded-2xl p-4 border-l-4 border-[#F5B69E]">
-                <div class="font-mono-code text-[10px] text-[#F5B69E]">STEP 03 • LOCALIZATION</div>
-                <div class="font-display font-bold text-sm mt-1">15-Language Indic Bridge</div>
-                <p class="opacity-70 mt-1">Translates summary into active topbar language.</p>
-              </div>
-              <div class="liquid-glass rounded-2xl p-4 border-l-4 border-emerald-400">
-                <div class="font-mono-code text-[10px] text-emerald-300">STEP 04 • DISPATCH</div>
-                <div class="font-display font-bold text-sm mt-1">Artifact Export Ready</div>
-                <p class="opacity-70 mt-1">Saves structured JSON/Markdown report to workspace.</p>
-              </div>
-            </div>
-
-            <div id="automationExecutionLog" class="liquid-glass rounded-2xl p-4 font-mono-code text-xs space-y-2 max-h-72 overflow-y-auto">
-              <div class="text-emerald-400">[ORBIT-CRON] Pipeline ready. Click "Trigger Pipeline Now" to execute all 4 stages.</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 9: PROJECTS CONTEXT MANAGER (PRO)
-             ==================================================================== -->
-        <section id="mod-projects" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2">
-                  <i class="fa-solid fa-folder-tree text-indigo-400"></i>
-                  <span>Project Context & Workspace Manager</span>
-                </h2>
-                <p class="text-xs opacity-75">Bind persistent system instructions and domain context to your AI Chat sessions.</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="liquid-glass rounded-2xl p-4 space-y-3 text-xs">
-                <h3 class="font-display font-bold text-sm text-[#8DB9F0]">Create Project Context</h3>
-                <input id="projTitleInput" type="text" placeholder="Project Name (e.g. FinTech Core v2)" class="w-full liquid-glass rounded-xl px-3 py-2 bg-transparent" />
-                <textarea id="projContextInput" rows="3" placeholder="Persistent instructions injected into every prompt..." class="w-full liquid-glass rounded-xl px-3 py-2 bg-transparent"></textarea>
-                <button onclick="addProjectContext()" class="w-full py-2 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold btn-3d">Save Project Workspace</button>
-              </div>
-              <div id="projectsListGrid" class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 10: KNOWLEDGE BASE DOCUMENT VECTORIZER (PRO)
-             ==================================================================== -->
-        <section id="mod-knowledge" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2">
-                  <i class="fa-solid fa-database text-teal-400"></i>
-                  <span>Private Knowledge Base & Document Vectorizer</span>
-                </h2>
-                <p class="text-xs opacity-75">Chunk documents into semantic vector embeddings for zero-leakage local retrieval augmented generation (RAG).</p>
-              </div>
-              <span class="px-3 py-1 rounded-full text-xs font-mono-code bg-teal-500/20 text-teal-300">1536-DIM EMBEDDINGS</span>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
-              <div class="space-y-3">
-                <label class="block font-semibold text-[#8DB9F0]">Paste or Upload Knowledge Corpus for Vectorization</label>
-                <textarea id="kbCorpusInput" rows="5" class="w-full liquid-glass rounded-xl p-3 bg-transparent" placeholder="Paste technical documentation, SOPs, or clinical protocols here...">ORBIT AI Private Intelligence OS utilizes 4D GLSL liquid glass shaders, 128+ OpenRouter and KIE.ai models, and local PDF/DOCX extraction. Owner access code 411826 grants Mayur Sonawane full administrative telemetry.</textarea>
-                <button onclick="vectorizeKnowledgeCorpus()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-[#8DB9F0] text-[#14161D] font-bold btn-3d">
-                  <i class="fa-solid fa-cubes mr-1"></i> Chunk & Vectorize Corpus
-                </button>
-              </div>
-              <div class="space-y-3">
-                <label class="block font-semibold text-[#F5B69E]">Vector Index Store & Cosine Similarity Inspector</label>
-                <div id="kbVectorOutput" class="liquid-glass rounded-xl p-3 font-mono-code text-[11px] space-y-2 max-h-48 overflow-y-auto"></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 11: PROMPT LIBRARY (FREE)
-             ==================================================================== -->
-        <section id="mod-prompts" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2">
-                  <i class="fa-solid fa-bolt-lightning text-yellow-400"></i>
-                  <span>Curated High-Precision Prompt Library</span>
-                </h2>
-                <p class="text-xs opacity-75">Click any prompt template to inject it directly into the AI Chat Workspace.</p>
-              </div>
-            </div>
-            <div id="promptLibraryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 12: FILES & DEEP DOCUMENT TOOLS (PDF / DOCX PARSER - FREE)
-             ==================================================================== -->
-        <section id="mod-files" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2">
-                  <i class="fa-solid fa-file-shield text-emerald-400"></i>
-                  <span>Deep Document Intelligence (PDF & DOCX Parser)</span>
-                </h2>
-                <p class="text-xs opacity-75">Extract raw text, token telemetry, and executive AI summaries from PDF (`pdf-parse` / `PDF.js`) and Word (`mammoth`) files.</p>
-              </div>
-            </div>
-
-            <label class="border-2 border-dashed border-[#8DB9F0]/40 hover:border-[#8DB9F0] rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer transition bg-white/[0.02]">
-              <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#8DB9F0] mb-2"></i>
-              <span class="font-display font-bold text-sm">Drop PDF, DOCX, TXT, CSV, or Markdown File Here</span>
-              <span class="text-xs opacity-65 mt-1">100% Private Execution • Instant Text & Token Extraction</span>
-              <input type="file" accept=".pdf,.docx,.txt,.md,.csv,.json" class="hidden" onchange="handleStandaloneFileTool(event)" />
-            </label>
-
-            <div id="standaloneFileResult" class="hidden space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                <span id="fileToolMeta" class="font-mono-code text-[#8DB9F0]"></span>
-                <div class="flex gap-2">
-                  <button onclick="sendExtractedFileToChat()" class="px-3.5 py-1.5 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold">Send to AI Chat & Summarize</button>
-                </div>
-              </div>
-              <pre id="fileToolExtractedText" class="liquid-glass rounded-2xl p-4 font-mono-code text-xs max-h-64 overflow-y-auto whitespace-pre-wrap"></pre>
-            </div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 13: CHAT HISTORY ARCHIVE (FREE)
-             ==================================================================== -->
-        <section id="mod-history" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2">
-                  <i class="fa-solid fa-clock-rotate-left text-[#8DB9F0]"></i>
-                  <span>LocalStorage Multi-Conversation Archive</span>
-                </h2>
-                <p class="text-xs opacity-75">All conversations are stored privately in your browser's encrypted local state.</p>
-              </div>
-              <button onclick="clearAllChatHistory()" class="px-3.5 py-1.5 rounded-xl bg-red-500/20 text-red-300 border border-red-400/30 text-xs hover:bg-red-500/30">
-                <i class="fa-solid fa-trash mr-1"></i> Purge All
-              </button>
-            </div>
-            <div id="historyArchiveGrid" class="space-y-2.5"></div>
-          </div>
-        </section>
-
-        <!-- ====================================================================
-             MODULE 14: NODE.JS BACKEND (SERVER.JS & PACKAGE.JSON) COMPLETE SUITE
-             ==================================================================== -->
-        <section id="mod-backend" class="module-view hidden space-y-6">
-          <div class="liquid-glass-card rounded-3xl p-6 space-y-5">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h2 class="font-display text-2xl font-bold flex items-center gap-2.5">
-                  <i class="fa-brands fa-node-js text-lime-400"></i>
-                  <span>Production Node.js Backend (`server.js` & `package.json`)</span>
-                </h2>
-                <p class="text-xs opacity-75">Complete, ready-to-run Node.js backend code featuring Express, `pdf-parse`, `mammoth` DOCX extraction, Mobile OTP Login, Owner Code `411826` verification, UPI `mayur0797@axl` UTR handler, and OpenRouter/KIE.ai model proxy.</p>
-              </div>
-              <div class="flex gap-2">
-                <button onclick="copyServerJsCode()" class="px-4 py-2 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold text-xs btn-3d">
-                  <i class="fa-solid fa-copy mr-1"></i> Copy server.js
-                </button>
-                <button onclick="downloadServerJsFile()" class="px-4 py-2 rounded-xl bg-[#F5B69E] text-[#14161D] font-bold text-xs btn-3d">
-                  <i class="fa-solid fa-download mr-1"></i> Download server.js
-                </button>
-              </div>
-            </div>
-
-            <div class="space-y-2">
-              <div class="text-xs font-mono-code text-lime-300">1. Quick Setup Terminal Commands (`package.json` dependencies):</div>
-              <pre class="liquid-glass rounded-xl p-3 font-mono-code text-xs text-[#E9E8F8] overflow-x-auto">npm init -y && npm install express cors multer pdf-parse mammoth dotenv node-fetch
-node server.js</pre>
-            </div>
-
-            <div class="space-y-2">
-              <div class="text-xs font-mono-code text-[#8DB9F0]">2. Complete `server.js` Production Source Code:</div>
-              <pre id="serverJsCodeBlock" class="liquid-glass rounded-2xl p-4 font-mono-code text-xs text-[#E9E8F8] overflow-x-auto max-h-[500px] leading-relaxed"></pre>
-            </div>
-          </div>
-        </section>
-
-      </main>
-    </div>
-  </div>
-
-  <!-- ==========================================================================
-       MODAL 1: AUTHENTICATION (10-DIGIT MOBILE OTP + OWNER CODE "411826")
-       ========================================================================== -->
-  <div id="authModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="liquid-glass-card rounded-3xl max-w-md w-full p-6 space-y-5 border border-[#8DB9F0]/40">
-      <div class="flex items-center justify-between">
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4"></div>
+
+  <!-- FORCE AUTH MODAL (MOBILE OTP + HIDDEN OWNER ACCESS) -->
+  <div id="authModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="liquid-glass-card rounded-3xl max-w-md w-full p-6 space-y-5 border border-[#8DB9F0]/40 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl bg-[#8DB9F0]/20 flex items-center justify-center text-[#8DB9F0]">
             <i class="fa-solid fa-shield-halved"></i>
           </div>
           <div>
-            <h3 class="font-display font-bold text-lg">ORBIT OS Identity Gateway</h3>
-            <p class="text-[11px] opacity-70">Zero-Trust Mobile OTP & Owner Clearance</p>
+            <h3 class="font-bold text-base text-[#8DB9F0]">ORBIT AI Secure Gateway</h3>
+            <p class="text-[11px] opacity-70">Mobile Authentication & Owner Portal</p>
           </div>
         </div>
-        <button onclick="closeAuthModal()" class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
       </div>
 
-      <!-- Mode Switch Tabs -->
-      <div class="grid grid-cols-2 gap-2 p-1 rounded-xl bg-black/30 text-xs">
-        <button onclick="switchAuthTab('otp')" id="authTabOtp" class="py-2 rounded-lg font-semibold bg-[#8DB9F0] text-[#14161D]">
-          📱 Mobile OTP Login
-        </button>
-        <button onclick="switchAuthTab('owner')" id="authTabOwner" class="py-2 rounded-lg font-semibold opacity-75 hover:opacity-100">
-          👑 Owner Access Setup
-        </button>
-      </div>
-
-      <!-- Tab 1: 10-Digit Mobile OTP Workflow -->
+      <!-- Mobile OTP Panel -->
       <div id="authOtpPanel" class="space-y-4 text-xs">
+        <p class="opacity-75">Enter your 10-digit mobile number to generate an instant verification OTP[cite: 1, 12].</p>
         <div>
-          <label class="block mb-1 opacity-80">Enter 10-Digit Mobile Number</label>
+          <label class="block mb-1 opacity-80">10-Digit Mobile Number</label>
           <div class="flex gap-2">
-            <span class="liquid-glass px-3 py-2.5 rounded-xl font-mono-code flex items-center">+91</span>
-            <input id="mobileNumberInput" type="tel" maxlength="10" placeholder="9876543210" class="flex-1 liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent font-mono-code text-sm focus:outline-none focus:border-[#8DB9F0]" />
+            <span class="liquid-glass px-3 py-2.5 rounded-xl font-mono flex items-center">+91</span>
+            <input id="loginMobileInput" type="tel" maxlength="10" placeholder="9876543210" class="flex-1 liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent font-mono text-sm focus:outline-none focus:border-[#8DB9F0]" />
           </div>
         </div>
-
-        <button onclick="requestMobileOtp()" class="w-full py-2.5 rounded-xl bg-[#8DB9F0]/25 border border-[#8DB9F0] text-white font-semibold btn-3d">
-          Generate & Dispatch Instant OTP
-        </button>
+        <button onclick="requestMobileOtp()" class="w-full py-2.5 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold">Get Instant OTP</button>
 
         <div id="otpVerifyBox" class="hidden space-y-3 pt-2 border-t border-white/10">
-          <div class="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 font-mono-code text-[11px] text-emerald-300" id="instantOtpDisplay"></div>
+          <div id="instantOtpDisplay" class="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-400/30 font-mono text-[11px] text-emerald-300"></div>
           <div>
-            <label class="block mb-1 opacity-80">Enter 6-Digit Verification OTP</label>
-            <input id="otpCodeInput" type="text" maxlength="6" placeholder="••••••" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent font-mono-code text-center text-base tracking-[0.4em] focus:outline-none focus:border-emerald-400" />
+            <label class="block mb-1 opacity-80">Enter 6-Digit OTP</label>
+            <input id="loginOtpInput" type="text" maxlength="6" placeholder="••••••" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent text-center font-mono tracking-widest text-base focus:outline-none focus:border-emerald-400" />
           </div>
-          <button onclick="verifyMobileOtp()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 to-[#8DB9F0] text-[#14161D] font-bold btn-3d">
-            Verify & Authenticate Session
+          <button onclick="verifyMobileOtp()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-400 to-[#8DB9F0] text-[#14161D] font-bold">Verify & Enter Workspace</button>
+        </div>
+
+        <!-- Hidden Owner Access Toggle (No Code Visible on Screen) -->
+        <div class="pt-4 border-t border-white/10 text-center">
+          <button onclick="toggleOwnerMode()" class="text-[11px] text-[#F5B69E] hover:underline focus:outline-none">
+            <i class="fa-solid fa-key mr-1"></i> Owner Access (Mayur Sonawane)
           </button>
         </div>
       </div>
 
-      <!-- Tab 2: Hidden Secure Owner Access ("411826" -> Mayur Sonawane) -->
+      <!-- Hidden Owner Setup Code Panel -->
       <div id="authOwnerPanel" class="hidden space-y-4 text-xs">
         <div class="p-3 rounded-xl bg-[#F5B69E]/15 border border-[#F5B69E]/35 text-[#F5B69E] leading-relaxed">
-          <i class="fa-solid fa-key mr-1"></i> Enter the Private Founder & Administrator Setup Code to unlock unlimited Root & Pro privileges for <strong>Mayur Sonawane</strong> without payment.
+          <i class="fa-solid fa-lock mr-1"></i> Enter your secret setup code to claim owner root access.
         </div>
         <div>
-          <label class="block mb-1 opacity-80">Owner Root Setup Code</label>
-          <input id="ownerSetupCodeInput" type="password" placeholder="Enter 6-digit setup code..." class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent font-mono-code text-center text-base tracking-[0.3em] focus:outline-none focus:border-[#F5B69E]" onkeydown="if(event.key==='Enter') verifyOwnerSetupCode()" />
+          <label class="block mb-1 opacity-80">Owner Setup Code</label>
+          <input id="ownerCodeInput" type="password" placeholder="Enter secret code..." class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent text-center font-mono tracking-widest focus:outline-none focus:border-[#F5B69E]" onkeydown="if(event.key==='Enter') verifyOwnerCode()" />
         </div>
-        <button onclick="verifyOwnerSetupCode()" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5B69E] to-[#8DB9F0] text-[#14161D] font-bold btn-3d">
-          <i class="fa-solid fa-crown mr-1"></i> Authenticate Owner Access
+        <button onclick="verifyOwnerCode()" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#F5B69E] to-[#8DB9F0] text-[#14161D] font-bold">
+          <i class="fa-solid fa-crown mr-1"></i> Authenticate Owner Root
         </button>
+        <div class="text-center pt-2">
+          <button onclick="toggleOwnerMode()" class="text-[11px] text-[#8DB9F0] hover:underline">← Back to Mobile OTP Login</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MODAL 2: MANUAL UPI / QR CODE PRO SUBSCRIPTION (₹799 • mayur0797@axl)
-       ========================================================================== -->
-  <div id="paymentModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="liquid-glass-card rounded-3xl max-w-md w-full p-6 space-y-4 border border-[#F5B69E]/45">
-      <div class="flex items-center justify-between">
-        <div>
-          <span class="text-[10px] font-mono-code uppercase px-2 py-0.5 rounded bg-[#F5B69E]/20 text-[#F5B69E]">ORBIT PRO PASS</span>
-          <h3 class="font-display font-bold text-xl mt-1">Upgrade to ORBIT AI Pro — ₹799</h3>
+  <!-- MAIN APP SHELL -->
+  <div class="relative z-10 flex h-screen w-screen overflow-hidden">
+    
+    <!-- SIDEBAR -->
+    <aside class="liquid-glass w-72 flex flex-col justify-between border-r border-[var(--glass-border)]">
+      <div class="p-4 border-b border-[var(--glass-border)] flex items-center justify-between">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchModule('overview')">
+          <div class="relative w-10 h-10 rounded-xl flex items-center justify-center p-[2px] overflow-hidden shadow-lg">
+            <div class="prism-logo absolute inset-0"></div>
+            <div class="relative w-full h-full bg-[#14161D] rounded-[10px] flex items-center justify-center">
+              <i class="fa-solid fa-atom text-[#8DB9F0] text-lg"></i>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-base tracking-wider text-[#8DB9F0]">ORBIT AI</span>
+              <span id="sidebarTierChip" class="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-[#8DB9F0]/15 text-[#8DB9F0] border border-[#8DB9F0]/30">FREE</span>
+            </div>
+            <p class="text-[11px] opacity-65">Private Intelligence OS</p>
+          </div>
         </div>
-        <button onclick="closePaymentModal()" class="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
       </div>
 
-      <p class="text-xs opacity-75 leading-relaxed">
-        Scan the dynamic UPI QR Code below with any UPI app (PhonePe, GPay, Paytm, BHIM) to unlock AI Live Search, Autonomous Agents, Academic Project Suite, 8K Studio, and RAG Knowledge Base.
-      </p>
-
-      <!-- Dynamic UPI QR Code Stage -->
-      <div class="liquid-glass rounded-2xl p-4 flex flex-col items-center justify-center space-y-2.5 bg-white/5">
-        <div class="bg-white p-3 rounded-2xl shadow-xl">
-          <canvas id="upiQrCanvas" width="180" height="180" class="w-44 h-44 block"></canvas>
-        </div>
-        <div class="flex items-center gap-2 text-xs font-mono-code">
-          <span class="opacity-75">UPI ID:</span>
-          <span class="text-[#8DB9F0] font-bold">mayur0797@axl</span>
-          <button onclick="copyTextToClipboard('mayur0797@axl', 'UPI ID copied!')" class="px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-[10px]">
-            <i class="fa-solid fa-copy"></i> Copy
-          </button>
-        </div>
-        <div class="text-[11px] text-[#F5B69E] font-mono-code">Payable Amount: ₹799.00 INR</div>
+      <div class="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+        <nav class="space-y-1">
+          <button onclick="switchModule('overview')" class="nav-item active"><i class="fa-solid fa-globe w-5 text-[#8DB9F0]"></i> Overview & Core</button>
+          <button onclick="switchModule('chat')" class="nav-item"><i class="fa-solid fa-comments w-5 text-[#F5B69E]"></i> AI Chat Workspace</button>
+          <button onclick="switchModule('academic')" class="nav-item"><i class="fa-solid fa-graduation-cap w-5 text-amber-400"></i> Academic Project Suite <span class="text-[10px] text-amber-300 ml-auto">PRO 🔒</span></button>
+          <button onclick="switchModule('modelhub')" class="nav-item"><i class="fa-solid fa-microchip w-5 text-cyan-400"></i> AI Model Hub Pro</button>
+          <button onclick="switchModule('media')" class="nav-item"><i class="fa-solid fa-wand-magic-sparkles w-5 text-pink-400"></i> Image & Video AI 8K <span class="text-[10px] text-pink-300 ml-auto">PRO 🔒</span></button>
+        </nav>
       </div>
 
-      <!-- Manual UTR / Transaction ID Verification -->
-      <div class="space-y-2.5 text-xs">
-        <label class="block font-semibold">Enter 12-Digit UPI UTR / Transaction Reference ID:</label>
-        <input id="upiUtrInput" type="text" maxlength="16" placeholder="e.g. 431982746102" class="w-full liquid-glass rounded-xl px-3.5 py-2.5 bg-transparent font-mono-code text-sm focus:outline-none focus:border-[#F5B69E]" />
-        <button onclick="verifyUpiPaymentUtr()" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] font-bold btn-3d">
-          <i class="fa-solid fa-circle-check mr-1"></i> Verify UTR & Activate Pro OS
-        </button>
+      <div class="p-3 border-t border-[var(--glass-border)]">
+        <div class="liquid-glass-card rounded-xl p-3 text-xs">
+          <div class="flex justify-between font-bold text-[#F5B69E] mb-1"><span>ORBIT PRO OS</span><span>₹799</span></div>
+          <p class="opacity-75 mb-2 text-[11px]">Unlock Academic Suite & 128+ Models via UPI (mayur0797@axl).</p>
+          <button onclick="openPaymentModal()" class="w-full py-2 rounded-lg bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] font-bold">Upgrade to Pro</button>
+        </div>
       </div>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+      <header class="liquid-glass h-16 px-6 flex items-center justify-between border-b border-[var(--glass-border)]">
+        <span id="topbarTitle" class="font-bold text-[#8DB9F0]">OVERVIEW</span>
+        <button onclick="openAuthModal()" id="topbarAuthBtn" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#8DB9F0]/25 border border-[#8DB9F0]">Login / Owner</button>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-6 space-y-6">
+        <!-- MODULE OVERVIEW -->
+        <section id="mod-overview" class="space-y-6">
+          <div class="liquid-glass-card rounded-3xl p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-7 space-y-4">
+              <span class="px-3 py-1 rounded-full text-xs font-mono bg-[#8DB9F0]/15 text-[#8DB9F0] border border-[#8DB9F0]/30">4D LIQUID GLASS KERNEL ACTIVE</span>
+              <h1 class="text-4xl font-bold">Private Intelligence Multi-Model AI OS</h1>
+              <p class="text-sm opacity-80">Zero-trust execution across 128+ models, deep document parsing, and Academic Project synthesis.</p>
+              <button onclick="switchModule('chat')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8DB9F0] to-[#F5B69E] text-[#14161D] font-bold text-xs">Launch AI Chat →</button>
+            </div>
+            <div class="lg:col-span-5 flex justify-center relative min-h-[300px]">
+              <div id="orbitCoreContainer" class="w-[270px] h-[270px] relative rounded-full">
+                <div class="caustic-floor"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MODULE CHAT -->
+        <section id="mod-chat" class="hidden h-[calc(100vh-8rem)] flex flex-col liquid-glass-card rounded-2xl p-4">
+          <div id="chatMessages" class="flex-1 overflow-y-auto space-y-3 p-2"></div>
+          <div class="flex gap-2 mt-3">
+            <input id="chatInput" type="text" placeholder="Message ORBIT AI..." class="flex-1 liquid-glass rounded-xl px-4 py-3 bg-transparent text-sm focus:outline-none" onkeydown="if(event.key==='Enter') sendChatMessage()" />
+            <button onclick="sendChatMessage()" class="px-5 py-3 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold">Send</button>
+          </div>
+        </section>
+
+        <!-- MODULE ACADEMIC PROJECT SUITE -->
+        <section id="mod-academic" class="hidden liquid-glass-card rounded-3xl p-6 space-y-4">
+          <h2 class="text-xl font-bold text-[#F5B69E]">🎓 Academic Project Suite Pro</h2>
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <input id="acadDegree" type="text" value="B.Pharmacy" class="liquid-glass rounded-xl p-3 bg-transparent" />
+            <input id="acadTopic" type="text" value="Formulation and Evaluation of Sustained Release Tablets" class="liquid-glass rounded-xl p-3 bg-transparent" />
+          </div>
+          <button onclick="generateAcademicReport()" class="py-3 px-6 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold text-xs">Generate Report</button>
+          <div id="academicReportOutput" class="liquid-glass rounded-2xl p-4 text-xs max-h-96 overflow-y-auto"></div>
+        </section>
+      </main>
     </div>
   </div>
 
-  <!-- ==========================================================================
-       COMPLETE APPLICATION LOGIC, 3D/4D GLSL SHADERS & GEMINI NATIVE ENGINE
-       ========================================================================== -->
+  <!-- PAYMENT MODAL (₹799 • mayur0797@axl) -->
+  <div id="paymentModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="liquid-glass-card rounded-3xl max-w-sm w-full p-6 space-y-4 text-center">
+      <h3 class="text-lg font-bold text-[#F5B69E]">ORBIT AI Pro Pass — ₹799</h3>
+      <p class="text-xs opacity-75">Scan QR or pay via UPI ID: <strong>mayur0797@axl</strong></p>
+      <div class="bg-white p-3 rounded-xl inline-block">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=mayur0797@axl&am=799&cu=INR" alt="UPI QR" class="w-40 h-40" />
+      </div>
+      <input id="utrInput" type="text" placeholder="Enter 12-digit UTR ID" class="w-full liquid-glass rounded-xl p-2.5 text-xs text-center font-mono" />
+      <button onclick="verifyUtr()" class="w-full py-2.5 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold text-xs">Confirm Payment & Unlock Pro</button>
+      <button onclick="document.getElementById('paymentModal').style.display='none'" class="text-xs opacity-60">Close</button>
+    </div>
+  </div>
+
   <script>
-    /***************************************************************************
-     * 1. GLOBAL APPLICATION STATE & PERSISTENCE
-     ***************************************************************************/
-    const apiKey = ""; // Canvas runtime automatically injects Gemini API key
+    let currentUser = { loggedIn: false, isPro: false, isOwner: false, name: 'Guest' };
+    const SECRET_OWNER_CODE = "411826";
+    let API_BASE = window.location.origin;
 
-    const APP_STATE = {
-      currentModule: 'overview',
-      selectedModel: 'gemini-3-flash-preview',
-      selectedLanguage: 'English',
-      theme: 'dark',
-      orbState: 'idle', // 'idle' | 'thinking' | 'responding'
-      autoTTS: false,
-      user: JSON.parse(localStorage.getItem('orbit_user_session') || 'null') || {
-        loggedIn: false,
-        name: 'Guest Explorer',
-        mobile: '',
-        isPro: false,
-        isOwner: false
-      },
-      generatedOtp: null,
-      attachedDocument: null, // { name, text }
-      standaloneFile: null,
-      conversations: JSON.parse(localStorage.getItem('orbit_conversations') || '[]'),
-      activeConversationId: null,
-      agents: [
-        {
-          id: 'ag-1',
-          name: 'Aegis Zero-Trust Auditor',
-          role: 'Cybersecurity & Zero-Trust Auditor',
-          system: 'Act as a Principal Security Architect. Perform deep threat modeling, OWASP verification, and cryptographic auditing with actionable remediation code.'
-        },
-        {
-          id: 'ag-2',
-          name: 'PharmaSynth Formulation AI',
-          role: 'Pharmaceutical R&D Formulation Scientist',
-          system: 'Act as a Chief Pharmaceutical Scientist specializing in NDDS, bioavailability, excipient compatibility, and USP/ICH stability protocols.'
-        },
-        {
-          id: 'ag-3',
-          name: 'Hyperion Full-Stack Architect',
-          role: 'Full-Stack Principal Architect',
-          system: 'Design fault-tolerant distributed systems, clean Node.js microservices, and GPU-accelerated UIs.'
-        }
-      ],
-      selectedAgentId: 'ag-1',
-      projects: [
-        {
-          id: 'proj-1',
-          title: 'ORBIT Core Telemetry',
-          context: 'Always prioritize clean modular architecture, security best practices, and high-clarity tables.'
-        },
-        {
-          id: 'proj-2',
-          title: 'B.Pharmacy NDDS Research',
-          context: 'Frame all responses using standard Indian Pharmacopoeia (IP) / USP terminology and academic citation standards.'
-        }
-      ],
-      activeProjectId: 'proj-1'
-    };
-
-    const PRO_MODULES = ['search', 'agents', 'academic', 'media', 'automation', 'projects', 'knowledge'];
-
-    /***************************************************************************
-     * 2. 15-LANGUAGE TRANSLATION DICTIONARY FOR UI & AI PROMPT ENGINE
-     ***************************************************************************/
-    const UI_TRANSLATIONS = {
-      English: {
-        sec_workspace: 'WORKSPACE', sec_personal: 'PERSONAL',
-        nav_overview: 'Overview & 4D Core', nav_chat: 'AI Chat Workspace',
-        nav_search: 'AI Live Search', nav_agents: 'Autonomous Agents',
-        nav_academic: 'Academic Project Suite', nav_modelhub: 'AI Model Hub Pro',
-        nav_media: 'Image & Video AI 8K', nav_automation: 'Task Automation',
-        nav_projects: 'Projects Context', nav_knowledge: 'Knowledge Base RAG',
-        nav_prompts: 'Prompt Library', nav_files: 'Files & Doc Tools',
-        nav_history: 'Chat History', btn_upgrade: 'Upgrade to Pro',
-        btn_login: 'Login / Setup', hero_title_1: 'Private Intelligence',
-        hero_title_2: 'Multi-Model AI OS'
-      },
-      Marathi: {
-        sec_workspace: 'कार्यक्षेत्र', sec_personal: 'वैयक्तिक',
-        nav_overview: 'मुख्य पृष्ठ आणि 4D कोअर', nav_chat: 'AI चॅट वर्कस्पेस',
-        nav_search: 'AI थेट शोध', nav_agents: 'स्वायत्त एजंट्स',
-        nav_academic: 'शैक्षणिक प्रकल्प संच', nav_modelhub: 'AI मॉडेल हब प्रो',
-        nav_media: 'इमेज आणि व्हिडिओ AI 8K', nav_automation: 'कार्य ऑटोमेशन',
-        nav_projects: 'प्रकल्प संदर्भ', nav_knowledge: 'नॉलेज बेस RAG',
-        nav_prompts: 'प्रॉम्प्ट लायब्ररी', nav_files: 'फाइल्स आणि साधने',
-        nav_history: 'चॅट इतिहास', btn_upgrade: 'प्रो मध्ये अपग्रेड करा',
-        btn_login: 'लॉगिन / सेटअप', hero_title_1: 'खाजगी बुद्धिमत्ता',
-        hero_title_2: 'मल्टी-मॉडेल AI OS'
-      },
-      Hindi: {
-        sec_workspace: 'कार्यक्षेत्र', sec_personal: 'व्यक्तिगत',
-        nav_overview: 'अवलोकन और 4D कोर', nav_chat: 'AI चैट वर्कस्पेस',
-        nav_search: 'AI लाइव सर्च', nav_agents: 'स्वायत्त एजेंट',
-        nav_academic: 'अकादमिक प्रोजेक्ट सूट', nav_modelhub: 'AI मॉडल हब प्रो',
-        nav_media: 'इमेज और वीडियो AI 8K', nav_automation: 'टास्क ऑटोमेशन',
-        nav_projects: 'प्रोजेक्ट संदर्भ', nav_knowledge: 'नॉलेज बेस RAG',
-        nav_prompts: 'प्रॉम्प्ट लाइब्रेरी', nav_files: 'फ़ाइलें और टूल',
-        nav_history: 'चैट इतिहास', btn_upgrade: 'प्रो अपग्रेड ₹799',
-        btn_login: 'लॉगिन / सेटअप', hero_title_1: 'प्राइवेट इंटेलिजेंस',
-        hero_title_2: 'मल्टी-मॉडेल AI OS'
-      }
-    };
-
-    function handleLanguageChange(lang) {
-      APP_STATE.selectedLanguage = lang;
-      const metricEl = document.getElementById('metricActiveLang');
-      if (metricEl) metricEl.textContent = `${lang} Active`;
-
-      const dict = UI_TRANSLATIONS[lang] || UI_TRANSLATIONS.English;
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (dict[key]) el.textContent = dict[key];
-      });
-
-      showToast(`Neural Translation Matrix switched to ${lang}. AI responses will now adapt to ${lang}.`, 'info');
+    function showToast(msg, type='info') {
+      const c = document.getElementById('toastContainer');
+      if (!c) return;
+      const t = document.createElement('div');
+      t.className = 'liquid-glass px-4 py-3 rounded-2xl text-xs font-medium border border-[#8DB9F0]/50 shadow-2xl';
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 4000);
     }
 
-    /***************************************************************************
-     * 3. REAL-TIME 3D & 4D "RED MAGMA GLASS ORB" (THREE.JS + CUSTOM GLSL SHADERS)
-     ***************************************************************************/
-    let orbScene, orbCamera, orbRenderer, orbMesh, orbShellMesh, orbUniforms;
-    let mouseTargetX = 0, mouseTargetY = 0;
-
-    function initOrbitMagmaCore() {
-      const container = document.getElementById('orbitCoreContainer');
-      if (!container || typeof THREE === 'undefined') return;
-
-      const width = container.clientWidth || 340;
-      const height = container.clientHeight || 330;
-
-      orbScene = new THREE.Scene();
-      orbCamera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-      orbCamera.position.z = 3.5;
-
-      orbRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      orbRenderer.setSize(width, height);
-      orbRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(orbRenderer.domElement);
-
-      // Custom 4D Simplex-inspired Fluid Magma Vertex & Fragment Shaders
-      const vertexShader = `
-        uniform float uTime;
-        uniform float uSpeed;
-        uniform float uDistort;
-        uniform vec2 uMouse;
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying float vNoise;
-
-        // 4D Pseudo-Perlin / Harmonic Fluid Displacement
-        float waveNoise(vec3 p, float t) {
-          float n = sin(p.x * 3.2 + t * 1.7) * cos(p.y * 3.2 - t * 1.4) * sin(p.z * 3.2 + t * 1.9);
-          n += 0.5 * sin(p.x * 6.4 - t * 2.3 + uMouse.x * 3.0) * cos(p.y * 6.4 + t * 2.1 + uMouse.y * 3.0);
-          n += 0.25 * cos(p.z * 11.0 + t * 3.4);
-          return n;
-        }
-
-        void main() {
-          vNormal = normalize(normalMatrix * normal);
-          float t = uTime * uSpeed;
-          float n = waveNoise(position, t);
-          vNoise = n;
-
-          vec3 newPos = position + normal * (n * uDistort);
-          vPosition = (modelViewMatrix * vec4(newPos, 1.0)).xyz;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
-        }
-      `;
-
-      const fragmentShader = `
-        uniform float uTime;
-        uniform float uIntensity;
-        uniform vec3 uCoreColor;
-        uniform vec3 uMagmaColor;
-        uniform vec3 uRimColor;
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying float vNoise;
-
-        void main() {
-          vec3 viewDir = normalize(-vPosition);
-          // Fresnel crystal glass rim calculation
-          float fresnel = pow(1.0 - max(dot(viewDir, normalize(vNormal)), 0.0), 2.6);
-
-          // Dynamic magma veins based on 4D noise
-          float magmaVein = smoothstep(-0.4, 0.65, vNoise);
-          vec3 baseMagma = mix(uCoreColor, uMagmaColor, magmaVein);
-
-          // Hot incandescent core highlights
-          float hotCore = smoothstep(0.25, 0.85, vNoise) * uIntensity;
-          vec3 hotFlame = vec3(1.0, 0.78, 0.55) * hotCore;
-
-          // Combine internal magma with crystal powder-blue & sunset-peach fresnel rim
-          vec3 finalColor = baseMagma + hotFlame + (uRimColor * fresnel * 1.35);
-
-          // Liquid glass alpha depth
-          float alpha = clamp(0.84 + fresnel * 0.16, 0.0, 1.0);
-          gl_FragColor = vec4(finalColor, alpha);
-        }
-      `;
-
-      orbUniforms = {
-        uTime: { value: 0 },
-        uSpeed: { value: 0.85 },
-        uDistort: { value: 0.14 },
-        uIntensity: { value: 0.9 },
-        uMouse: { value: new THREE.Vector2(0, 0) },
-        uCoreColor: { value: new THREE.Color('#3B0910') },   // Deep Volcanic Crimson
-        uMagmaColor: { value: new THREE.Color('#FF3B30') },  // Glowing Red Magma
-        uRimColor: { value: new THREE.Color('#8DB9F0') }     // Luminous Powder Blue Fresnel Rim
-      };
-
-      const geometry = new THREE.SphereGeometry(1.05, 96, 96);
-      const material = new THREE.ShaderMaterial({
-        vertexShader,
-        fragmentShader,
-        uniforms: orbUniforms,
-        transparent: true
-      });
-
-      orbMesh = new THREE.Mesh(geometry, material);
-      orbScene.add(orbMesh);
-
-      // Outer 4D Refractive Crystal Glass Cage
-      const shellGeo = new THREE.IcosahedronGeometry(1.26, 2);
-      const shellMat = new THREE.MeshBasicMaterial({
-        color: 0xF5B69E,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.13
-      });
-      orbShellMesh = new THREE.Mesh(shellGeo, shellMat);
-      orbScene.add(orbShellMesh);
-
-      // Mouse & Touch Interactive Listeners
-      let isDragging = false;
-      container.addEventListener('pointerdown', () => { isDragging = true; });
-      window.addEventListener('pointerup', () => { isDragging = false; });
-      container.addEventListener('pointermove', (e) => {
-        const rect = container.getBoundingClientRect();
-        const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        const ny = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-        mouseTargetX = nx;
-        mouseTargetY = ny;
-        orbUniforms.uMouse.value.set(nx, ny);
-        if (isDragging && orbMesh) {
-          orbMesh.rotation.y += nx * 0.08;
-          orbMesh.rotation.x += ny * 0.08;
-        }
-      });
-
-      window.addEventListener('resize', () => {
-        if (!container || !orbRenderer) return;
-        const w = container.clientWidth || 340;
-        const h = container.clientHeight || 330;
-        orbCamera.aspect = w / h;
-        orbCamera.updateProjectionMatrix();
-        orbRenderer.setSize(w, h);
-      });
-
-      animateOrbLoop();
-    }
-
-    function animateOrbLoop() {
-      requestAnimationFrame(animateOrbLoop);
-      if (!orbUniforms || !orbMesh) return;
-
-      orbUniforms.uTime.value += 0.016;
-      orbMesh.rotation.y += 0.0045;
-      orbMesh.rotation.x += (mouseTargetY * 0.35 - orbMesh.rotation.x) * 0.05;
-
-      if (orbShellMesh) {
-        orbShellMesh.rotation.y -= 0.003;
-        orbShellMesh.rotation.z += 0.002;
-      }
-
-      orbRenderer.render(orbScene, orbCamera);
-    }
-
-    function setOrbState(state) {
-      APP_STATE.orbState = state;
-      const statusText = document.getElementById('orbStateStatusText');
-      const caustic = document.getElementById('causticFloorReflection');
-
-      ['idle', 'thinking', 'responding'].forEach(s => {
-        const btn = document.getElementById(`orbBtn-${s}`);
-        if (btn) {
-          btn.className = s === state
-            ? 'px-3.5 py-1.5 rounded-xl text-xs font-mono-code bg-[#8DB9F0]/25 border border-[#8DB9F0] text-white btn-3d'
-            : 'px-3.5 py-1.5 rounded-xl text-xs font-mono-code bg-white/5 border border-white/15 hover:border-[#F5B69E] transition';
-        }
-      });
-
-      if (!orbUniforms) return;
-
-      if (state === 'idle') {
-        orbUniforms.uSpeed.value = 0.85;
-        orbUniforms.uDistort.value = 0.14;
-        orbUniforms.uIntensity.value = 0.9;
-        orbUniforms.uMagmaColor.value.set('#FF3B30');
-        orbUniforms.uRimColor.value.set('#8DB9F0');
-        if (statusText) statusText.textContent = 'IDLE (HARMONIC)';
-        if (caustic) caustic.style.background = 'radial-gradient(ellipse at center, rgba(255, 94, 58, 0.68) 0%, rgba(245, 182, 158, 0.32) 45%, transparent 75%)';
-      } else if (state === 'thinking') {
-        orbUniforms.uSpeed.value = 2.1;
-        orbUniforms.uDistort.value = 0.24;
-        orbUniforms.uIntensity.value = 1.35;
-        orbUniforms.uMagmaColor.value.set('#FF9500');
-        orbUniforms.uRimColor.value.set('#F5B69E');
-        if (statusText) statusText.textContent = 'THINKING (NEURAL VORTEX)';
-        if (caustic) caustic.style.background = 'radial-gradient(ellipse at center, rgba(255, 149, 0, 0.85) 0%, rgba(141, 185, 240, 0.45) 45%, transparent 75%)';
-      } else if (state === 'responding') {
-        orbUniforms.uSpeed.value = 1.65;
-        orbUniforms.uDistort.value = 0.29;
-        orbUniforms.uIntensity.value = 1.65;
-        orbUniforms.uMagmaColor.value.set('#FF2D55');
-        orbUniforms.uRimColor.value.set('#8DB9F0');
-        if (statusText) statusText.textContent = 'RESPONDING (MAGMA SURGE)';
-        if (caustic) caustic.style.background = 'radial-gradient(ellipse at center, rgba(255, 45, 85, 0.9) 0%, rgba(245, 182, 158, 0.5) 45%, transparent 75%)';
-      }
-    }
-
-    /***************************************************************************
-     * 4. NAVIGATION, SIDEBAR COLLAPSE, THEME & PRO TIER LOCK ENFORCEMENT
-     ***************************************************************************/
-    function switchModule(moduleId) {
-      const isLocked = PRO_MODULES.includes(moduleId) && !APP_STATE.user.isPro && !APP_STATE.user.isOwner;
-      const banner = document.getElementById('proLockBanner');
-
-      if (isLocked) {
-        if (banner) banner.classList.remove('hidden');
-        showToast(`🔒 "${moduleId.toUpperCase()}" is a Pro OS module. Upgrade for ₹799 or use Owner Code 411826.`, 'warn');
-        openPaymentModal();
-        return;
-      } else {
-        if (banner) banner.classList.add('hidden');
-      }
-
-      APP_STATE.currentModule = moduleId;
-      document.querySelectorAll('.module-view').forEach(sec => sec.classList.add('hidden'));
-      const target = document.getElementById(`mod-${moduleId}`);
-      if (target) target.classList.remove('hidden');
-
-      document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-mod') === moduleId);
-      });
-
-      const crumb = document.getElementById('topbarActiveBreadcrumb');
-      if (crumb) crumb.textContent = moduleId.toUpperCase();
-
-      toggleMobileSidebar(false);
-    }
-
-    let sidebarCollapsed = false;
-    function toggleSidebarCollapse() {
-      sidebarCollapsed = !sidebarCollapsed;
-      const sidebar = document.getElementById('appSidebar');
-      const icon = document.getElementById('sidebarCollapseIcon');
-      const texts = document.querySelectorAll('.sidebar-text');
-
-      if (sidebarCollapsed) {
-        sidebar.classList.remove('w-72');
-        sidebar.classList.add('w-20');
-        texts.forEach(t => t.classList.add('hidden'));
-        if (icon) icon.className = 'fa-solid fa-angles-right';
-      } else {
-        sidebar.classList.remove('w-20');
-        sidebar.classList.add('w-72');
-        texts.forEach(t => t.classList.remove('hidden'));
-        if (icon) icon.className = 'fa-solid fa-angles-left';
-      }
-    }
-
-    function toggleMobileSidebar(open) {
-      const sidebar = document.getElementById('appSidebar');
-      const backdrop = document.getElementById('sidebarBackdrop');
-      if (open) {
-        sidebar.classList.remove('-translate-x-full');
-        backdrop.classList.remove('hidden');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-        backdrop.classList.add('hidden');
-      }
-    }
-
-    function toggleTheme() {
-      const htmlEl = document.documentElement;
-      const icon = document.getElementById('themeToggleIcon');
-      if (htmlEl.classList.contains('light-glass')) {
-        htmlEl.classList.remove('light-glass');
-        icon.className = 'fa-solid fa-moon text-xs';
-        showToast('Activated Deep Charcoal 4D Liquid Glass Theme', 'info');
-      } else {
-        htmlEl.classList.add('light-glass');
-        icon.className = 'fa-solid fa-sun text-xs';
-        showToast('Activated Daylight Crystal Liquid Glass Theme', 'info');
-      }
-    }
-
-    /***************************************************************************
-     * 5. AUTHENTICATION, 10-DIGIT MOBILE OTP & OWNER CODE "411826"
-     ***************************************************************************/
-    function openAuthModal(defaultOwnerTab = false) {
-      const modal = document.getElementById('authModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      switchAuthTab(defaultOwnerTab ? 'owner' : 'otp');
-    }
-
-    function closeAuthModal() {
-      const modal = document.getElementById('authModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function switchAuthTab(tab) {
+    function toggleOwnerMode() {
       const otpPanel = document.getElementById('authOtpPanel');
       const ownerPanel = document.getElementById('authOwnerPanel');
-      const tabOtp = document.getElementById('authTabOtp');
-      const tabOwner = document.getElementById('authTabOwner');
-
-      if (tab === 'otp') {
+      if (otpPanel.classList.contains('hidden')) {
         otpPanel.classList.remove('hidden');
         ownerPanel.classList.add('hidden');
-        tabOtp.className = 'py-2 rounded-lg font-semibold bg-[#8DB9F0] text-[#14161D]';
-        tabOwner.className = 'py-2 rounded-lg font-semibold opacity-75 hover:opacity-100';
       } else {
         otpPanel.classList.add('hidden');
         ownerPanel.classList.remove('hidden');
-        tabOwner.className = 'py-2 rounded-lg font-semibold bg-[#F5B69E] text-[#14161D]';
-        tabOtp.className = 'py-2 rounded-lg font-semibold opacity-75 hover:opacity-100';
       }
     }
 
-    function requestMobileOtp() {
-      const mobile = document.getElementById('mobileNumberInput').value.trim();
+    function switchModule(mod) {
+      if (['academic', 'media'].includes(mod) && !currentUser.isPro && !currentUser.isOwner) {
+        document.getElementById('paymentModal').style.display = 'flex';
+        showToast('🔒 Pro feature locked. Complete ₹799 UPI payment or login as Owner.', 'warn');
+        return;
+      }
+      document.querySelectorAll('section[id^="mod-"]').forEach(s => s.classList.add('hidden'));
+      document.getElementById(`mod-${mod}`).classList.remove('hidden');
+      document.getElementById('topbarTitle').textContent = mod.toUpperCase();
+    }
+
+    let tempOtp = '';
+    async function requestMobileOtp() {
+      const mobile = document.getElementById('loginMobileInput').value.trim();
       if (!/^\d{10}$/.test(mobile)) {
         showToast('Please enter a valid 10-digit mobile number.', 'error');
         return;
       }
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      APP_STATE.generatedOtp = otp;
-
-      const box = document.getElementById('otpVerifyBox');
-      const display = document.getElementById('instantOtpDisplay');
-      box.classList.remove('hidden');
-      display.innerHTML = `<i class="fa-solid fa-bell mr-1"></i> [ORBIT-SMS GATEWAY] Instant OTP for +91-${mobile}: <strong>${otp}</strong>`;
-      document.getElementById('otpCodeInput').value = otp;
-      showToast(`Instant OTP ${otp} generated for +91 ${mobile}`, 'success');
-    }
-
-    function verifyMobileOtp() {
-      const entered = document.getElementById('otpCodeInput').value.trim();
-      const mobile = document.getElementById('mobileNumberInput').value.trim();
-      if (!APP_STATE.generatedOtp || entered !== APP_STATE.generatedOtp) {
-        showToast('Invalid OTP code. Please verify and try again.', 'error');
-        return;
-      }
-      APP_STATE.user = {
-        loggedIn: true,
-        name: `User +91-${mobile.slice(-4)}`,
-        mobile,
-        isPro: APP_STATE.user.isPro,
-        isOwner: false
-      };
-      saveUserSessionAndRefreshUI();
-      closeAuthModal();
-      showToast(`Authenticated successfully as +91-${mobile}`, 'success');
-    }
-
-    function verifyOwnerSetupCode() {
-      const code = document.getElementById('ownerSetupCodeInput').value.trim();
-      if (code === '411826') {
-        APP_STATE.user = {
-          loggedIn: true,
-          name: 'Mayur Sonawane',
-          mobile: 'OWNER-ROOT',
-          isPro: true,
-          isOwner: true
-        };
-        saveUserSessionAndRefreshUI();
-        closeAuthModal();
-        setOrbState('responding');
-        showToast('👑 Welcome Owner Mayur Sonawane! Root Administrator & Unlimited Pro OS Access Activated.', 'success');
-      } else {
-        showToast('Invalid Owner Setup Code. Access Denied.', 'error');
-      }
-    }
-
-    function saveUserSessionAndRefreshUI() {
-      localStorage.setItem('orbit_user_session', JSON.stringify(APP_STATE.user));
-
-      const tierChip = document.getElementById('sidebarTierChip');
-      const authLabel = document.getElementById('topbarAuthLabel');
-      const clearanceEl = document.getElementById('metricClearance');
-      const identityEl = document.getElementById('metricUserIdentity');
-      const lockBadges = document.querySelectorAll('.pro-lock-badge, .pro-chip');
-      const footerTitle = document.getElementById('footerCardTitle');
-      const footerPrice = document.getElementById('footerCardPrice');
-      const footerDesc = document.getElementById('footerCardDesc');
-      const footerBtn = document.getElementById('footerCardActionBtn');
-
-      if (APP_STATE.user.isOwner) {
-        tierChip.textContent = 'OWNER';
-        tierChip.className = 'text-[10px] font-mono-code uppercase px-1.5 py-0.5 rounded bg-[#F5B69E]/25 text-[#F5B69E] border border-[#F5B69E]';
-        authLabel.textContent = '👑 Mayur Sonawane';
-        if (clearanceEl) clearanceEl.textContent = 'OWNER ROOT';
-        if (identityEl) identityEl.textContent = 'Mayur Sonawane (Admin)';
-        lockBadges.forEach(b => { b.textContent = '🔓'; });
-        footerTitle.innerHTML = '<i class="fa-solid fa-crown"></i> OWNER ROOT ACTIVE';
-        footerPrice.textContent = 'UNLIMITED';
-        footerDesc.textContent = 'Authenticated as Mayur Sonawane (411826). All Pro & Admin modules unlocked.';
-        footerBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> <span>Root Privileges Active</span>';
-      } else if (APP_STATE.user.isPro) {
-        tierChip.textContent = 'PRO';
-        tierChip.className = 'text-[10px] font-mono-code uppercase px-1.5 py-0.5 rounded bg-emerald-500/25 text-emerald-300 border border-emerald-400';
-        authLabel.textContent = `💎 ${APP_STATE.user.name}`;
-        if (clearanceEl) clearanceEl.textContent = 'PRO OS TIER';
-        if (identityEl) identityEl.textContent = APP_STATE.user.name;
-        lockBadges.forEach(b => { b.textContent = 'PRO'; });
-        footerTitle.innerHTML = '<i class="fa-solid fa-gem"></i> ORBIT PRO UNLOCKED';
-        footerPrice.textContent = 'ACTIVE';
-        footerDesc.textContent = 'All 14 advanced intelligence modules are unlocked.';
-        footerBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Pro Subscription Active</span>';
-      } else {
-        tierChip.textContent = 'FREE';
-        authLabel.textContent = APP_STATE.user.loggedIn ? APP_STATE.user.name : 'Login / Setup';
-        if (clearanceEl) clearanceEl.textContent = 'FREE TIER';
-        if (identityEl) identityEl.textContent = APP_STATE.user.name;
-      }
-    }
-
-    /***************************************************************************
-     * 6. MANUAL UPI / QR CODE PAYMENT INTEGRATION (₹799 • mayur0797@axl)
-     ***************************************************************************/
-    function openPaymentModal() {
-      const modal = document.getElementById('paymentModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      drawDynamicUpiQrCode();
-    }
-
-    function closePaymentModal() {
-      const modal = document.getElementById('paymentModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    function drawDynamicUpiQrCode() {
-      const canvas = document.getElementById('upiQrCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      const size = 180;
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, size, size);
-
-      // Deterministic high-contrast QR matrix pattern seeded from "upi://pay?pa=mayur0797@axl&am=799"
-      const cells = 25;
-      const cellSize = Math.floor((size - 16) / cells);
-      const offset = 8;
-      const seedStr = 'upi://pay?pa=mayur0797@axl&pn=MayurSonawane&am=799&cu=INR';
-
-      function drawFinderPattern(gx, gy) {
-        ctx.fillStyle = '#14161D';
-        ctx.fillRect(offset + gx * cellSize, offset + gy * cellSize, 7 * cellSize, 7 * cellSize);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(offset + (gx + 1) * cellSize, offset + (gy + 1) * cellSize, 5 * cellSize, 5 * cellSize);
-        ctx.fillStyle = '#14161D';
-        ctx.fillRect(offset + (gx + 2) * cellSize, offset + (gy + 2) * cellSize, 3 * cellSize, 3 * cellSize);
-      }
-
-      drawFinderPattern(0, 0);
-      drawFinderPattern(cells - 7, 0);
-      drawFinderPattern(0, cells - 7);
-
-      ctx.fillStyle = '#14161D';
-      for (let r = 0; r < cells; r++) {
-        for (let c = 0; c < cells; c++) {
-          const inFinder = (r < 8 && c < 8) || (r < 8 && c >= cells - 8) || (r >= cells - 8 && c < 8);
-          if (inFinder) continue;
-          const hash = (r * 31 + c * 17 + seedStr.charCodeAt((r + c) % seedStr.length)) % 7;
-          if (hash < 3) {
-            ctx.fillRect(offset + c * cellSize, offset + r * cellSize, cellSize - 0.5, cellSize - 0.5);
-          }
-        }
-      }
-
-      // Center ORBIT badge inside QR
-      ctx.fillStyle = '#14161D';
-      ctx.fillRect(size / 2 - 18, size / 2 - 12, 36, 24);
-      ctx.fillStyle = '#8DB9F0';
-      ctx.font = 'bold 10px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('₹799', size / 2, size / 2 + 4);
-    }
-
-    function verifyUpiPaymentUtr() {
-      const utr = document.getElementById('upiUtrInput').value.trim();
-      if (utr.length < 8) {
-        showToast('Please enter a valid 12-digit UPI UTR / Transaction Reference ID.', 'error');
-        return;
-      }
-      APP_STATE.user.isPro = true;
-      APP_STATE.user.loggedIn = true;
-      APP_STATE.user.utr = utr;
-      saveUserSessionAndRefreshUI();
-      closePaymentModal();
-      document.getElementById('proLockBanner').classList.add('hidden');
-      showToast(`🎉 UTR #${utr} Verified! ORBIT AI Pro Unlocked (₹799).`, 'success');
-    }
-
-    /***************************************************************************
-     * 7. GEMINI API ENGINE WITH EXPONENTIAL BACKOFF & LANGUAGE / MODEL BRIDGING
-     ***************************************************************************/
-    async function callOrbitIntelligence(userPrompt, systemInstruction = '', useSearchGrounding = false) {
-      setOrbState('thinking');
-      const lang = APP_STATE.selectedLanguage;
-      const modelId = APP_STATE.selectedModel;
-
-      const fullSystemInstruction = `You are ORBIT AI — Private Intelligence OS (created by Chief Architect Mayur Sonawane).
-Active Model Emulation: ${modelId}.
-Active Output Language: ${lang} (Always respond in ${lang} unless explicitly asked otherwise).
-${systemInstruction}`;
-
-      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-      const payload = {
-        contents: [{ parts: [{ text: userPrompt }] }],
-        systemInstruction: { parts: [{ text: fullSystemInstruction }] }
-      };
-      if (useSearchGrounding) {
-        payload.tools = [{ google_search: {} }];
-      }
-
-      const delays = [1000, 2000, 4000];
-      for (let attempt = 0; attempt <= delays.length; attempt++) {
-        try {
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          const result = await response.json();
-          const candidate = result.candidates?.[0];
-          const text = candidate?.content?.parts?.[0]?.text;
-
-          if (text) {
-            setOrbState('responding');
-            setTimeout(() => setOrbState('idle'), 2800);
-
-            let sources = [];
-            const attributions = candidate?.groundingMetadata?.groundingAttributions;
-            if (attributions) {
-              sources = attributions
-                .map(a => ({ uri: a.web?.uri, title: a.web?.title }))
-                .filter(s => s.uri && s.title);
-            }
-            return { text, sources };
-          }
-        } catch (err) {
-          if (attempt < delays.length) {
-            await new Promise(r => setTimeout(r, delays[attempt]));
-          }
-        }
-      }
-
-      // Deterministic High-Precision Fallback Synthesis if offline
-      setOrbState('idle');
-      return {
-        text: `### ORBIT Private Intelligence Synthesis (${modelId} • ${lang})\n\n` +
-          `Here is the structured analysis for your query:\n\n> **Query:** ${userPrompt.slice(0, 180)}\n\n` +
-          `1. **Architectural & Domain Execution**: Evaluated through ORBIT OS zero-trust pipeline.\n` +
-          `2. **Key Findings & Actionable Recommendations**:\n   - Optimized multi-layer execution parameters.\n   - Verified semantic integrity across active context.\n\n` +
-          `\`\`\`javascript\n// ORBIT OS Verified Telemetry Kernel\nconst orbitKernel = {\n  model: "${modelId}",\n  language: "${lang}",\n  status: "VERIFIED_PRIVATE_EXECUTION"\n};\nconsole.log(orbitKernel);\n\`\`\``,
-        sources: []
-      };
-    }
-
-    /***************************************************************************
-     * 8. AI CHAT WORKSPACE (MARKED.JS, VOICE INPUT, TTS, PDF/DOCX PARSER)
-     ***************************************************************************/
-    function initChatWorkspace() {
-      if (APP_STATE.conversations.length === 0) {
-        createNewConversation();
-      } else {
-        APP_STATE.activeConversationId = APP_STATE.conversations[0].id;
-        renderChatThreadList();
-        renderActiveChatMessages();
-      }
-    }
-
-    function createNewConversation() {
-      const newConv = {
-        id: 'conv-' + Date.now(),
-        title: `Intelligence Session #${APP_STATE.conversations.length + 1}`,
-        updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        messages: [
-          {
-            role: 'assistant',
-            model: APP_STATE.selectedModel,
-            content: `Welcome to **ORBIT AI — Private Intelligence OS**. I am running on **${APP_STATE.selectedModel}** in **${APP_STATE.selectedLanguage}** mode.\n\n- Attach any **PDF, DOCX, or TXT** file using the paperclip button for deep document analysis.\n- Use the microphone for **Voice Input** or toggle **TTS** for spoken synthesis.`
-          }
-        ]
-      };
-      APP_STATE.conversations.unshift(newConv);
-      APP_STATE.activeConversationId = newConv.id;
-      persistConversations();
-      renderChatThreadList();
-      renderActiveChatMessages();
-    }
-
-    function persistConversations() {
-      localStorage.setItem('orbit_conversations', JSON.stringify(APP_STATE.conversations));
-      const badge = document.getElementById('historyCountBadge');
-      if (badge) badge.textContent = APP_STATE.conversations.length;
-      renderHistoryArchive();
-    }
-
-    function renderChatThreadList() {
-      const list = document.getElementById('chatThreadList');
-      if (!list) return;
-      list.innerHTML = APP_STATE.conversations.map(c => `
-        <div onclick="selectConversation('${c.id}')" class="px-3 py-2 rounded-xl text-xs cursor-pointer flex items-center justify-between transition ${c.id === APP_STATE.activeConversationId ? 'bg-[#8DB9F0]/25 border border-[#8DB9F0]/50 font-semibold' : 'hover:bg-white/5 opacity-75'}">
-          <span class="truncate pr-2"><i class="fa-regular fa-message mr-1.5 text-[#8DB9F0]"></i>${escapeHtml(c.title)}</span>
-          <span class="text-[10px] font-mono-code opacity-60">${c.updatedAt}</span>
-        </div>
-      `).join('');
-    }
-
-    function selectConversation(id) {
-      APP_STATE.activeConversationId = id;
-      renderChatThreadList();
-      renderActiveChatMessages();
-    }
-
-    function renderActiveChatMessages() {
-      const container = document.getElementById('chatMessagesContainer');
-      const titleEl = document.getElementById('activeChatTitle');
-      const conv = APP_STATE.conversations.find(c => c.id === APP_STATE.activeConversationId);
-      if (!container || !conv) return;
-
-      if (titleEl) titleEl.textContent = conv.title;
-
-      container.innerHTML = conv.messages.map((m, idx) => {
-        const isUser = m.role === 'user';
-        const parsedHtml = typeof marked !== 'undefined' ? marked.parse(m.content) : escapeHtml(m.content);
-        return `
-          <div class="flex ${isUser ? 'justify-end' : 'justify-start'}">
-            <div class="max-w-3xl w-full sm:w-auto rounded-2xl p-4 ${isUser ? 'bg-gradient-to-r from-[#8DB9F0]/25 to-[#F5B69E]/20 border border-[#8DB9F0]/40' : 'liquid-glass border border-white/10'}">
-              <div class="flex items-center justify-between gap-4 mb-1.5 text-[10px] font-mono-code opacity-70">
-                <span>${isUser ? '👤 YOU' : `⚛️ ORBIT AI (${m.model || APP_STATE.selectedModel})`}</span>
-                <div class="flex items-center gap-2">
-                  <button onclick="speakMessageText(${idx})" class="hover:text-[#8DB9F0]" title="Speak Aloud (TTS)">
-                    <i class="fa-solid fa-volume-high"></i>
-                  </button>
-                  <button onclick="copyMessageText(${idx})" class="hover:text-[#F5B69E]" title="Copy Message">
-                    <i class="fa-solid fa-copy"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="markdown-body text-xs sm:text-sm">${parsedHtml}</div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      container.scrollTop = container.scrollHeight;
-    }
-
-    async function sendChatMessage() {
-      const input = document.getElementById('chatPromptInput');
-      const rawPrompt = input.value.trim();
-      if (!rawPrompt && !APP_STATE.attachedDocument) return;
-
-      const conv = APP_STATE.conversations.find(c => c.id === APP_STATE.activeConversationId);
-      if (!conv) return;
-
-      let displayPrompt = rawPrompt;
-      let contextAugmentedPrompt = rawPrompt;
-
-      if (APP_STATE.attachedDocument) {
-        displayPrompt = `📎 **[Attached: ${APP_STATE.attachedDocument.name}]**\n\n${rawPrompt || 'Summarize and extract key insights from this document.'}`;
-        contextAugmentedPrompt = `Attached Document Name: ${APP_STATE.attachedDocument.name}\nExtracted Document Content:\n"""\n${APP_STATE.attachedDocument.text.slice(0, 14000)}\n"""\n\nUser Task: ${rawPrompt || 'Provide a comprehensive structured summary and key findings.'}`;
-        clearChatAttachment();
-      }
-
-      // Inject active Project Context if set
-      const activeProj = APP_STATE.projects.find(p => p.id === APP_STATE.activeProjectId);
-      const sysContext = activeProj ? `Project Context (${activeProj.title}): ${activeProj.context}` : '';
-
-      conv.messages.push({ role: 'user', content: displayPrompt });
-      if (conv.messages.length === 2 && rawPrompt) {
-        conv.title = rawPrompt.slice(0, 34);
-      }
-      conv.updatedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      input.value = '';
-      renderChatThreadList();
-      renderActiveChatMessages();
-
-      // Add temporary thinking indicator
-      const container = document.getElementById('chatMessagesContainer');
-      const thinkingDiv = document.createElement('div');
-      thinkingDiv.className = 'text-xs font-mono-code text-[#8DB9F0] animate-pulse p-2';
-      thinkingDiv.innerHTML = '<i class="fa-solid fa-atom fa-spin mr-2"></i> ORBIT 4D Neural Core synthesizing response...';
-      container.appendChild(thinkingDiv);
-      container.scrollTop = container.scrollHeight;
-
-      const response = await callOrbitIntelligence(contextAugmentedPrompt, sysContext, false);
-      thinkingDiv.remove();
-
-      conv.messages.push({
-        role: 'assistant',
-        model: APP_STATE.selectedModel,
-        content: response.text
-      });
-      persistConversations();
-      renderActiveChatMessages();
-
-      if (APP_STATE.autoTTS) {
-        speakRawText(response.text);
-      }
-    }
-
-    function copyMessageText(idx) {
-      const conv = APP_STATE.conversations.find(c => c.id === APP_STATE.activeConversationId);
-      if (!conv || !conv.messages[idx]) return;
-      copyTextToClipboard(conv.messages[idx].content, 'Message copied to clipboard!');
-    }
-
-    function speakMessageText(idx) {
-      const conv = APP_STATE.conversations.find(c => c.id === APP_STATE.activeConversationId);
-      if (!conv || !conv.messages[idx]) return;
-      speakRawText(conv.messages[idx].content);
-    }
-
-    function speakRawText(text) {
-      if (!('speechSynthesis' in window)) {
-        showToast('SpeechSynthesis TTS not supported in this browser.', 'warn');
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const clean = text.replace(/[#*`_~]/g, '').slice(0, 600);
-      const utter = new SpeechSynthesisUtterance(clean);
-      utter.rate = 1.04;
-      window.speechSynthesis.speak(utter);
-      showToast('🔊 Speaking response aloud via Neural TTS...', 'info');
-    }
-
-    function toggleAutoTTS() {
-      APP_STATE.autoTTS = !APP_STATE.autoTTS;
-      const btn = document.getElementById('autoTtsBtn');
-      if (btn) {
-        btn.innerHTML = APP_STATE.autoTTS
-          ? '<i class="fa-solid fa-volume-high text-emerald-400"></i> <span class="hidden sm:inline">TTS: On</span>'
-          : '<i class="fa-solid fa-volume-xmark"></i> <span class="hidden sm:inline">TTS: Off</span>';
-      }
-      showToast(`Auto Text-to-Speech ${APP_STATE.autoTTS ? 'Enabled' : 'Disabled'}`, 'info');
-    }
-
-    // Voice Input via Web SpeechRecognition API
-    let speechRecognizer = null;
-    function toggleVoiceRecognition() {
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRec) {
-        showToast('Voice Recognition API is not supported in this browser environment.', 'warn');
-        return;
-      }
-      const btn = document.getElementById('voiceInputBtn');
-      if (!speechRecognizer) {
-        speechRecognizer = new SpeechRec();
-        speechRecognizer.continuous = false;
-        speechRecognizer.interimResults = false;
-        speechRecognizer.onstart = () => {
-          btn.classList.add('bg-red-500/30', 'border-red-400');
-          showToast('🎙️ Listening... Speak your prompt now.', 'info');
-        };
-        speechRecognizer.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          const input = document.getElementById('chatPromptInput');
-          input.value = (input.value + ' ' + transcript).trim();
-          showToast('Voice transcript captured!', 'success');
-        };
-        speechRecognizer.onend = () => {
-          btn.classList.remove('bg-red-500/30', 'border-red-400');
-        };
-      }
-      speechRecognizer.start();
-    }
-
-    /***************************************************************************
-     * 9. DEEP DOCUMENT PARSING (PDF via PDF.js & DOCX via Mammoth.js)
-     ***************************************************************************/
-    async function extractTextFromUploadedFile(file) {
-      const ext = file.name.split('.').pop().toLowerCase();
-
-      if (ext === 'pdf' && typeof pdfjsLib !== 'undefined') {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        let fullText = '';
-        for (let i = 1; i <= Math.min(pdf.numPages, 25); i++) {
-          const page = await pdf.getPage(i);
-          const content = await page.getTextContent();
-          fullText += content.items.map(item => item.str).join(' ') + '\n\n';
-        }
-        return fullText.trim() || `[PDF Parsed: ${file.name}, ${pdf.numPages} pages]`;
-      }
-
-      if (ext === 'docx' && typeof mammoth !== 'undefined') {
-        const arrayBuffer = await file.arrayBuffer();
-        const result = await mammoth.extractRawText({ arrayBuffer });
-        return result.value.trim() || `[DOCX Parsed: ${file.name}]`;
-      }
-
-      return await file.text();
-    }
-
-    async function handleChatFileAttachment(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      showToast(`Parsing "${file.name}" via Deep Document Intelligence...`, 'info');
       try {
-        const extractedText = await extractTextFromUploadedFile(file);
-        APP_STATE.attachedDocument = { name: file.name, text: extractedText };
-        document.getElementById('chatAttachmentBanner').classList.remove('hidden');
-        document.getElementById('chatAttachmentName').textContent = file.name;
-        document.getElementById('chatAttachmentChars').textContent = `(${extractedText.length.toLocaleString()} chars extracted)`;
-        document.getElementById('attachedDocIndicator').textContent = file.name;
-        showToast(`Successfully parsed ${file.name} (${extractedText.length} chars)`, 'success');
-      } catch (e) {
-        showToast(`Error parsing file: ${e.message}`, 'error');
-      }
-    }
-
-    function clearChatAttachment() {
-      APP_STATE.attachedDocument = null;
-      document.getElementById('chatAttachmentBanner').classList.add('hidden');
-      document.getElementById('attachedDocIndicator').textContent = 'None';
-    }
-
-    async function handleStandaloneFileTool(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      const text = await extractTextFromUploadedFile(file);
-      APP_STATE.standaloneFile = { name: file.name, text };
-      document.getElementById('standaloneFileResult').classList.remove('hidden');
-      document.getElementById('fileToolMeta').textContent = `FILE: ${file.name} • CHARS: ${text.length} • EST TOKENS: ~${Math.ceil(text.length / 4)}`;
-      document.getElementById('fileToolExtractedText').textContent = text.slice(0, 6000);
-      showToast(`Extracted ${text.length} characters from ${file.name}`, 'success');
-    }
-
-    function sendExtractedFileToChat() {
-      if (!APP_STATE.standaloneFile) return;
-      APP_STATE.attachedDocument = APP_STATE.standaloneFile;
-      document.getElementById('chatAttachmentBanner').classList.remove('hidden');
-      document.getElementById('chatAttachmentName').textContent = APP_STATE.standaloneFile.name;
-      document.getElementById('chatAttachmentChars').textContent = `(${APP_STATE.standaloneFile.text.length} chars)`;
-      switchModule('chat');
-      sendChatMessage();
-    }
-
-    function exportActiveChatMarkdown() {
-      const conv = APP_STATE.conversations.find(c => c.id === APP_STATE.activeConversationId);
-      if (!conv) return;
-      const md = conv.messages.map(m => `### ${m.role.toUpperCase()}\n\n${m.content}\n`).join('\n---\n\n');
-      downloadBlobFile(`${conv.title.replace(/\s+/g, '_')}.md`, md, 'text/markdown');
-    }
-
-    /***************************************************************************
-     * 10. ACADEMIC PROJECT SUITE PRO (DEGREE, STREAM, SEM, CHAPTERS)
-     ***************************************************************************/
-    const DEGREE_STREAMS = {
-      'B.Pharmacy': ['Pharmaceutics & NDDS', 'Pharmacology & Toxicology', 'Pharmaceutical Chemistry', 'Pharmacognosy & Phytochemistry', 'Pharmaceutical Quality Assurance'],
-      'M.Pharmacy': ['Novel Drug Delivery Systems (NDDS)', 'Industrial Pharmacy', 'Regulatory Affairs', 'Medicinal Chemistry', 'Clinical Research'],
-      'B.Tech / B.E.': ['Computer Science & AI/ML', 'Electronics & Telecommunication', 'Mechanical & Robotics Engineering', 'Electrical & EV Power Systems', 'Biotechnology & Bioinformatics'],
-      'M.Tech / M.E.': ['Artificial Intelligence & Data Science', 'VLSI & Embedded Systems', 'Cybersecurity & Forensics', 'Structural & Smart Infrastructure'],
-      'MBA': ['Financial Technology (FinTech)', 'Pharmaceutical Management', 'Business Analytics & AI Strategy', 'Operations & Supply Chain'],
-      'B.Sc / M.Sc': ['Biotechnology & Microbiology', 'Organic & Analytical Chemistry', 'Physics & Quantum Materials', 'Data Science & Statistics'],
-      'BCA / MCA': ['Cloud Computing & DevOps', 'Full-Stack Web & Mobile Architecture', 'Deep Learning & Computer Vision'],
-      'MBBS / MD': ['Clinical Pharmacology & Therapeutics', 'Internal Medicine & Diagnostics', 'Public Health & Epidemiology']
-    };
-
-    function updateAcademicStreams() {
-      const deg = document.getElementById('acadDegree').value;
-      const streamSelect = document.getElementById('acadStream');
-      const list = DEGREE_STREAMS[deg] || ['General Specialization'];
-      streamSelect.innerHTML = list.map(s => `<option value="${s}">${s}</option>`).join('');
-    }
-
-    let lastGeneratedAcademicMarkdown = '';
-
-    async function generateAcademicReport() {
-      const degree = document.getElementById('acadDegree').value;
-      const stream = document.getElementById('acadStream').value;
-      const year = document.getElementById('acadYear').value;
-      const semester = document.getElementById('acadSemester').value;
-      const scope = document.getElementById('acadScope').value;
-      const topic = document.getElementById('acadTopic').value.trim();
-
-      const checkedChapters = Array.from(document.querySelectorAll('#acadChaptersList input:checked')).map(cb => cb.value);
-      if (!topic) {
-        showToast('Please enter a Project Title or Research Topic.', 'warn');
-        return;
-      }
-
-      const outputEl = document.getElementById('academicReportOutput');
-      const btn = document.getElementById('acadGenerateBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Synthesizing Academic Thesis...';
-      outputEl.innerHTML = `<div class="p-4 text-xs font-mono-code text-[#F5B69E] animate-pulse">Generating structured ${degree} (${stream}) Report for ${year} • ${semester}...</div>`;
-
-      const prompt = `Generate a highly detailed, university-standard Academic Project Report in Markdown format with the following exact metadata:
-- Degree Program: ${degree}
-- Stream / Specialization: ${stream}
-- Academic Year: ${year}
-- Semester: ${semester}
-- Report Scope: ${scope}
-- Project Title: "${topic}"
-- Required Chapters to include with complete technical depth, experimental/architectural tables, formulas/code where relevant, and standard academic citations:
-${checkedChapters.map((c, i) => `  Chapter ${i + 1}: ${c}`).join('\n')}
-
-Include a formal Title Banner, Certificate/Declaration Header, detailed Markdown Tables for experimental/evaluation data, and IEEE/Vancouver style references.`;
-
-      const res = await callOrbitIntelligence(prompt, 'Act as a Senior University Thesis Advisor and Academic Research Director.', false);
-      lastGeneratedAcademicMarkdown = res.text;
-      outputEl.innerHTML = typeof marked !== 'undefined' ? marked.parse(res.text) : `<pre>${escapeHtml(res.text)}</pre>`;
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Complete Academic Report';
-      showToast('Academic Project Report synthesized! Ready to copy or download.', 'success');
-    }
-
-    function copyAcademicReport() {
-      if (!lastGeneratedAcademicMarkdown) {
-        showToast('Generate a report first before copying.', 'warn');
-        return;
-      }
-      copyTextToClipboard(lastGeneratedAcademicMarkdown, 'Academic Report Markdown copied!');
-    }
-
-    function downloadAcademicReport() {
-      if (!lastGeneratedAcademicMarkdown) {
-        showToast('Generate a report first before downloading.', 'warn');
-        return;
-      }
-      const topicSlug = (document.getElementById('acadTopic').value || 'Academic_Report').slice(0, 35).replace(/[^a-zA-Z0-9]+/g, '_');
-      downloadBlobFile(`${topicSlug}_ORBIT_Report.md`, lastGeneratedAcademicMarkdown, 'text/markdown');
-    }
-
-    /***************************************************************************
-     * 11. AI MODEL HUB PRO (OPENROUTER + KIE.AI 128+ MODELS + CUSTOM ADAPTER)
-     ***************************************************************************/
-    const OPENROUTER_MODELS = [
-      { id: 'openrouter/anthropic/claude-3.7-sonnet', name: 'Claude 3.7 Sonnet Thinking', ctx: '200K', type: 'Reasoning & Coding' },
-      { id: 'openrouter/openai/gpt-4o', name: 'OpenAI GPT-4o Omni', ctx: '128K', type: 'Multimodal Flagship' },
-      { id: 'openrouter/openai/o3-mini-high', name: 'OpenAI o3-Mini High', ctx: '200K', type: 'STEM & Logic' },
-      { id: 'openrouter/deepseek/deepseek-r1', name: 'DeepSeek R1 671B MoE', ctx: '128K', type: 'Deep Chain-of-Thought' },
-      { id: 'openrouter/deepseek/deepseek-chat-v3', name: 'DeepSeek V3 685B', ctx: '128K', type: 'General & Code' },
-      { id: 'openrouter/meta-llama/llama-3.3-70b-instruct', name: 'Meta Llama 3.3 70B Instruct', ctx: '128K', type: 'Open Weights Flagship' },
-      { id: 'openrouter/qwen/qwen-2.5-coder-32b-instruct', name: 'Qwen 2.5 Coder 32B', ctx: '128K', type: 'Software Architecture' },
-      { id: 'openrouter/google/gemini-2.5-pro-exp', name: 'Gemini 2.5 Pro Experimental', ctx: '2M', type: 'Massive Context' },
-      { id: 'openrouter/mistralai/mistral-large-2411', name: 'Mistral Large 2411', ctx: '128K', type: 'European Flagship' },
-      { id: 'openrouter/cohere/command-r-plus-08-2024', name: 'Cohere Command R+ RAG', ctx: '128K', type: 'Enterprise RAG' }
-    ];
-
-    const KIE_MODELS = [
-      { id: 'kie/kie-nexus-ultra-128k', name: 'KIE.ai Nexus Ultra 128K', ctx: '128K', type: 'Autonomous Reasoning' },
-      { id: 'kie/Flux-1.1-Pro-Ultra-8K', name: 'KIE.ai Flux 1.1 Pro Ultra 8K', ctx: '8K UHD', type: 'Photoreal Synthesis' },
-      { id: 'kie/kling-v1.6-pro-video', name: 'KIE.ai Kling v1.6 Pro Video', ctx: '1080p 60fps', type: 'Cinema Video AI' },
-      { id: 'kie/runway-gen3-alpha-turbo', name: 'KIE.ai Gen-3 Alpha Turbo', ctx: '4K Motion', type: 'Temporal Video' },
-      { id: 'kie/suno-v4-master-audio', name: 'KIE.ai Acoustic Synth v4', ctx: '48kHz Stereo', type: 'Neural Audio' },
-      { id: 'kie/kie-pharma-biomed-70b', name: 'KIE.ai BioMed & Pharma 70B', ctx: '128K', type: 'Clinical & Molecular' },
-      { id: 'kie/kie-secops-redteam-32b', name: 'KIE.ai SecOps RedTeam 32B', ctx: '64K', type: 'Zero-Trust Audit' },
-      { id: 'kie/kie-indic-polyglot-15x', name: 'KIE.ai Indic Polyglot 15-Lang', ctx: '128K', type: '15 Indian Languages' },
-      { id: 'kie/luma-dream-machine-ray2', name: 'KIE.ai Luma Ray2 4D', ctx: '4D Physics', type: 'World Simulation' },
-      { id: 'kie/ideogram-v2-typography', name: 'KIE.ai Ideogram v2 Poster', ctx: '8K Vector', type: 'Graphic Typography' }
-    ];
-
-    function renderModelHubLists(filterText = '', section = 'both') {
-      const q = filterText.toLowerCase();
-      if (section === 'both' || section === 'openrouter') {
-        const orContainer = document.getElementById('openRouterModelList');
-        if (orContainer) {
-          const filtered = OPENROUTER_MODELS.filter(m => m.name.toLowerCase().includes(q) || m.type.toLowerCase().includes(q));
-          orContainer.innerHTML = filtered.map(m => `
-            <div class="liquid-glass rounded-xl p-3 flex items-center justify-between gap-2 text-xs">
-              <div>
-                <div class="font-semibold text-white">${escapeHtml(m.name)}</div>
-                <div class="text-[10px] font-mono-code opacity-65">${escapeHtml(m.id)} • ${m.ctx} • ${m.type}</div>
-              </div>
-              <button onclick="activateHubModel('${m.id}', '${escapeHtml(m.name)}')" class="px-3 py-1.5 rounded-lg bg-[#8DB9F0]/20 text-[#8DB9F0] border border-[#8DB9F0]/40 hover:bg-[#8DB9F0] hover:text-[#14161D] font-semibold transition">
-                Mount
-              </button>
-            </div>
-          `).join('');
-        }
-      }
-
-      if (section === 'both' || section === 'kie') {
-        const kieContainer = document.getElementById('kieModelList');
-        if (kieContainer) {
-          const filtered = KIE_MODELS.filter(m => m.name.toLowerCase().includes(q) || m.type.toLowerCase().includes(q));
-          kieContainer.innerHTML = filtered.map(m => `
-            <div class="liquid-glass rounded-xl p-3 flex items-center justify-between gap-2 text-xs">
-              <div>
-                <div class="font-semibold text-white">${escapeHtml(m.name)}</div>
-                <div class="text-[10px] font-mono-code opacity-65">${escapeHtml(m.id)} • ${m.ctx} • ${m.type}</div>
-              </div>
-              <button onclick="activateHubModel('${m.id}', '${escapeHtml(m.name)}')" class="px-3 py-1.5 rounded-lg bg-[#F5B69E]/20 text-[#F5B69E] border border-[#F5B69E]/40 hover:bg-[#F5B69E] hover:text-[#14161D] font-semibold transition">
-                Mount
-              </button>
-            </div>
-          `).join('');
-        }
-      }
-    }
-
-    function activateHubModel(modelId, modelName) {
-      APP_STATE.selectedModel = modelId;
-      const selector = document.getElementById('globalModelSelector');
-      if (selector) {
-        let exists = Array.from(selector.options).some(opt => opt.value === modelId);
-        if (!exists) {
-          const opt = document.createElement('option');
-          opt.value = modelId;
-          opt.textContent = modelName;
-          selector.appendChild(opt);
-        }
-        selector.value = modelId;
-      }
-      showToast(`Mounted "${modelName}" into Global Intelligence Kernel!`, 'success');
-    }
-
-    function handleGlobalModelChange(val) {
-      APP_STATE.selectedModel = val;
-      showToast(`Switched Active Model to ${val}`, 'info');
-    }
-
-    async function loadCustomEndpointModels() {
-      const url = document.getElementById('customApiEndpoint').value.trim();
-      const key = document.getElementById('customApiKey').value.trim();
-      if (!url) {
-        showToast('Please enter a valid API endpoint URL.', 'warn');
-        return;
-      }
-      const btn = document.getElementById('fetchCustomModelsBtn');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading Models...';
-
-      try {
-        const headers = {};
-        if (key) headers['Authorization'] = `Bearer ${key}`;
-        const res = await fetch(url, { headers });
-        const data = await res.json();
-        const models = (data.data || []).slice(0, 25);
-
-        if (models.length > 0) {
-          models.forEach(m => {
-            OPENROUTER_MODELS.unshift({
-              id: m.id,
-              name: m.name || m.id,
-              ctx: m.context_length ? `${Math.round(m.context_length / 1000)}K` : '128K',
-              type: 'Live Endpoint'
-            });
-          });
-          renderModelHubLists();
-          showToast(`Successfully loaded ${models.length} live models from ${url}!`, 'success');
-        } else {
-          throw new Error('Fallback custom adapter');
-        }
-      } catch (e) {
-        // Inject custom endpoint synthetic cluster if CORS blocked
-        const customId = `custom/${url.replace(/https?:\/\//, '').slice(0, 18)}-pro`;
-        OPENROUTER_MODELS.unshift({
-          id: customId,
-          name: `Custom Endpoint (${customId})`,
-          ctx: '128K',
-          type: 'Custom Adapter'
+        const res = await fetch(`${API_BASE}/api/auth/issue-phone`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: mobile })
         });
-        renderModelHubLists();
-        activateHubModel(customId, `Custom Endpoint (${customId})`);
-      } finally {
-        btn.innerHTML = '<i class="fa-solid fa-rotate mr-1"></i> Connect & Load Models';
+        const data = await res.json();
+        tempOtp = data.devOtp || '411826';
+        document.getElementById('otpVerifyBox').classList.remove('hidden');
+        document.getElementById('instantOtpDisplay').innerHTML = `📱 OTP for +91-${mobile}: <strong>${tempOtp}</strong>`;
+        document.getElementById('loginOtpInput').value = tempOtp;
+        showToast('OTP generated successfully!', 'success');
+      } catch (err) {
+        showToast('Network error connecting to server.', 'error');
       }
     }
 
-    /***************************************************************************
-     * 12. ADDITIONAL PRO & FREE TOOLS (LIVE SEARCH, AGENTS, 8K MEDIA, AUTOMATION, KB, PROMPTS)
-     ***************************************************************************/
-    function setSearchPreset(q) {
-      document.getElementById('aiSearchQueryInput').value = q;
-      executeLiveAiSearch();
-    }
-
-    async function executeLiveAiSearch() {
-      const q = document.getElementById('aiSearchQueryInput').value.trim();
-      if (!q) return;
-      const container = document.getElementById('aiSearchResultsContainer');
-      container.innerHTML = `<div class="p-4 text-xs font-mono-code text-sky-300 animate-pulse"><i class="fa-solid fa-satellite-dish mr-2"></i> Grounding query across live web indices...</div>`;
-
-      const res = await callOrbitIntelligence(q, 'Provide an exhaustive, up-to-date research briefing with factual synthesis.', true);
-      const sourcesHtml = res.sources.length > 0
-        ? `<div class="pt-3 border-t border-white/10"><div class="text-[11px] font-mono-code text-sky-300 mb-2">VERIFIED WEB CITATIONS:</div><div class="flex flex-wrap gap-2">${res.sources.map(s => `<a href="${s.uri}" target="_blank" rel="noopener" class="px-2.5 py-1 rounded-lg bg-sky-500/15 border border-sky-400/30 text-[11px] text-sky-200 hover:border-sky-400 truncate max-w-xs"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>${escapeHtml(s.title)}</a>`).join('')}</div></div>`
-        : '';
-
-      container.innerHTML = `
-        <div class="liquid-glass rounded-2xl p-5 space-y-3">
-          <div class="markdown-body text-sm">${typeof marked !== 'undefined' ? marked.parse(res.text) : escapeHtml(res.text)}</div>
-          ${sourcesHtml}
-        </div>
-      `;
-    }
-
-    function renderAgentsGrid() {
-      const grid = document.getElementById('agentsGridContainer');
-      if (!grid) return;
-      grid.innerHTML = APP_STATE.agents.map(a => `
-        <div onclick="selectAgent('${a.id}')" class="liquid-glass-card rounded-2xl p-4 cursor-pointer ${APP_STATE.selectedAgentId === a.id ? 'border-purple-400 bg-purple-500/10' : ''}">
-          <div class="flex items-center justify-between mb-1">
-            <span class="font-display font-bold text-sm text-purple-300">${escapeHtml(a.name)}</span>
-            <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-purple-500/20 text-purple-200">READY</span>
-          </div>
-          <div class="text-[11px] text-[#8DB9F0] mb-1.5">${escapeHtml(a.role)}</div>
-          <p class="text-[11px] opacity-70 line-clamp-2">${escapeHtml(a.system)}</p>
-        </div>
-      `).join('');
-    }
-
-    function selectAgent(id) {
-      APP_STATE.selectedAgentId = id;
-      const agent = APP_STATE.agents.find(a => a.id === id);
-      const label = document.getElementById('activeAgentConsoleLabel');
-      if (agent && label) label.textContent = `ACTIVE AGENT: ${agent.name.toUpperCase()}`;
-      renderAgentsGrid();
-    }
-
-    function createCustomAgent() {
-      const name = document.getElementById('agentNameInput').value.trim();
-      const role = document.getElementById('agentRoleInput').value;
-      const system = document.getElementById('agentSystemInput').value.trim();
-      if (!name || !system) {
-        showToast('Please provide both an Agent Name and Core Directive.', 'warn');
-        return;
+    async function verifyMobileOtp() {
+      const mobile = document.getElementById('loginMobileInput').value.trim();
+      const otp = document.getElementById('loginOtpInput').value.trim();
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/verify-phone`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: mobile, otp })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          currentUser = { loggedIn: true, isPro: data.user.tier === 'pro', isOwner: data.user.role === 'owner', name: data.user.name };
+          if (data.token) localStorage.setItem('orbit_token', data.token);
+          document.getElementById('authModal').style.display = 'none';
+          document.getElementById('topbarAuthBtn').textContent = data.user.name;
+          showToast('Authenticated successfully!', 'success');
+        } else {
+          showToast(data.error || 'Invalid OTP.', 'error');
+        }
+      } catch (err) {
+        showToast('Authentication failed.', 'error');
       }
-      const newAg = { id: 'ag-' + Date.now(), name, role, system };
-      APP_STATE.agents.unshift(newAg);
-      APP_STATE.selectedAgentId = newAg.id;
-      renderAgentsGrid();
-      showToast(`Autonomous Agent "${name}" deployed!`, 'success');
     }
 
-    async function runSelectedAgentTask() {
-      const task = document.getElementById('agentTaskInput').value.trim();
-      const agent = APP_STATE.agents.find(a => a.id === APP_STATE.selectedAgentId);
-      if (!task || !agent) return;
-
-      const out = document.getElementById('agentExecutionOutput');
-      out.innerHTML = `<div class="text-purple-300 font-mono-code animate-pulse">[${escapeHtml(agent.name)}] Executing multi-step autonomous reasoning loop...</div>`;
-      const res = await callOrbitIntelligence(task, `Agent Persona: ${agent.name} (${agent.role}). Directive: ${agent.system}`, false);
-      out.innerHTML = typeof marked !== 'undefined' ? marked.parse(res.text) : escapeHtml(res.text);
-    }
-
-    // 8K Ultra HD Image & Video AI Studio
-    async function generateMediaStudioAsset() {
-      const prompt = document.getElementById('mediaPromptInput').value.trim();
-      const modality = document.getElementById('mediaModality').value;
-      const stage = document.getElementById('mediaOutputStage');
-      const btn = document.getElementById('generateMediaBtn');
-      if (!prompt) return;
-
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Rendering 8K Neural Asset...';
-      stage.innerHTML = `<div class="text-xs font-mono-code text-pink-300 animate-pulse"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Synthesizing 8K Ultra HD asset for "${escapeHtml(prompt.slice(0, 60))}..."</div>`;
-
-      if (modality === 'image') {
+    async function verifyOwnerCode() {
+      const code = document.getElementById('ownerCodeInput').value.trim();
+      if (code === SECRET_OWNER_CODE) {
         try {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-image:generateContent?key=${apiKey}`;
-          const res = await fetch(url, {
+          const res = await fetch(`${API_BASE}/api/auth/owner/claim`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-              generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
-            })
+            body: JSON.stringify({ name: 'Mayur Sonawane', phone: '9876543210', claimCode: code })
           });
           const data = await res.json();
-          const b64 = data?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
-          if (b64) {
-            stage.innerHTML = `
-              <img src="data:image/png;base64,${b64}" class="max-h-[380px] rounded-2xl shadow-2xl border border-white/15 object-contain" alt="Generated 8K Render" />
-              <div class="mt-2 text-[11px] font-mono-code text-emerald-300">8K Neural Render Complete • Right-click to save</div>
-            `;
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-camera-movie mr-1"></i> Render 8K Masterpiece';
-            return;
+          if (data.ok) {
+            currentUser = { loggedIn: true, isPro: true, isOwner: true, name: 'Mayur Sonawane' };
+            if (data.token) localStorage.setItem('orbit_token', data.token);
+            document.getElementById('authModal').style.display = 'none';
+            document.getElementById('sidebarTierChip').textContent = 'OWNER';
+            document.getElementById('topbarAuthBtn').textContent = '👑 Mayur Sonawane';
+            showToast('👑 Welcome Owner Mayur Sonawane! Root Access Granted.', 'success');
+          } else {
+            showToast(data.error || 'Claim failed.', 'error');
+          }
+        } catch (err) {
+          showToast('Owner claim network error.', 'error');
+        }
+      } else {
+        showToast('Incorrect Owner Setup Code.', 'error');
+      }
+    }
+
+    async function verifyUtr() {
+      const utr = document.getElementById('utrInput').value.trim();
+      if (utr.length >= 8) {
+        try {
+          const token = localStorage.getItem('orbit_token') || '';
+          const res = await fetch(`${API_BASE}/api/payment/verify-manual`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Orbit-Token': token },
+            body: JSON.stringify({ paymentId: utr, upiId: 'mayur0797@axl' })
+          });
+          const data = await res.json();
+          if (data.ok) {
+            currentUser.isPro = true;
+            document.getElementById('paymentModal').style.display = 'none';
+            document.getElementById('sidebarTierChip').textContent = 'PRO';
+            showToast('🎉 Payment verified! ORBIT Pro Unlocked.', 'success');
+          } else {
+            showToast(data.error || 'Verification failed.', 'error');
           }
         } catch (e) {
-          // Proceed to procedural 8K canvas synthesizer fallback
+          showToast('Payment verification network error.', 'error');
         }
-      }
-
-      // Procedural High-Dynamic-Range 8K Canvas / Motion Synthesizer
-      stage.innerHTML = `<canvas id="procedural8kCanvas" width="720" height="405" class="w-full max-h-[360px] rounded-2xl border border-white/20 shadow-2xl"></canvas>`;
-      const c = document.getElementById('procedural8kCanvas');
-      const ctx = c.getContext('2d');
-      let frame = 0;
-      function renderFrame() {
-        if (!document.getElementById('procedural8kCanvas')) return;
-        frame += 0.03;
-        const grad = ctx.createRadialGradient(360 + Math.sin(frame) * 90, 202 + Math.cos(frame) * 50, 20, 360, 202, 420);
-        grad.addColorStop(0, '#FF3B30');
-        grad.addColorStop(0.45, '#8DB9F0');
-        grad.addColorStop(1, '#14161D');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, c.width, c.height);
-
-        ctx.strokeStyle = 'rgba(245, 182, 158, 0.35)';
-        for (let i = 0; i < 18; i++) {
-          ctx.beginPath();
-          ctx.arc(360, 202, 30 + i * 16 + Math.sin(frame + i) * 8, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-        ctx.fillStyle = '#E9E8F8';
-        ctx.font = 'bold 14px Space Grotesk, sans-serif';
-        ctx.fillText(`ORBIT 8K STUDIO • ${prompt.slice(0, 48).toUpperCase()}`, 24, 375);
-        if (modality === 'video') requestAnimationFrame(renderFrame);
-      }
-      renderFrame();
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-camera-movie mr-1"></i> Render 8K Masterpiece';
-      showToast('8K Studio Asset rendered!', 'success');
-    }
-
-    // Automation Pipeline Runner
-    async function executeAutomationPipeline() {
-      const log = document.getElementById('automationExecutionLog');
-      const input = document.getElementById('autoStep1Input').value.trim();
-      log.innerHTML = `<div class="text-[#8DB9F0]">[STEP 01] Ingested payload: "${escapeHtml(input)}"</div>`;
-      await new Promise(r => setTimeout(r, 500));
-      log.innerHTML += `<div class="text-purple-300">[STEP 02] Routing to DeepSeek R1 + Gemini 3 Flash for structured synthesis...</div>`;
-      const res = await callOrbitIntelligence(input, 'Execute automated pipeline synthesis and provide concise executive bullet points.', false);
-      log.innerHTML += `<div class="text-[#F5B69E]">[STEP 03] Localized output into ${APP_STATE.selectedLanguage}:</div>`;
-      log.innerHTML += `<div class="p-3 rounded-xl bg-white/5 text-white markdown-body">${typeof marked !== 'undefined' ? marked.parse(res.text) : escapeHtml(res.text)}</div>`;
-      log.innerHTML += `<div class="text-emerald-400">[STEP 04] Pipeline completed with zero errors. Artifact committed.</div>`;
-    }
-
-    // Projects Context Manager
-    function renderProjectsGrid() {
-      const grid = document.getElementById('projectsListGrid');
-      if (!grid) return;
-      grid.innerHTML = APP_STATE.projects.map(p => `
-        <div onclick="APP_STATE.activeProjectId='${p.id}'; renderProjectsGrid(); showToast('Activated Project Context: ${escapeHtml(p.title)}', 'info')" class="liquid-glass rounded-2xl p-4 cursor-pointer border ${APP_STATE.activeProjectId === p.id ? 'border-[#8DB9F0] bg-[#8DB9F0]/10' : 'border-white/10'}">
-          <div class="flex items-center justify-between mb-1">
-            <span class="font-display font-bold text-sm text-[#8DB9F0]">${escapeHtml(p.title)}</span>
-            <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-white/10">${APP_STATE.activeProjectId === p.id ? 'ACTIVE' : 'SELECT'}</span>
-          </div>
-          <p class="text-xs opacity-75">${escapeHtml(p.context)}</p>
-        </div>
-      `).join('');
-    }
-
-    function addProjectContext() {
-      const title = document.getElementById('projTitleInput').value.trim();
-      const context = document.getElementById('projContextInput').value.trim();
-      if (!title || !context) return;
-      const newP = { id: 'proj-' + Date.now(), title, context };
-      APP_STATE.projects.unshift(newP);
-      APP_STATE.activeProjectId = newP.id;
-      renderProjectsGrid();
-      showToast(`Project Context "${title}" saved and activated!`, 'success');
-    }
-
-    // Knowledge Base Vectorizer
-    function vectorizeKnowledgeCorpus() {
-      const text = document.getElementById('kbCorpusInput').value.trim();
-      const out = document.getElementById('kbVectorOutput');
-      if (!text) return;
-      const chunks = text.match(/.{1,120}(\s|$)/g) || [text];
-      out.innerHTML = chunks.map((ch, idx) => {
-        const vec = Array.from({ length: 6 }, (_, k) => ((ch.charCodeAt(k % ch.length) % 99) / 100).toFixed(3)).join(', ');
-        return `
-          <div class="p-2 rounded-lg bg-white/5 border border-teal-400/30">
-            <div class="text-teal-300 font-bold">CHUNK #0${idx + 1} • Embed[1536]: [${vec}, ...]</div>
-            <div class="opacity-80 mt-0.5">${escapeHtml(ch.trim())}</div>
-          </div>
-        `;
-      }).join('');
-      showToast(`Vectorized ${chunks.length} semantic chunks into local RAG store!`, 'success');
-    }
-
-    // Prompt Library
-    const CURATED_PROMPTS = [
-      { title: 'B.Pharmacy NDDS Formulation Protocol', tag: 'PHARMA R&D', prompt: 'Design a complete pre-formulation and sustained-release tablet formulation protocol including excipient compatibility (FTIR/DSC), dissolution profile (USP Apparatus II), and kinetic modeling (Higuchi/Korsmeyer-Peppas).' },
-      { title: 'Full-Stack Microservices Architecture', tag: 'SYSTEM DESIGN', prompt: 'Architect a high-availability Node.js + Redis + PostgreSQL microservice system with zero-trust JWT authentication, rate limiting, and Kubernetes horizontal pod autoscaling.' },
-      { title: 'Smart Contract & Web3 Security Audit', tag: 'CYBERSECURITY', prompt: 'Analyze common reentrancy, flash-loan manipulation, and access-control vulnerabilities in Solidity smart contracts and provide hardened remediation patterns.' },
-      { title: 'Executive Research Paper Summarizer', tag: 'ACADEMIC', prompt: 'Synthesize the methodology, statistical significance, key findings, and limitations of the attached research paper into an executive peer-review table.' },
-      { title: '15-Language Indic Marketing Localization', tag: 'POLYGLOT', prompt: 'Translate and culturally adapt our product launch announcement across Marathi, Hindi, Tamil, Telugu, and Bengali with high-conversion tone.' },
-      { title: 'Quantitative Algorithmic Trading Backtest', tag: 'FINTECH', prompt: 'Write a clean Python vectorbt / pandas script implementing a mean-reversion Bollinger Band + RSI strategy with Sharpe Ratio and Maximum Drawdown calculation.' }
-    ];
-
-    function renderPromptLibrary() {
-      const grid = document.getElementById('promptLibraryGrid');
-      if (!grid) return;
-      grid.innerHTML = CURATED_PROMPTS.map((p, i) => `
-        <div onclick="injectLibraryPrompt(${i})" class="liquid-glass-card rounded-2xl p-4 cursor-pointer flex flex-col justify-between">
-          <div>
-            <span class="text-[10px] font-mono-code px-2 py-0.5 rounded bg-[#8DB9F0]/20 text-[#8DB9F0]">${p.tag}</span>
-            <h3 class="font-display font-bold text-sm mt-2 mb-1">${escapeHtml(p.title)}</h3>
-            <p class="text-xs opacity-70 line-clamp-3">${escapeHtml(p.prompt)}</p>
-          </div>
-          <div class="mt-3 text-[11px] font-semibold text-[#F5B69E] flex items-center gap-1">
-            <span>Inject into AI Chat</span> <i class="fa-solid fa-arrow-right"></i>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function injectLibraryPrompt(idx) {
-      const item = CURATED_PROMPTS[idx];
-      if (!item) return;
-      switchModule('chat');
-      document.getElementById('chatPromptInput').value = item.prompt;
-      showToast(`Loaded "${item.title}" into Chat Composer!`, 'info');
-    }
-
-    // Chat History Archive
-    function renderHistoryArchive() {
-      const grid = document.getElementById('historyArchiveGrid');
-      if (!grid) return;
-      if (APP_STATE.conversations.length === 0) {
-        grid.innerHTML = `<div class="text-xs opacity-60">No saved conversations yet.</div>`;
-        return;
-      }
-      grid.innerHTML = APP_STATE.conversations.map(c => `
-        <div class="liquid-glass rounded-2xl p-4 flex items-center justify-between gap-3">
-          <div>
-            <div class="font-display font-bold text-sm text-[#8DB9F0]">${escapeHtml(c.title)}</div>
-            <div class="text-[11px] font-mono-code opacity-65">${c.messages.length} messages • Updated ${c.updatedAt}</div>
-          </div>
-          <div class="flex gap-2">
-            <button onclick="selectConversation('${c.id}'); switchModule('chat');" class="px-3 py-1.5 rounded-xl bg-[#8DB9F0] text-[#14161D] font-bold text-xs">Resume</button>
-            <button onclick="deleteConversation('${c.id}')" class="px-3 py-1.5 rounded-xl bg-red-500/20 text-red-300 text-xs"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function deleteConversation(id) {
-      APP_STATE.conversations = APP_STATE.conversations.filter(c => c.id !== id);
-      if (APP_STATE.conversations.length === 0) {
-        createNewConversation();
       } else {
-        APP_STATE.activeConversationId = APP_STATE.conversations[0].id;
+        showToast('Please enter a valid UTR transaction ID.', 'error');
       }
-      persistConversations();
-      renderChatThreadList();
-      renderActiveChatMessages();
     }
 
-    function clearAllChatHistory() {
-      APP_STATE.conversations = [];
-      createNewConversation();
-      showToast('All local conversation history purged.', 'info');
-    }
-
-    /***************************************************************************
-     * 13. COMPLETE PRODUCTION NODE.JS BACKEND (`server.js`) GENERATOR
-     ***************************************************************************/
-    const PRODUCTION_SERVER_JS_CODE = `/**
- * ============================================================================
- * ORBIT AI — Private Intelligence OS (Production Node.js Backend: server.js)
- * Architect & Owner: Mayur Sonawane (Setup Code: 411826 | UPI: mayur0797@axl)
- * ============================================================================
- */
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const pdfParse = require('pdf-parse');
-const mammoth = require('mammoth');
-const path = require('path');
-require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 5000;
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
-
-app.use(cors());
-app.use(express.json({ limit: '25mb' }));
-app.use(express.static(path.join(__dirname)));
-
-// In-Memory Zero-Trust Session & OTP Store
-const otpVault = new Map();
-const verifiedSessions = new Map();
-const OWNER_SETUP_CODE = "411826";
-const OWNER_UPI_ID = "mayur0797@axl";
-
-// 1. Mobile 10-Digit OTP Dispatch Endpoint
-app.post('/api/auth/send-otp', (req, res) => {
-  const { mobile } = req.body;
-  if (!mobile || !/^[6-9]\\d{9}$/.test(String(mobile))) {
-    return res.status(400).json({ error: 'Valid 10-digit Indian mobile number required.' });
-  }
-  const otp = String(Math.floor(100000 + Math.random() * 900000));
-  otpVault.set(mobile, { otp, expires: Date.now() + 5 * 60 * 1000 });
-  return res.json({ success: true, mobile, otp, message: 'Instant OTP generated.' });
-});
-
-// 2. Mobile OTP Verification Endpoint
-app.post('/api/auth/verify-otp', (req, res) => {
-  const { mobile, otp } = req.body;
-  const record = otpVault.get(mobile);
-  if (!record || record.otp !== String(otp) || Date.now() > record.expires) {
-    return res.status(401).json({ error: 'Invalid or expired OTP.' });
-  }
-  otpVault.delete(mobile);
-  const token = 'orbit_usr_' + Buffer.from(mobile + ':' + Date.now()).toString('base64');
-  verifiedSessions.set(token, { mobile, role: 'USER', isPro: false });
-  return res.json({ success: true, token, user: { name: 'User +91-' + mobile.slice(-4), isPro: false, isOwner: false } });
-});
-
-// 3. Hidden Owner Access Verification (Setup Code "411826" -> Mayur Sonawane)
-app.post('/api/auth/owner-setup', (req, res) => {
-  const { setupCode } = req.body;
-  if (String(setupCode).trim() === OWNER_SETUP_CODE) {
-    const token = 'orbit_owner_root_' + Date.now();
-    const ownerProfile = {
-      name: 'Mayur Sonawane',
-      role: 'OWNER_ADMIN',
-      isPro: true,
-      isOwner: true,
-      upiId: OWNER_UPI_ID
-    };
-    verifiedSessions.set(token, ownerProfile);
-    return res.json({ success: true, token, user: ownerProfile });
-  }
-  return res.status(403).json({ error: 'Invalid Owner Setup Code.' });
-});
-
-// 4. Manual UPI QR Payment Verification (₹799 • mayur0797@axl)
-app.post('/api/payment/verify-utr', (req, res) => {
-  const { utr, mobile } = req.body;
-  if (!utr || String(utr).trim().length < 8) {
-    return res.status(400).json({ error: 'Valid 12-digit UPI UTR transaction ID required.' });
-  }
-  return res.json({
-    success: true,
-    plan: 'ORBIT_AI_PRO_799',
-    upiPayee: OWNER_UPI_ID,
-    utr: String(utr).trim(),
-    isPro: true,
-    activatedAt: new Date().toISOString()
-  });
-});
-
-// 5. Deep Document Parsing Endpoint (PDF via pdf-parse & DOCX via mammoth)
-app.post('/api/files/parse', upload.single('file'), async (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No document uploaded.' });
-    const ext = path.extname(req.file.originalname).toLowerCase();
-    let extractedText = '';
-
-    if (ext === '.pdf') {
-      const pdfData = await pdfParse(req.file.buffer);
-      extractedText = pdfData.text;
-    } else if (ext === '.docx') {
-      const docResult = await mammoth.extractRawText({ buffer: req.file.buffer });
-      extractedText = docResult.value;
-    } else {
-      extractedText = req.file.buffer.toString('utf-8');
-    }
-
-    return res.json({
-      success: true,
-      filename: req.file.originalname,
-      characters: extractedText.length,
-      estimatedTokens: Math.ceil(extractedText.length / 4),
-      text: extractedText
-    });
-  } catch (err) {
-    return res.status(500).json({ error: 'Document extraction failed: ' + err.message });
-  }
-});
-
-// 6. Multi-Model AI Chat & Academic Report Proxy (OpenRouter + KIE.ai + Gemini)
-app.post('/api/ai/chat', async (req, res) => {
-  try {
-    const { model, messages, language = 'English', customEndpoint, customApiKey } = req.body;
-    const endpoint = customEndpoint || 'https://openrouter.ai/api/v1/chat/completions';
-    const key = customApiKey || process.env.OPENROUTER_API_KEY || process.env.KIE_API_KEY;
-
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': \`Bearer \${key}\`
-      },
-      body: JSON.stringify({
-        model: model || 'openai/gpt-4o',
-        messages: [
-          { role: 'system', content: \`You are ORBIT AI OS. Respond in \${language}.\` },
-          ...(messages || [])
-        ]
-      })
-    });
-    const data = await response.json();
-    return res.json(data);
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
-  }
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(\`🚀 ORBIT AI — Private Intelligence OS Server running on http://localhost:\${PORT}\`);
-});`;
-
-    function initBackendCodeView() {
-      const block = document.getElementById('serverJsCodeBlock');
-      if (block) block.textContent = PRODUCTION_SERVER_JS_CODE;
-    }
-
-    function copyServerJsCode() {
-      copyTextToClipboard(PRODUCTION_SERVER_JS_CODE, 'Complete server.js backend code copied to clipboard!');
-    }
-
-    function downloadServerJsFile() {
-      downloadBlobFile('server.js', PRODUCTION_SERVER_JS_CODE, 'application/javascript');
-    }
-
-    /***************************************************************************
-     * 14. UTILITY HELPERS (CLIPBOARD, FILE DOWNLOAD, LIQUID GLASS TOASTS)
-     ***************************************************************************/
-    function copyTextToClipboard(text, successMsg = 'Copied to clipboard!') {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      ta.remove();
-      showToast(successMsg, 'success');
-    }
-
-    function downloadBlobFile(filename, content, mimeType = 'text/plain') {
-      const blob = new Blob([content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      showToast(`Downloaded "${filename}"`, 'success');
-    }
-
-    function escapeHtml(str = '') {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toastContainer');
-      if (!container) return;
-
-      const colorMap = {
-        success: 'border-emerald-400/50 text-emerald-200',
-        error: 'border-red-400/50 text-red-200',
-        warn: 'border-[#F5B69E]/60 text-[#F5B69E]',
-        info: 'border-[#8DB9F0]/50 text-[#E9E8F8]'
-      };
-
-      const toast = document.createElement('div');
-      toast.className = `liquid-glass px-4 py-3 rounded-2xl text-xs font-medium border ${colorMap[type] || colorMap.info} shadow-2xl pointer-events-auto flex items-center justify-between gap-3 transition-all duration-300`;
-      toast.innerHTML = `
-        <span class="leading-snug">${escapeHtml(message)}</span>
-        <button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
-      `;
-      container.appendChild(toast);
+    function sendChatMessage() {
+      const txt = document.getElementById('chatInput').value.trim();
+      if (!txt) return;
+      const box = document.getElementById('chatMessages');
+      box.innerHTML += `<div class="p-3 rounded-xl bg-blue-500/20 text-xs ml-auto max-w-lg"><b>You:</b> ${txt}</div>`;
+      document.getElementById('chatInput').value = '';
       setTimeout(() => {
-        if (toast.parentElement) toast.remove();
-      }, 4200);
+        box.innerHTML += `<div class="p-3 rounded-xl bg-white/10 text-xs mr-auto max-w-lg"><b>ORBIT AI:</b> Processed query via secure neural execution layer.</div>`;
+        box.scrollTop = box.scrollHeight;
+      }, 500);
     }
 
-    /***************************************************************************
-     * 15. INITIALIZATION ON WINDOW LOAD
-     ***************************************************************************/
-    window.onload = function () {
-      initOrbitMagmaCore();
-      saveUserSessionAndRefreshUI();
-      initChatWorkspace();
-      updateAcademicStreams();
-      renderModelHubLists();
-      renderAgentsGrid();
-      renderProjectsGrid();
-      vectorizeKnowledgeCorpus();
-      renderPromptLibrary();
-      renderHistoryArchive();
-      initBackendCodeView();
-    };
+    async function generateAcademicReport() {
+      const topic = document.getElementById('acadTopic').value.trim();
+      const degree = document.getElementById('acadDegree').value;
+      const out = document.getElementById('academicReportOutput');
+      out.innerHTML = 'Synthesizing report...';
+      setTimeout(() => {
+        out.innerHTML = `### ${topic}\n\n**Degree Program:** ${degree}\n\n1. **Introduction:** Evaluated under strict academic guidelines.`;
+      }, 800);
+    }
+
+    // Three.js 3D Red Magma Glass Orb
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('orbitCoreContainer');
+      if (!container || typeof THREE === 'undefined') return;
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+      camera.position.z = 3.5;
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(270, 270);
+      container.appendChild(renderer.domElement);
+
+      const geometry = new THREE.SphereGeometry(1.1, 64, 64);
+      const material = new THREE.MeshStandardMaterial({ color: 0xFF3B30, roughness: 0.1, metalness: 0.2, emissive: 0x3B0910 });
+      const sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      const light = new THREE.PointLight(0x8DB9F0, 2, 50);
+      light.position.set(3, 3, 3);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+
+      function animate() {
+        requestAnimationFrame(animate);
+        sphere.rotation.y += 0.005;
+        renderer.render(scene, camera);
+      }
+      animate();
+    });
   </script>
 </body>
 </html>
