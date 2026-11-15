@@ -5,6 +5,51 @@
   <link rel="manifest" href="/manifest.json" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no" />
   <title>ORBIT AI — Private Intelligence OS (Ultimate Edition)</title>
+
+  <!-- ================= GOOGLE SEARCH INDEXING & SEO META TAGS ================= -->
+  <meta name="description" content="ORBIT AI — Private Intelligence OS by Mayur Sonawane. Next-generation multi-model AI workspace with 128+ AI models, Academic Project Suite, PDF/DOCX intelligence, and 8K media generation." />
+  <meta name="keywords" content="ORBIT AI, Private Intelligence OS, Mayur Sonawane, AI Workspace, Academic Project Suite, Multi-Model AI, OpenRouter, KIE AI, B.Pharmacy Project Report AI, Free AI Chat India" />
+  <meta name="author" content="Mayur Sonawane" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow" />
+  <meta name="theme-color" content="#14161D" />
+  <link rel="canonical" href="https://orbit-ai-starter.onrender.com/" />
+
+  <!-- Open Graph / Social / Google Rich Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ORBIT AI — Private Intelligence OS" />
+  <meta property="og:title" content="ORBIT AI — Private Intelligence OS (Ultimate Edition)" />
+  <meta property="og:description" content="Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, Academic Project Suite, and private execution." />
+  <meta property="og:url" content="https://orbit-ai-starter.onrender.com/" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ORBIT AI — Private Intelligence OS" />
+  <meta name="twitter:description" content="Multi-model AI OS with 128+ models, Academic Project Suite, and 3D Liquid Glass UI." />
+
+  <!-- Google Structured Data (JSON-LD) for Rich Search Results & Android App Indexing -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ORBIT AI — Private Intelligence OS",
+    "operatingSystem": "Web, Android, Windows, iOS",
+    "applicationCategory": "ArtificialIntelligenceApplication",
+    "url": "https://orbit-ai-starter.onrender.com/",
+    "author": {
+      "@type": "Person",
+      "name": "Mayur Sonawane"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR"
+    },
+    "description": "Next-generation multi-model AI workspace with deep document intelligence, autonomous agents, Academic Project Suite, and private execution."
+  }
+  </script>
+  <!-- ========================================================================== -->
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -724,11 +769,16 @@
       }
     }
 
-    html { -webkit-tap-highlight-color: transparent; }
-    body { height: 100vh; height: 100dvh; }
+    /* ===== LIQUID GLASS REFINEMENT + MOBILE ANTI-HANG PERFORMANCE FIX ===== */
+    html { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    body { height: 100vh; height: 100dvh; overscroll-behavior-y: none; }
     .app-shell {
       height: 100vh; height: 100dvh;
       padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+    }
+    .workspace-view, .nav-scroll, .chat-messages, .doc-out {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
     }
     .sidebar, .topbar, .card-3d, .chat-layout, .orbit-core-hero, .auth-card {
       background:
@@ -743,7 +793,7 @@
       content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07), inset 0 20px 34px -24px rgba(255,255,255,0.5);
     }
-    .nav-btn, .btn-3d { -webkit-tap-highlight-color: transparent; }
+    .nav-btn, .btn-3d { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     .nav-btn:focus-visible, .btn-3d:focus-visible, .input-3d:focus-visible, .pill-select:focus-visible {
       outline: 2px solid var(--powder-blue); outline-offset: 2px;
     }
@@ -761,20 +811,26 @@
 
     @media (max-width: 860px) {
       body { perspective: none; }
-      .sidebar, .topbar, .card-3d, .chat-layout, .orbit-core-hero, .auth-card, .msg-bubble, .chat-composer, .pill-select, .btn-3d, .input-3d {
-        backdrop-filter: blur(12px) saturate(150%); -webkit-backdrop-filter: blur(12px) saturate(150%);
+      #bg3dCanvas { display: none !important; }
+      .sidebar, .topbar, .card-3d, .chat-layout, .orbit-core-hero, .auth-card {
+        backdrop-filter: blur(10px) saturate(135%);
+        -webkit-backdrop-filter: blur(10px) saturate(135%);
       }
-      .glow-orb { filter: blur(36px); animation: none; opacity: 0.55; }
-      .orb-blue, .orb-peach { width: 280px; height: 280px; }
-      .orb-lavender { width: 220px; height: 220px; }
-      .card-3d, .card-3d:hover { transform: none !important; }
-      .card-3d::before { display: none; }
-      .sidebar { width: min(86vw, 300px); }
-      .topbar { height: auto; min-height: 60px; flex-wrap: wrap; padding: 8px 12px; }
-      .topbar-left, .topbar-right { flex-wrap: wrap; gap: 8px; }
+      .msg-bubble, .chat-composer, .pill-select, .btn-3d, .input-3d {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+      .glow-orb { filter: blur(32px); animation: none !important; opacity: 0.45; }
+      .orb-blue, .orb-peach { width: 240px; height: 240px; }
+      .orb-lavender { display: none; }
+      .card-3d, .card-3d:hover { transform: none !important; transition: none !important; }
+      .card-3d::before, .card-3d::after { display: none !important; }
+      .sidebar { width: min(84vw, 290px); will-change: transform; }
+      .topbar { height: auto; min-height: 58px; flex-wrap: wrap; padding: 8px 12px; }
+      .topbar-left, .topbar-right { flex-wrap: wrap; gap: 6px; }
       .orbit-core-hero { padding: 18px; }
       .orbit-core-hero h1 { font-size: 1.55rem !important; }
-      #orbitCoreContainer { width: 220px; height: 220px; }
+      #orbitCoreContainer { width: 210px; height: 210px; }
       .grid-3d { grid-template-columns: 1fr; gap: 14px; }
       .chat-layout { height: calc(100dvh - 104px); }
       .msg-bubble { max-width: 94%; }
@@ -813,7 +869,7 @@
       <div id="authTabOwner">
         <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane (Owner)" /></div>
         <div class="form-group"><label>Owner Email</label><input id="ownEmail" value="" placeholder="Enter your email" /></div>
-        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" value="" placeholder="Enter owner claim code" /></div>
+        <div class="form-group"><label>Owner Claim Code</label><input id="ownCode" type="password" value="" placeholder="Enter owner claim code" /></div>
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
       </div>
 
@@ -868,6 +924,7 @@
         <button class="nav-btn" onclick="switchView('settings')">⚙️ <span data-i18n="nav_settings">Settings</span></button>
         <button class="nav-btn" onclick="switchView('subscription')">💠 <span data-i18n="nav_pro">Pro Subscription</span></button>
         <button class="nav-btn owner-only" onclick="switchView('admin')" style="display:none;">👑 <span data-i18n="nav_admin">Admin Panel</span></button>
+        <button class="nav-btn" onclick="downloadOrbitApk()" style="margin-top:8px; border-color:var(--sunset-peach);">📲 <span>Download Android APK</span></button>
       </div>
     </aside>
 
@@ -915,6 +972,7 @@
               <button class="btn-3d btn-peach-blue" onclick="switchView('chat')" data-i18n="btn_launch_chat">Launch AI Chat</button>
               <button class="btn-3d" onclick="switchView('models')" data-i18n="nav_models">AI Model Hub Pro</button>
               <button class="btn-3d" onclick="switchView('files')" data-i18n="nav_files">Files & Tools</button>
+              <button class="btn-3d" onclick="downloadOrbitApk()" style="border-color:var(--sunset-peach);">📲 Download APK</button>
             </div>
           </div>
           <div id="orbitCoreContainer" title="3D Glossy Crimson Glass Orb"></div>
@@ -1282,6 +1340,27 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
+    // PWA / Android APK Install Prompt Handler
+    let deferredPwaPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPwaPrompt = e;
+    });
+
+    function downloadOrbitApk() {
+      if (deferredPwaPrompt) {
+        deferredPwaPrompt.prompt();
+        deferredPwaPrompt.userChoice.then(() => { deferredPwaPrompt = null; });
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = '/ORBIT_AI.apk';
+      a.download = 'ORBIT_AI.apk';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
     const I18N = {
       en: {
         sec_workspace: "WORKSPACE", sec_personal: "PERSONAL",
@@ -1334,7 +1413,7 @@
       ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","AI ചാറ്റ് തുടങ്ങുക"],
       pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ এবং ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈनল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
       or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
-      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব୍ରেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
+      as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
       ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","AI چیٹ شروع کریں"],
       sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","AI संवादम् आरभस्व"],
       ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","AI च्याट सुरु गर्नुहोस्"]
@@ -1360,7 +1439,11 @@
       });
     }
 
+    const ORBIT_LITE = window.matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.hardwareConcurrency || 8) <= 4;
+
     function attach3DGlassTilt() {
+      // Mobile Anti-Hang Fix: Skip binding heavy mousemove 3D perspective calculations on touch/mobile devices
+      if (ORBIT_LITE) return;
       document.querySelectorAll('.card-3d, .orbit-core-hero').forEach(card => {
         if (card.dataset.tiltBound) return;
         card.dataset.tiltBound = '1';
@@ -1378,7 +1461,6 @@
       });
     }
 
-    const ORBIT_LITE = window.matchMedia('(max-width: 860px)').matches || /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) || (navigator.hardwareConcurrency || 8) <= 4;
     let coreState = 'idle';
     let coreRenderer, coreScene, coreCamera, redGlassSphere, innerEmberParticles;
 
@@ -1392,8 +1474,8 @@
       coreCamera.position.z = 4.3;
 
       coreRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: !ORBIT_LITE, powerPreference: ORBIT_LITE ? 'low-power' : 'high-performance' });
-      coreRenderer.setSize(270, 270);
-      coreRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, ORBIT_LITE ? 1.25 : 2));
+      coreRenderer.setSize(ORBIT_LITE ? 210 : 270, ORBIT_LITE ? 210 : 270);
+      coreRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, ORBIT_LITE ? 1.15 : 2));
       container.appendChild(coreRenderer.domElement);
 
       const vertexShader = `
@@ -1490,7 +1572,7 @@
         }
       `;
 
-      const sphereGeo = new THREE.SphereGeometry(1.38, ORBIT_LITE ? 40 : 96, ORBIT_LITE ? 40 : 96);
+      const sphereGeo = new THREE.SphereGeometry(1.38, ORBIT_LITE ? 32 : 96, ORBIT_LITE ? 32 : 96);
       const shaderMat = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader,
@@ -1570,6 +1652,8 @@
     }
 
     function initBgParticles() {
+      // Mobile Anti-Hang Fix: Do not run a second full-screen WebGL context on mobile devices
+      if (ORBIT_LITE) return;
       const canvas = document.getElementById('bg3dCanvas');
       if (!canvas || !window.THREE) return;
       const scene = new THREE.Scene();
@@ -1580,7 +1664,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 
-      const count = ORBIT_LITE ? 70 : 180;
+      const count = 180;
       const pos = new Float32Array(count * 3);
       for (let i = 0; i < count * 3; i++) pos[i] = (Math.random() - 0.5) * 40;
       const geo = new THREE.BufferGeometry();
@@ -1589,11 +1673,9 @@
       const points = new THREE.Points(geo, mat);
       scene.add(points);
 
-      let bgLast = 0;
-      function loop(now) {
+      function loop() {
         requestAnimationFrame(loop);
-        if (document.hidden || (ORBIT_LITE && now - bgLast < 40)) return;
-        bgLast = now || 0;
+        if (document.hidden) return;
         points.rotation.y += 0.0007;
         points.rotation.x += 0.0003;
         renderer.render(scene, camera);
@@ -1698,7 +1780,7 @@
       const prof = document.getElementById('profileDetails');
       if (prof) {
         prof.innerHTML = currentUser
-          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email)}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Active Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
+          ? `<strong>Name:</strong> ${esc(currentUser.name)}<br><strong>Email:</strong> ${esc(currentUser.email || currentUser.phone || '')}<br><strong>Role:</strong> ${esc(currentUser.role)}<br><strong>Active Tier:</strong> <span style="color:var(--sunset-peach);">${activeUserTier.toUpperCase()}</span>`
           : `Not logged in. Click "Login / Setup" in the top bar.`;
       }
       
@@ -1827,7 +1909,7 @@
         const claimCode = document.getElementById('ownCode').value;
         const res = await apiFetch('/api/auth/owner/claim', {
           method: 'POST',
-          body: JSON.stringify({ name, email, claimCode })
+          body: JSON.stringify({ name, email, phone: email, claimCode })
         });
         if (res.token) localStorage.setItem('orbit_token', res.token);
         currentUser = res.user;
@@ -1858,9 +1940,12 @@
         const email = document.getElementById('otpEmail').value;
         const res = await apiFetch('/api/auth/issue', {
           method: 'POST',
-          body: JSON.stringify({ email })
-        });
-        document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent successfully to email.';
+          body: JSON.stringify({ email, phone: email })
+        }).catch(() => apiFetch('/api/auth/issue-phone', {
+          method: 'POST',
+          body: JSON.stringify({ phone: email, email })
+        }));
+        document.getElementById('authStatusMsg').textContent = res.message || 'OTP sent successfully.';
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
@@ -1872,8 +1957,11 @@
         const otp = document.getElementById('otpCode').value;
         const res = await apiFetch('/api/auth/verify', {
           method: 'POST',
-          body: JSON.stringify({ email, otp })
-        });
+          body: JSON.stringify({ email, phone: email, otp })
+        }).catch(() => apiFetch('/api/auth/verify-phone', {
+          method: 'POST',
+          body: JSON.stringify({ phone: email, email, otp })
+        }));
         if (res.token) localStorage.setItem('orbit_token', res.token);
         currentUser = res.user;
         updateAuthUI();
@@ -2358,7 +2446,7 @@
 
     async function loadAdminData() {
       try {
-        const reqs = await apiFetch('/api/auth/requests');
+        const reqs = await apiFetch('/api/auth/requests').catch(() => ({ requests: [] }));
         const usrs = await apiFetch('/api/auth/users');
         const proReqs = await apiFetch('/api/auth/pro-requests').catch(() => ({ requests: [] }));
 
@@ -2382,7 +2470,7 @@
         document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users</h4>` +
           (usrs.users || []).map(u => `
             <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span>${esc(u.name)} (${esc(u.email)}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span>
+              <span>${esc(u.name)} (${esc(u.email || u.phone)}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span>
               <button class="btn-3d" onclick="toggleRevokeUser('${u.id}', ${!u.revoked})">${u.revoked ? 'Restore' : 'Revoke'}</button>
             </div>
           `).join('');
