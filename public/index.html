@@ -487,7 +487,7 @@
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
-    /* 3D & 4D HERO GLASS POD */
+    /* 3D & 4D HERO GLASS POD WITH DEEP DEPTH HOVER */
     .orbit-core-hero {
       position: relative;
       display: flex;
@@ -515,7 +515,6 @@
         inset 0 3px 6px rgba(255, 255, 255, 0.7),
         inset 0 -4px 12px var(--sunset-peach-glow);
       overflow: hidden;
-      /* 4D Depth Hover Transition */
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
       transform-style: preserve-3d;
     }
@@ -546,7 +545,6 @@
       cursor: grab;
     }
 
-    /* Bottom Caustic Fire Reflection under the Red Glass Sphere */
     #orbitCoreContainer::after {
       content: "";
       position: absolute;
@@ -739,7 +737,6 @@
       border-radius: 26px;
       padding: 28px;
       box-shadow: var(--glass-3d-shadow);
-      /* 4D Depth Hover Transition */
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
       transform-style: preserve-3d;
     }
@@ -792,7 +789,7 @@
       }
     }
 
-    /* ===== LIQUID GLASS REFINEMENT + MOBILE ANTI-HANG PERFORMANCE FIX ===== */
+    /* ===== LIQUID GLASS REFINEMENT + 4D & MOBILE ANTI-HANG PERFORMANCE FIX ===== */
     html { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     body { height: 100vh; height: 100dvh; overscroll-behavior-y: none; }
     .app-shell {
@@ -874,7 +871,7 @@
 
   <canvas id="bg3dCanvas"></canvas>
 
-  <!-- 🔐 FORCE AUTH MODAL (फक्त Sign Up आणि OTP Login + खाली कोपऱ्यात छोटा Owner Claim) -->
+  <!-- 🔐 FORCE AUTH MODAL (Sign Up, OTP Login + Owner Claim RESTORED + 4D Depth) -->
   <div class="auth-overlay" id="authModal" style="display: flex;">
     <div class="auth-card" style="position: relative; padding-bottom: 36px;">
       <div class="card-title" style="justify-content: center; font-size: 1.35rem;">
@@ -884,10 +881,11 @@
         Sign up or login instantly with OTP to access workspace.
       </p>
 
-      <!-- वरती फक्त २ मुख्य पर्याय: Sign Up आणि OTP Login -->
-      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <!-- 3 Tabs: Sign Up, OTP Login, Owner Claim -->
+      <div style="display: flex; gap: 6px; margin-bottom: 16px;">
         <button class="btn-3d btn-peach-blue" id="tabBtnSignup" style="flex:1;" onclick="showAuthTab('guest')">Sign Up</button>
         <button class="btn-3d" id="tabBtnOtp" style="flex:1;" onclick="showAuthTab('otp')">OTP Login</button>
+        <button class="btn-3d" id="tabBtnOwner" style="flex:1;" onclick="showAuthTab('owner')">👑 Owner</button>
       </div>
 
       <!-- 1. SIGN UP TAB -->
@@ -909,22 +907,14 @@
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="verifyOtpLogin()">Verify &amp; Login</button>
       </div>
 
-      <!-- 3. OWNER CLAIM TAB (फक्त नाव आणि सेटअप कोड - कोपऱ्यातल्या लिंकवर क्लिक केल्यावरच उघडेल) -->
+      <!-- 3. OWNER CLAIM TAB (Mayur Sonawane + Setup Code 411826 RESTORED) -->
       <div id="authTabOwner" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="ownName" value="Mayur Sonawane" placeholder="Enter owner name" /></div>
-        <div class="form-group"><label>Owner Setup Code</label><input id="ownCode" type="password" placeholder="Enter secret setup code" onkeydown="if(event.key==='Enter')claimOwner()" /></div>
-        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Unlock Owner Access</button>
-        <div class="text-center pt-2">
-          <button onclick="showAuthTab('guest')" class="text-[11px] text-[#8DB9F0] hover:underline" style="background:none; border:none; cursor:pointer;">← Back to Sign Up</button>
-        </div>
+        <div class="form-group"><label>Owner Name</label><input id="ownName" value="Mayur Sonawane" placeholder="Enter owner name" /></div>
+        <div class="form-group"><label>Owner Setup Code</label><input id="ownCode" type="password" placeholder="Enter secret setup code (411826)" onkeydown="if(event.key==='Enter')claimOwner()" /></div>
+        <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Claim Owner Workspace</button>
       </div>
 
       <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach); text-align:center;"></div>
-
-      <!-- खाली उजव्या कोपऱ्यात एकदम छोटा Owner Claim पर्याय -->
-      <div style="position: absolute; bottom: 10px; right: 18px;">
-        <span onclick="showAuthTab('owner')" style="font-size: 0.68rem; color: var(--lavender-muted); opacity: 0.55; cursor: pointer; text-decoration: underline;" title="Owner Claim">Owner Claim</span>
-      </div>
     </div>
   </div>
 
@@ -1447,8 +1437,8 @@
       gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ પ્રો","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
       kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
       ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾस","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল ਅਤੇ ਖಾತೆ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ and ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪრო ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡmin ਪੈनल","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
-      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল ਅਤੇ ਖಾತೆ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ and ਸੁਰੱਖਿਆ","ਸੈਟिंगਾਂ","ਪრო ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡmin ਪੈनল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫাইল୍ ଓ ଆକାউଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
       as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
       ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","AI چیٹ شروع کریں"],
       sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","AI संवादम् आरभस्व"],
@@ -1599,6 +1589,7 @@
 
           col += vec3(0.95, 0.75, 0.88) * softReflect * 0.25;
           col += vec3(1.0, 0.35, 0.25) * fresnel * 0.85;
+          col += vec3(1.0, 0.98, 0.95) * spec1 * 1.35;
           col += vec3(1.0, 0.9, 0.85) * spec2 * 0.9;
 
           float alpha = clamp(0.76 + fresnel * 0.24 + spec1 + causticSpot * 0.2, 0.0, 1.0);
@@ -1775,9 +1766,11 @@
 
       const btnSignup = document.getElementById('tabBtnSignup');
       const btnOtp = document.getElementById('tabBtnOtp');
-      if (btnSignup && btnOtp) {
+      const btnOwner = document.getElementById('tabBtnOwner');
+      if (btnSignup && btnOtp && btnOwner) {
         btnSignup.classList.toggle('btn-peach-blue', tab === 'guest');
         btnOtp.classList.toggle('btn-peach-blue', tab === 'otp');
+        btnOwner.classList.toggle('btn-peach-blue', tab === 'owner');
       }
       document.getElementById('authStatusMsg').textContent = '';
     }
@@ -1850,6 +1843,7 @@
       });
     }
 
+    // QR Code आणि ₹799 पेमेंट विंडो (हेल्पलाईन नंबर 7499594248 सह)
     function redirectToRazorpay() {
       if (!currentUser) {
         alert('कृपया आधी लॉगिन करा.');
@@ -1868,13 +1862,14 @@
             <h3 style="color:var(--powder-blue); margin-bottom:10px;">ORBIT AI Pro सबस्क्रिप्शन</h3>
             <p style="font-size:1.1rem; color:var(--sunset-peach); font-weight:bold; margin-bottom:15px;">फी: ₹799</p>
             
-            <p style="font-size:0.85rem; margin-bottom:10px; opacity:0.85;">खालील QR कोड स्कॅन करा (PhonePe, GPay, Paytm) किंवा UPI ने पैसे पाठवा:</p>
+            <p style="font-size:0.85rem; margin-bottom:10px; opacity:0.85;">खालील QR कोड स्कॅन करा किंवा UPI ने पैसे पाठवा:</p>
             
             <div style="background:#fff; padding:10px; border-radius:12px; display:inline-block; margin-bottom:15px;">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=mayur0797@axl&pn=Mayur%20Sonawane&am=799&cu=INR" alt="Payment QR Code" style="width:180px; height:180px; object-fit:contain;" />
             </div>
             
-            <p style="font-size:0.8rem; margin-bottom:12px; color:var(--powder-blue);">UPI ID: <strong>mayur0797@axl</strong></p>
+            <p style="font-size:0.8rem; margin-bottom:8px; color:var(--powder-blue);">UPI ID: <strong>mayur0797@axl</strong></p>
+            <p style="font-size:0.75rem; margin-bottom:12px; color:var(--sunset-peach);">तत्काळ अप्रूव्हलसाठी कॉल करा: <strong>7499594248</strong></p>
 
             <div class="form-group" style="text-align:left;">
               <label style="font-size:0.8rem;">पेमेंट केल्यावर मिळणारा UPI Transaction ID (UTR) इथे टाका:</label>
@@ -1908,11 +1903,8 @@
         });
 
         if (res.ok) {
-          currentUser = res.user;
-          if (res.token) localStorage.setItem('orbit_token', res.token);
-          updateAuthUI();
           document.getElementById('paymentModal').remove();
-          alert('अभिनंदन! तुमचे पेमेंट यशस्वीरित्या व्हेरिफाय झाले असून ORBIT AI Pro सबस्क्रिप्शन ॲक्टिव्ह झाले आहे!');
+          alert('सध्या पेमेंट स्टेटस "PENDING" मध्ये आहे! कृपया त्वरित अप्रूव्हलसाठी Mayur Sonawane यांना 7499594248 या नंबरवर कॉल करा.');
           switchView('overview');
         }
       } catch (e) {
@@ -1940,9 +1932,10 @@
       updateAuthUI();
     }
 
+    // 👑 OWNER CLAIM (Mayur Sonawane + Setup Code 411826)
     async function claimOwner() {
       try {
-        const name = document.getElementById('ownName').value.trim() || 'Mayur Sonawane';
+        const name = (document.getElementById('ownName').value || 'Mayur Sonawane').trim();
         const claimCode = document.getElementById('ownCode').value.trim();
         if (!claimCode) {
           document.getElementById('authStatusMsg').textContent = 'Please enter Owner Setup Code.';
@@ -1950,12 +1943,13 @@
         }
         const res = await apiFetch('/api/auth/owner/claim', {
           method: 'POST',
-          body: JSON.stringify({ name, phone: name, email: name, claimCode })
+          body: JSON.stringify({ name, phone: '7499594248', claimCode })
         });
         if (res.token) localStorage.setItem('orbit_token', res.token);
         currentUser = res.user;
         updateAuthUI();
         closeAuthModal();
+        alert('👑 Welcome Owner Mayur Sonawane! Root Access Granted.');
       } catch (e) {
         document.getElementById('authStatusMsg').textContent = e.message;
       }
@@ -1987,7 +1981,7 @@
         }
         const res = await apiFetch('/api/auth/issue-phone', {
           method: 'POST',
-          body: JSON.stringify({ phone: identifier, email: identifier })
+          body: JSON.stringify({ phone: identifier })
         });
         const otpBox = document.getElementById('instantOtpUnderBox');
         if (res.devOtp) {
@@ -2011,7 +2005,7 @@
         }
         const res = await apiFetch('/api/auth/verify-phone', {
           method: 'POST',
-          body: JSON.stringify({ phone: identifier, email: identifier, otp })
+          body: JSON.stringify({ phone: identifier, otp })
         });
         if (res.token) localStorage.setItem('orbit_token', res.token);
         const savedName = localStorage.getItem('orbit_signup_name');
@@ -2522,15 +2516,28 @@
           </div>
         `).join('');
 
-        document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users</h4>` +
+        document.getElementById('adminUsersList').innerHTML = `<h4>Registered Users & Payments</h4>` +
           (usrs.users || []).map(u => `
             <div style="padding:10px; border-bottom:1px solid rgba(233,232,248,0.2); display:flex; justify-content:space-between; align-items:center;">
-              <span>${esc(u.name)} (${esc(u.email || u.phone)}) — ${u.revoked ? '🔴 Revoked' : '🟢 Active'} (${esc(u.tier || 'free').toUpperCase()})</span>
-              <button class="btn-3d" onclick="toggleRevokeUser('${u.id}', ${!u.revoked})">${u.revoked ? 'Restore' : 'Revoke'}</button>
+              <span>${esc(u.name)} (${esc(u.email || u.phone)}) — Tier: <strong>${esc(u.tier || 'free').toUpperCase()}</strong> ${u.pendingUtr ? `(UTR: ${u.pendingUtr})` : ''}</span>
+              <div>
+                ${u.tier === 'pending' ? `<button class="btn-3d btn-peach-blue" onclick="approveUserPayment('${u.phone}')">Approve ₹799</button>` : ''}
+                <button class="btn-3d" onclick="toggleRevokeUser('${u.id}', ${!u.revoked})">${u.revoked ? 'Restore' : 'Revoke'}</button>
+              </div>
             </div>
           `).join('');
       } catch (e) {
         document.getElementById('adminRequestsList').innerHTML = `<p style="color:#ff8888;">Owner permission required to view Admin Panel.</p>`;
+      }
+    }
+
+    async function approveUserPayment(phone) {
+      try {
+        await apiFetch('/api/admin/approve-payment', { method: 'POST', body: JSON.stringify({ userPhone: phone }) });
+        alert('Payment approved successfully for ' + phone);
+        loadAdminData();
+      } catch (e) {
+        alert('Error: ' + e.message);
       }
     }
 
@@ -2582,8 +2589,7 @@
       try {
         const h = await apiFetch('/api/health');
         el.innerHTML = `<strong>Backend:</strong> Online (v${h.version})<br>
-          <strong>OpenRouter Key:</strong> ${h.openrouterConfigured ? '🟢 Configured' : '🟠 Missing in .env'}<br>
-          <strong>PDF/DOCX Parsers:</strong> ${h.parsers?.pdf ? '🟢 Active' : '⚪ Ready'}`;
+          <strong>OpenRouter Key:</strong> ${h.openrouterConfigured ? '🟢 Configured' : '🟠 Missing in .env'}`;
       } catch (e) {
         el.innerHTML = `🔴 Backend unreachable (${e.message})<br><small style="opacity:0.8;">Run <code>npm.cmd start</code> in PowerShell & open <code>http://localhost:3000</code></small>`;
       }
