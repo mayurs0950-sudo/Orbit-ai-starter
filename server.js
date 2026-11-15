@@ -189,7 +189,7 @@ function setSessionCookie(res, userObj) {
     id: userObj.id,
     role: userObj.role,
     tier: userObj.tier || (userObj.role === 'owner' ? 'pro' : 'free'),
-    phone: userObj.phone || userObj.email,
+    email: userObj.email || userObj.phone,
     iat: Date.now()
   });
   res.setHeader('Set-Cookie', `orbit_session=${token}; HttpOnly; Path=/; Max-Age=${30 * 24 * 3600}; SameSite=Lax`);
@@ -210,9 +210,44 @@ function requireOwner(req, res, next) {
   next();
 }
 
-// =========================================================
-// AUTHENTICATION & MOBILE OTP ROUTES
-// =========================================================
+// Email/Phone OTP Helper
+async function sendOtpEmail(toEmail, otpCode, userName = 'User') {
+  const ws = loadWorkspaceData();
+  const smtpUser = process.env.SMTP_EMAIL || ws.providers?.smtpUser || '';
+  const smtpPass = process.env.SMTP_PASSWORD || ws.providers?.smtpPass || '';
+
+  if (!nodemailer || !smtpUser || !smtpPass) {
+    return { sent: false, reason: 'SMTP credentials not configured' };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: smtpUser, pass: smtpPass }
+    });
+
+    await transporter.sendMail({
+      from: `"ORBIT AI Security" <${smtpUser}>`,
+      to: toEmail,
+      subject: 'Your ORBIT AI Login OTP Code',
+      html: `
+        <div style="font-family:Segoe UI,sans-serif;padding:20px;background:#14161D;color:#E9E8F8;border-radius:16px;">
+          <h2 style="color:#8DB9F0;">ORBIT AI — Access Verification</h2>
+          <p>Hello <strong>${userName}</strong>,</p>
+          <p>Your 6-digit One-Time Password (OTP) to access ORBIT AI is:</p>
+          <div style="font-size:28px;font-weight:900;letter-spacing:6px;padding:14px 20px;background:#1E222D;color:#F5B69E;border-radius:12px;display:inline-block;margin:12px 0;">
+            ${otpCode}
+          </div>
+        </div>
+      `
+    });
+    return { sent: true };
+  } catch (err) {
+    return { sent: false, reason: err.message };
+  }
+}
+
+// Authentication & Owner Claim Routes
 app.get('/api/auth/status', (req, res) => {
   const auth = loadAuthData();
   const cookies = parseCookies(req);
@@ -234,9 +269,10 @@ app.get('/api/auth/status', (req, res) => {
 });
 
 app.post('/api/auth/owner/claim', (req, res) => {
-  const { name, phone, claimCode } = req.body;
-  if (!phone || !claimCode) {
-    return res.status(400).json({ error: 'Owner phone and claim code are required.' });
+  const { name, email, phone, claimCode } = req.body;
+  const targetId = email || phone;
+  if (!targetId || !claimCode) {
+    return res.status(400).json({ error: 'Owner identifier and claim code are required.' });
   }
   const auth = loadAuthData();
   const validClaimCode = String(auth.ownerClaimCode || process.env.OWNER_CLAIM_CODE || '411826').trim();
@@ -247,8 +283,9 @@ app.post('/api/auth/owner/claim', (req, res) => {
 
   const ownerUser = {
     id: auth.owner?.id || 'owner_' + crypto.randomBytes(6).toString('hex'),
-    name: (name || auth.owner?.name || 'Mayur Sonawane (Owner)').trim(),
-    phone: phone.trim(),
+    name: (name || auth.owner?.name || 'Mayur Sonawane').trim(),
+    email: targetId.includes('@') ? targetId.toLowerCase() : null,
+    phone: !targetId.includes('@') ? targetId : null,
     role: 'owner',
     tier: 'pro',
     createdAt: auth.owner?.createdAt || new Date().toISOString()
@@ -262,16 +299,17 @@ app.post('/api/auth/owner/claim', (req, res) => {
 
 app.post('/api/auth/issue-phone', async (req, res) => {
   const { phone } = req.body;
-  if (!phone) return res.status(400).json({ error: 'Mobile number required' });
-  const cleanPhone = phone.trim();
+  if (!phone) return res.status(400).json({ error: 'Mobile number or email required' });
+  const cleanId = phone.trim().toLowerCase();
   
   const auth = loadAuthData();
-  let user = auth.users.find(u => u.phone === cleanPhone);
+  let user = auth.users.find(u => u.email?.toLowerCase() === cleanId || u.phone === cleanId);
   if (!user) {
     user = {
       id: 'usr_' + crypto.randomBytes(6).toString('hex'),
-      name: 'User ' + cleanPhone.slice(-4),
-      phone: cleanPhone,
+      name: 'Mayur Sonawane User',
+      email: cleanId.includes('@') ? cleanId : null,
+      phone: !cleanId.includes('@') ? cleanId : null,
       role: 'guest',
       tier: 'free',
       revoked: false,
@@ -282,10 +320,12 @@ app.post('/api/auth/issue-phone', async (req, res) => {
 
   const otp = String(Math.floor(100000 + Math.random() * 900000));
   auth.otps = auth.otps || {};
-  auth.otps[cleanPhone] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
+  auth.otps[cleanId] = { otp, createdAt: new Date().toISOString(), expiresAt: Date.now() + 10 * 60 * 1000 };
   saveAuthData(auth);
 
-  console.log(`[ORBIT AI MOBILE OTP] Phone: ${cleanPhone} | OTP: ${otp}`);
+  if (cleanId.includes('@')) {
+    await sendOtpEmail(cleanId, otp, user.name);
+  }
 
   res.json({
     ok: true,
@@ -296,23 +336,23 @@ app.post('/api/auth/issue-phone', async (req, res) => {
 
 app.post('/api/auth/verify-phone', (req, res) => {
   const { phone, otp } = req.body;
-  if (!phone || !otp) return res.status(400).json({ error: 'Phone and OTP required' });
-  const cleanPhone = phone.trim();
+  if (!phone || !otp) return res.status(400).json({ error: 'Phone/Email and OTP required' });
+  const cleanId = phone.trim().toLowerCase();
 
   const auth = loadAuthData();
-  const record = auth.otps ? auth.otps[cleanPhone] : null;
+  const record = auth.otps ? auth.otps[cleanId] : null;
   if (!record || record.otp !== String(otp).trim() || (record.expiresAt && Date.now() > record.expiresAt)) {
     return res.status(401).json({ error: 'Invalid or expired OTP.' });
   }
-  delete auth.otps[cleanPhone];
+  delete auth.otps[cleanId];
   saveAuthData(auth);
 
-  if (auth.owner && auth.owner.phone === cleanPhone) {
+  if (auth.owner && (auth.owner.email?.toLowerCase() === cleanId || auth.owner.phone === cleanId)) {
     const ownerObj = { ...auth.owner, role: 'owner', tier: 'pro' };
     const token = setSessionCookie(res, ownerObj);
     return res.json({ ok: true, user: ownerObj, token });
   }
-  const user = auth.users.find(u => u.phone === cleanPhone && !u.revoked);
+  const user = auth.users.find(u => (u.email?.toLowerCase() === cleanId || u.phone === cleanId) && !u.revoked);
   if (!user) return res.status(403).json({ error: 'User access revoked or not found' });
 
   const guestObj = { ...user, role: 'guest', tier: user.tier || 'free' };
@@ -325,9 +365,7 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ ok: true });
 });
 
-// =========================================================
-// PRO SUBSCRIPTION (₹799 MANUAL / QR CODE PAYMENT VERIFY)
-// =========================================================
+// Manual Payment Verification Route (₹799)
 const PRO_PRICE_INR = 799;
 
 app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
@@ -337,7 +375,7 @@ app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
   }
 
   const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === req.user.id || u.phone === req.user.phone);
+  const user = auth.users.find(u => u.id === req.user.id || u.email?.toLowerCase() === req.user.email?.toLowerCase() || u.phone === req.user.phone);
   
   if (user) {
     user.tier = 'pro';
@@ -348,7 +386,7 @@ app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
   auth.payments.unshift({
     id: paymentId,
     upiId: upiId || 'UPI / QR Payment',
-    phone: req.user.phone,
+    email: req.user.email || req.user.phone,
     name: req.user.name,
     amountInr: PRO_PRICE_INR,
     status: 'paid',
@@ -383,15 +421,13 @@ app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
   res.json({ ok: true, user });
 });
 
-// =========================================================
-// HEALTH, MODELS & CHAT
-// =========================================================
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
     version: '3.0.0',
     openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY),
-    kieConfigured: Boolean(process.env.KIE_API_KEY)
+    kieConfigured: Boolean(process.env.KIE_API_KEY),
+    parsers: { pdf: Boolean(pdfParse), docx: Boolean(mammoth) }
   });
 });
 
