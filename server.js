@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * ORBIT AI — Private Intelligence OS (Production Node.js Backend: server.js)
- * Chief Architect & Owner: Mayur Sonawane (Claim Code: 411826 | UPI: mayur0797@axl | Helpline: 7499594248)
+ * Chief Architect & Owner: Mayur Sonawane (Claim Code: 411826)
  * ============================================================================
  */
 require('dotenv').config();
@@ -71,16 +71,11 @@ function loadAuthData() {
         id: 'owner_mayur_01',
         name: 'Mayur Sonawane',
         phone: '7499594248',
-        role: 'owner',
-        tier: 'pro'
+        role: 'owner'
       },
       ownerClaimCode: process.env.OWNER_CLAIM_CODE || '411826',
       users: [],
-      requests: [],
-      proRequests: [],
-      payments: [],
-      otps: {},
-      sessions: {}
+      otps: {}
     };
     fs.writeFileSync(AUTH_FILE, JSON.stringify(initial, null, 2), 'utf8');
     return initial;
@@ -88,11 +83,7 @@ function loadAuthData() {
   try {
     const raw = JSON.parse(fs.readFileSync(AUTH_FILE, 'utf8'));
     raw.users = raw.users || [];
-    raw.requests = raw.requests || [];
-    raw.proRequests = raw.proRequests || [];
-    raw.payments = raw.payments || [];
     raw.otps = raw.otps || {};
-    raw.sessions = raw.sessions || {};
     if (!raw.ownerClaimCode) raw.ownerClaimCode = process.env.OWNER_CLAIM_CODE || '411826';
     return raw;
   } catch (e) {
@@ -100,11 +91,7 @@ function loadAuthData() {
       owner: null,
       ownerClaimCode: process.env.OWNER_CLAIM_CODE || '411826',
       users: [],
-      requests: [],
-      proRequests: [],
-      payments: [],
-      otps: {},
-      sessions: {}
+      otps: {}
     };
   }
 }
@@ -115,7 +102,7 @@ function saveAuthData(data) {
 
 function loadWorkspaceData() {
   if (!fs.existsSync(WORKSPACE_FILE)) {
-    const initWs = { agents: [], projects: [], knowledge: [], files: [], providers: {}, customProviders: [] };
+    const initWs = { agents: [], projects: [], knowledge: [], files: [] };
     fs.writeFileSync(WORKSPACE_FILE, JSON.stringify(initWs, null, 2), 'utf8');
     return initWs;
   }
@@ -125,11 +112,9 @@ function loadWorkspaceData() {
     ws.projects = ws.projects || [];
     ws.knowledge = ws.knowledge || [];
     ws.files = ws.files || [];
-    ws.providers = ws.providers || {};
-    ws.customProviders = ws.customProviders || [];
     return ws;
   } catch (e) {
-    return { agents: [], projects: [], knowledge: [], files: [], providers: {}, customProviders: [] };
+    return { agents: [], projects: [], knowledge: [], files: [] };
   }
 }
 
@@ -187,10 +172,10 @@ function getSessionUser(req) {
   if (!decoded) return null;
   const auth = loadAuthData();
   if (decoded.role === 'owner' && auth.owner && auth.owner.id === decoded.id) {
-    return { ...auth.owner, role: 'owner', tier: 'pro' };
+    return { ...auth.owner, role: 'owner' };
   }
   const user = auth.users.find(u => u.id === decoded.id && !u.revoked);
-  if (user) return { ...user, role: 'guest', tier: user.tier || 'free' };
+  if (user) return { ...user, role: 'guest' };
   return null;
 }
 
@@ -198,7 +183,6 @@ function setSessionCookie(res, userObj) {
   const token = signToken({
     id: userObj.id,
     role: userObj.role,
-    tier: userObj.tier || (userObj.role === 'owner' ? 'pro' : 'free'),
     phone: userObj.phone || userObj.email,
     iat: Date.now()
   });
@@ -213,13 +197,6 @@ function requireAuth(req, res, next) {
   next();
 }
 
-function requireOwner(req, res, next) {
-  const user = getSessionUser(req);
-  if (!user || user.role !== 'owner') return res.status(403).json({ error: 'Owner permissions required.' });
-  req.user = user;
-  next();
-}
-
 // Auth Status Route
 app.get('/api/auth/status', (req, res) => {
   const auth = loadAuthData();
@@ -229,13 +206,6 @@ app.get('/api/auth/status', (req, res) => {
   if (!token) return res.json({ ok: true, hasOwner: Boolean(auth.owner), authenticated: false, user: null });
   const decoded = verifyToken(token);
   if (!decoded) return res.json({ ok: true, hasOwner: Boolean(auth.owner), authenticated: false, user: null });
-
-  if (decoded.role !== 'owner') {
-    const userInDb = auth.users.find(u => u.id === decoded.id);
-    if (!userInDb || userInDb.revoked) {
-      return res.status(403).json({ error: 'Access revoked by admin', revoked: true });
-    }
-  }
 
   const user = getSessionUser(req);
   res.json({ ok: true, hasOwner: Boolean(auth.owner), authenticated: Boolean(user), user: user || null });
@@ -259,7 +229,6 @@ app.post('/api/auth/owner/claim', (req, res) => {
     name: (name || 'Mayur Sonawane').trim(),
     phone: phone ? phone.trim() : '7499594248',
     role: 'owner',
-    tier: 'pro',
     createdAt: auth.owner?.createdAt || new Date().toISOString()
   };
 
@@ -269,10 +238,12 @@ app.post('/api/auth/owner/claim', (req, res) => {
   res.json({ ok: true, user: ownerUser, token });
 });
 
-// Mobile OTP Issue Route
+// Mobile OTP Issue Route (10-Digit Validation)
 app.post('/api/auth/issue-phone', async (req, res) => {
   const { phone } = req.body;
-  if (!phone) return res.status(400).json({ error: 'Mobile number required' });
+  if (!phone || !/^\d{10}$/.test(String(phone))) {
+    return res.status(400).json({ error: 'Valid 10-digit mobile number required.' });
+  }
   const cleanPhone = phone.trim();
   
   const auth = loadAuthData();
@@ -283,7 +254,6 @@ app.post('/api/auth/issue-phone', async (req, res) => {
       name: 'User ' + cleanPhone.slice(-4),
       phone: cleanPhone,
       role: 'guest',
-      tier: 'free',
       revoked: false,
       createdAt: new Date().toISOString()
     };
@@ -317,14 +287,14 @@ app.post('/api/auth/verify-phone', (req, res) => {
   saveAuthData(auth);
 
   if (auth.owner && auth.owner.phone === cleanPhone) {
-    const ownerObj = { ...auth.owner, role: 'owner', tier: 'pro' };
+    const ownerObj = { ...auth.owner, role: 'owner' };
     const token = setSessionCookie(res, ownerObj);
     return res.json({ ok: true, user: ownerObj, token });
   }
   const user = auth.users.find(u => u.phone === cleanPhone && !u.revoked);
   if (!user) return res.status(403).json({ error: 'User access revoked or not found' });
 
-  const guestObj = { ...user, role: 'guest', tier: user.tier || 'free' };
+  const guestObj = { ...user, role: 'guest' };
   const token = setSessionCookie(res, guestObj);
   res.json({ ok: true, user: guestObj, token });
 });
@@ -334,83 +304,10 @@ app.post('/api/auth/logout', (req, res) => {
   res.json({ ok: true });
 });
 
-// =========================================================
-// PRO SUBSCRIPTION: PENDING VERIFICATION & HELPLINE (7499594248)
-// =========================================================
-const PRO_PRICE_INR = 799;
-
-app.post('/api/payment/verify-manual', requireAuth, (req, res) => {
-  const { paymentId, upiId } = req.body;
-  if (!paymentId) {
-    return res.status(400).json({ error: 'Please enter the UPI Transaction ID (UTR).' });
-  }
-
-  const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === req.user.id || u.phone === req.user.phone);
-  
-  if (user) {
-    user.tier = 'pending'; // पेमेंट केल्यावर तात्काळ पेंडिंगमध्ये ठेवणे
-    user.pendingUtr = paymentId;
-  }
-
-  auth.payments = auth.payments || [];
-  auth.payments.unshift({
-    id: paymentId,
-    upiId: upiId || 'mayur0797@axl',
-    phone: req.user.phone,
-    name: req.user.name,
-    amountInr: PRO_PRICE_INR,
-    status: 'pending', // ॲडमिन अप्रूव्ह करेपर्यंत पेंडिंग
-    paidAt: new Date().toISOString()
-  });
-
-  saveAuthData(auth);
-
-  res.json({
-    ok: true,
-    status: 'pending',
-    helpline: '7499594248',
-    message: 'Payment reference submitted successfully! Status is Pending. Please call Mayur Sonawane at 7499594248 for instant approval.'
-  });
-});
-
-// ॲडमिनसाठी पेमेंट अप्रूव्ह करण्याचे रूट (Owner 7499594248 द्वारे अप्रूव्ह होणार)
-app.post('/api/admin/approve-payment', requireOwner, (req, res) => {
-  const { userPhone, paymentId } = req.body;
-  const auth = loadAuthData();
-  
-  const user = auth.users.find(u => u.phone === userPhone);
-  if (user) {
-    user.tier = 'pro';
-  }
-  const payment = auth.payments.find(p => p.id === paymentId || p.phone === userPhone);
-  if (payment) {
-    payment.status = 'approved';
-  }
-
-  saveAuthData(auth);
-  res.json({ ok: true, message: 'Pro subscription approved successfully!' });
-});
-
-app.get('/api/auth/users', requireOwner, (req, res) => {
-  const auth = loadAuthData();
-  res.json({ ok: true, users: auth.users || [], payments: auth.payments || [] });
-});
-
-app.post('/api/auth/users/revoke', requireOwner, (req, res) => {
-  const { userId, revoked } = req.body;
-  const auth = loadAuthData();
-  const user = auth.users.find(u => u.id === userId);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  user.revoked = Boolean(revoked);
-  saveAuthData(auth);
-  res.json({ ok: true, user });
-});
-
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    version: '4.2.1',
+    version: '5.0.0',
     openrouterConfigured: Boolean(process.env.OPENROUTER_API_KEY)
   });
 });
