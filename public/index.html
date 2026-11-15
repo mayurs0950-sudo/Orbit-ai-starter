@@ -487,6 +487,7 @@
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
+    /* 3D & 4D HERO GLASS POD */
     .orbit-core-hero {
       position: relative;
       display: flex;
@@ -514,8 +515,19 @@
         inset 0 3px 6px rgba(255, 255, 255, 0.7),
         inset 0 -4px 12px var(--sunset-peach-glow);
       overflow: hidden;
+      /* 4D Depth Hover Transition */
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+      transform-style: preserve-3d;
+    }
+    .orbit-core-hero:hover {
+      transform: perspective(1200px) rotateX(1.5deg) rotateY(-1.5deg) translateY(-4px);
+      box-shadow:
+        0 40px 90px rgba(0, 0, 0, 0.85),
+        0 0 55px var(--powder-blue-glow),
+        inset 0 4px 8px rgba(255, 255, 255, 0.85);
     }
 
+    /* Red Glossy Crystal Sphere Stage */
     #orbitCoreContainer {
       width: 270px;
       height: 270px;
@@ -534,6 +546,7 @@
       cursor: grab;
     }
 
+    /* Bottom Caustic Fire Reflection under the Red Glass Sphere */
     #orbitCoreContainer::after {
       content: "";
       position: absolute;
@@ -726,6 +739,16 @@
       border-radius: 26px;
       padding: 28px;
       box-shadow: var(--glass-3d-shadow);
+      /* 4D Depth Hover Transition */
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+      transform-style: preserve-3d;
+    }
+    .auth-card:hover {
+      transform: perspective(1200px) rotateX(1deg) rotateY(-1deg) translateY(-3px);
+      box-shadow:
+        0 35px 80px rgba(0, 0, 0, 0.85),
+        0 0 35px var(--powder-blue-glow),
+        inset 0 3px 6px rgba(255, 255, 255, 0.8);
     }
 
     .form-group {
@@ -888,9 +911,12 @@
 
       <!-- 3. OWNER CLAIM TAB (फक्त नाव आणि सेटअप कोड - कोपऱ्यातल्या लिंकवर क्लिक केल्यावरच उघडेल) -->
       <div id="authTabOwner" style="display:none;">
-        <div class="form-group"><label>Your Name</label><input id="ownName" placeholder="Enter owner name" /></div>
+        <div class="form-group"><label>Your Name</label><input id="ownName" value="Mayur Sonawane" placeholder="Enter owner name" /></div>
         <div class="form-group"><label>Owner Setup Code</label><input id="ownCode" type="password" placeholder="Enter secret setup code" onkeydown="if(event.key==='Enter')claimOwner()" /></div>
         <button class="btn-3d btn-peach-blue" style="width:100%;" onclick="claimOwner()">Unlock Owner Access</button>
+        <div class="text-center pt-2">
+          <button onclick="showAuthTab('guest')" class="text-[11px] text-[#8DB9F0] hover:underline" style="background:none; border:none; cursor:pointer;">← Back to Sign Up</button>
+        </div>
       </div>
 
       <div id="authStatusMsg" style="margin-top: 12px; font-size: 0.85rem; color: var(--sunset-peach); text-align:center;"></div>
@@ -1351,7 +1377,6 @@
     let activeAbortController = null;
     let promptsList = JSON.parse(localStorage.getItem('orbit_prompts') || '[{"id":"p1","title":"Marathi Assistant","content":"मला सर्व उत्तरे अचूक आणि स्पष्ट मराठीत दे."},{"id":"p2","title":"Full-Stack Code Reviewer","content":"Review this code for security, bugs, and performance."}]');
 
-    // PWA / Android APK Install Prompt Handler
     let deferredPwaPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -1422,12 +1447,12 @@
       gu: ["વર્કસ્પેસ","અંગત","ઓવરવ્યૂ","AI ચેટ","AI મોડેલ હબ પ્રો","પ્રોમ્પ્ટ લાઇબ્રેરી","ફાઇલો અને ટૂલ્સ","ચેટ ઇતિહાસ","AI સર્ચ","AI એજન્ટ્સ","પ્રોજેક્ટ્સ","નોલેજ બેઝ","ઇમેજ અને વિડિયો AI","ઓટોમેશન","પ્રોફાઇલ અને એકાઉન્ટ","API કનેક્શન","પરવાનગી અને સુરક્ષા","સેટિંગ્સ","પ્રો સબ્સ્ક્રિપ્શન","એડમિન પેનલ","એકેડેમિક પ્રોજેક્ટ સ્યુટ","AI ચેટ શરૂ કરો"],
       kn: ["ವರ್ಕ್‌ಸ್ಪೇಸ್","ವೈಯಕ್ತಿಕ","ಅವಲೋಕನ","AI ಚಾಟ್","AI ಮಾಡೆಲ್ ಹಬ್ ಪ್ರೊ","ಪ್ರಾಂಪ್ಟ್ ಲೈಬ್ರರಿ","ಫೈಲ್‌ಗಳು ಮತ್ತು ಟೂಲ್ಸ್","ಚಾಟ್ ಇತಿಹಾಸ","AI ಹುಡುಕಾಟ","AI ಏಜೆಂಟ್‌ಗಳು","ಪ್ರಾಜೆಕ್ಟ್‌ಗಳು","ನಾಲೆಜ್ ಬೇಸ್","ಇಮೇಜ್ ಮತ್ತು ವಿಡಿಯೋ AI","ಆಟೊಮೇಷನ್","ಪ್ರೊಫೈಲ್ ಮತ್ತು ಖಾತೆ","API ಸಂಪರ್ಕಗಳು","ಅನುಮತಿ ಮತ್ತು ಭದ್ರತೆ","ಸೆಟ್ಟಿಂಗ್‌ಗಳು","ಪ್ರೊ ಚಂದಾದಾರಿಕೆ","ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್","AI ಚಾಟ್ ಆರಂಭಿಸಿ"],
       ml: ["വർക്ക്‌സ്‌പേസ്","വ്യക്തിഗതം","ഓവർവ്യൂ","AI ചാറ്റ്","AI മോഡൽ ഹബ് പ്രൊ","പ്രോംപ്റ്റ് ലൈബ്രറി","ഫയലുകളും ടൂളുകളും","ചാറ്റ് ചരിത്രം","AI തിരയൽ","AI ഏജന്റുകൾ","പ്രോജക്ടുകൾ","നോളജ് ബേസ്","ഇമേജ് & വീഡിയോ AI","ഓട്ടോമേഷൻ","പ്രൊഫൈൽ & അക്കൗണ്ട്","API കണക്ഷനുകൾ","അനുമതികളും സുരക്ഷയും","ക്രമീകരണങ്ങൾ","പ്രോ സബ്സ്ക്രിപ്ഷൻ","അഡ്മിൻ പാനൽ","AI ചാറ്റ് തുടങ്ങുക"],
-      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾਸ","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল ਅਤੇ ਖਾਤਾ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ এবং ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪ੍ਰੋ ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡਮिन ਪੈनল","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
+      pa: ["ਵਰਕਸਪੇਸ","ਨਿੱਜੀ","ਓਵਰਵਿਊ","AI ਚੈਟ","AI ਮਾਡਲ ਹੱਬ ਪ੍ਰੋ","ਪ੍ਰੌਂਪਟ ਲਾਇਬ੍ਰੇਰੀ","ਫਾਈਲਾਂ ਅਤੇ ਟੂਲ","ਚੈਟ ਇਤਿਹਾस","AI ਖੋਜ","AI ਏਜੰਟ","ਪ੍ਰੋਜੈਕਟ","ਗਿਆਨ ਆਧਾਰ","ਇਮੇਜ ਅਤੇ ਵੀਡੀਓ AI","ਆਟੋਮੇਸ਼ਨ","Pरेफাইল ਅਤੇ ਖಾತೆ","API ਕੁਨੈਕਸ਼ਨ","ਇਜਾਜ਼ਤਾਂ and ਸੁਰੱਖਿਆ","ਸੈਟਿੰਗਾਂ","ਪრო ਸਬਸਕ੍ਰਿਪਸ਼ਨ","ਐਡmin ਪੈनल","AI ਚੈਟ ਸ਼ੁਰੂ ਕਰੋ"],
       or: ["ୱାର୍କସ୍ପେସ୍","ବ୍ୟକ୍ତିଗତ","ଓଭର୍ଭିୟୁ","AI ଚାଟ୍","AI ମଡେଲ୍ ହବ୍ ପ୍ରୋ","ପ୍ରମ୍ପ୍ଟ ଲାଇବ୍ରେରୀ","ଫାଇଲ୍ ଓ ଟୁଲ୍ସ","ଚାଟ୍ ଇତିହାସ","AI ସର୍ଚ୍ଚ","AI ଏଜେଣ୍ଟ","ପ୍ରୋଜେକ୍ଟ","ନଲେଜ୍ ବେସ୍","ଇମେଜ୍ ଓ ଭିଡିଓ AI","ଅଟୋମେସନ୍","ପ୍ରୋଫାଇଲ୍ ଓ ଆକାଉଣ୍ଟ","API ସଂଯୋଗ","ଅନୁମତି ଓ ସୁରକ୍ଷା","ସେଟିଂସ୍","ପ୍ରୋ ସବସ୍କ୍ରିପସନ୍","ଆଡମିନ୍ ପ୍ୟାନେଲ୍","AI ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ"],
       as: ["ৱৰ্কস্পেচ","ব্যক্তিগত","অভাৰভিউ","AI চেট","AI মডেল হাব প্ৰ'","প্ৰম্পট লাইব্ৰেৰী","ফাইল আৰু টুলছ","চেট ইতিহাস","AI সন্ধান","AI এজেণ্ট","প্ৰকল্প","নলেজ বেছ","ছবি আৰু ভিডিঅ' AI","স্বয়ংক্ৰিয়কৰণ","প্ৰফাইল আৰু একাউণ্ট","API সংযোগ","অনুমতি আৰু সুৰক্ষা","ছেটিংছ","প্ৰ' সদস্যতা","এডমিন পেনেল","AI চেট আৰম্ভ কৰক"],
       ur: ["ورک اسپیس","ذاتی","جائزہ","AI چیٹ","AI ماڈل حب پرو","پرامپٹ لائبریری","فائلیں اور ٹولز","چیٹ ہسٹری","AI سرچ","AI ایجنٹس","پروجیکٹس","نالج بیس","امیج اور ویڈیو AI","آٹومیشن","پروفائل اور اکاؤنٹ","API کنکشنز","اجازتیں اور سیکیورٹی","سیٹنگز","پرو سبسکرپشن","ایڈمن پینل","AI چیٹ شروع کریں"],
       sa: ["कार्यक्षेत्रम्","वैयक्तिकम्","सिंहावलोकनम्","AI संवादः","AI प्रतिरूप-केन्द्रम् प्रो","प्रेरणा-पुस्तकालयः","सञ्चिकाः उपकरणानि च","संवाद-इतिहासः","AI अन्वेषणम्","AI प्रतिनिधयः","परियोजनाः","ज्ञानाधारः","चित्रं चलचित्रं च AI","स्वचालनम्","परिचयः लेखा च","API संयोजनानि","अनुमतयः सुरक्षा च","विन्यासाः","प्रो-सदस्यता","प्रशासकपटलम्","AI संवादम् आरभस्व"],
-      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","AI च्याट सुरु गर्नुहोस्"]
+      ne: ["कार्यक्षेत्र","व्यक्तिगत","ओभरभ्यु","AI च्याट","AI मोडेल हब प्रो","प्रम्प्ट लाइब्रेरी","फाइल र टुल्स","च्याट इतिहास","AI खोज","AI एजेन्टहरू","प्रोजेक्टहरू","ज्ञान आधार","इमेज र भिडियो AI","अटोमेसन","प्रोफाइल र खाता","API जडानहरू","अनुमति र सुरक्षा","सेटिङहरू","प्रो सदस्यता","एडमिन प्यानल","AI चैट सुरु गर्नुहोस्"]
     };
     Object.keys(I18N_PACK).forEach(l => {
       I18N[l] = {};
@@ -1574,7 +1599,6 @@
 
           col += vec3(0.95, 0.75, 0.88) * softReflect * 0.25;
           col += vec3(1.0, 0.35, 0.25) * fresnel * 0.85;
-          col += vec3(1.0, 0.98, 0.95) * spec1 * 1.35;
           col += vec3(1.0, 0.9, 0.85) * spec2 * 0.9;
 
           float alpha = clamp(0.76 + fresnel * 0.24 + spec1 + causticSpot * 0.2, 0.0, 1.0);
@@ -1709,7 +1733,6 @@
       return data;
     }
 
-    // फ्री युजर्ससाठी प्रो फीचर्स लॉक आणि प्रो/ॲडमिनसाठी अनलॅक करणारी सुरक्षा (Academic, Automation, Knowledge, Agents, Search)
     function switchView(name) {
       const proViews = ['academic', 'automation', 'knowledge', 'agents', 'search'];
       const isOwner = currentUser && currentUser.role === 'owner';
@@ -1827,7 +1850,6 @@
       });
     }
 
-    // QR Code आणि ₹799 पेमेंट विंडो
     function redirectToRazorpay() {
       if (!currentUser) {
         alert('कृपया आधी लॉगिन करा.');
@@ -1918,10 +1940,9 @@
       updateAuthUI();
     }
 
-    // OWNER CLAIM (फक्त नाव आणि सेटअप कोड -> थेट ओनर प्रो ॲक्सेस)
     async function claimOwner() {
       try {
-        const name = (document.getElementById('ownName').value || 'Mayur Sonawane').trim();
+        const name = document.getElementById('ownName').value.trim() || 'Mayur Sonawane';
         const claimCode = document.getElementById('ownCode').value.trim();
         if (!claimCode) {
           document.getElementById('authStatusMsg').textContent = 'Please enter Owner Setup Code.';
@@ -1940,7 +1961,6 @@
       }
     }
 
-    // SIGN UP (४०४ एरर फिक्स: थेट OTP जनरेट करून OTP Login टॅबमध्ये खालीच दाखवतो)
     async function submitGuestRequest() {
       try {
         const name = document.getElementById('reqName').value.trim();
@@ -1958,7 +1978,6 @@
       }
     }
 
-    // OTP GENERATION (OTP बॉक्सच्या खालीच लगेच OTP दाखवतो आणि ऑटो-फिल करतो)
     async function issueOtp() {
       try {
         const identifier = (document.getElementById('otpEmail').value || document.getElementById('reqEmail').value || '').trim();
